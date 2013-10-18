@@ -442,6 +442,10 @@
 ;; use automatic file headers
 (load "~/.emacs.d/emacs-auto-insert.el")
 
+;; mutt
+;; mail support.
+(setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
