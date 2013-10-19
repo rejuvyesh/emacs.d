@@ -14,11 +14,6 @@
       (normal-top-level-add-to-load-path '("."))
       (normal-top-level-add-subdirs-to-load-path))
 
-;; color
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-;; using prebulit tango theme
-(load-theme 'cyberpunk t)
-(icomplete-mode 1)
 
 
 (ido-mode 1)
@@ -455,4 +450,11 @@
       (set-face-background 'default "unspecified-bg" frame)))
 (on-frame-open (selected-frame))
 (add-hook 'after-make-frame-functions 'on-frame-open)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Theming
+;; color
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+;; using prebulit cyberpunk theme
+(load-theme 'cyberpunk t)
+(icomplete-mode 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
