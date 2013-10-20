@@ -69,8 +69,6 @@
                  1 2 3 4))
   (add-hook 'r-mode-hook 'flymake-mode)
   )
-(require 'r-autoyas)
-(add hook 'ess-mode-hook 'r-autoyas-ess-activate)
 
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
@@ -494,3 +492,7 @@
 (setq uniquify-separator "/")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Checking out helm
+(require 'helm-config)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
