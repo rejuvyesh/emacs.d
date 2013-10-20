@@ -495,4 +495,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Checking out helm
 (require 'helm-config)
+(helm-mode t)
+(global-set-key (kbd "M-t") 'helm-cmd-t)
+(global-set-key [remap switch-to-buffer] 'helm-C-x-b)
+(setq helm-ff-lynx-style-map nil
+      helm-input-idle-delay 0.1
+      helm-idle-delay 0.1
+      )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
