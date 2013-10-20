@@ -51,6 +51,24 @@
 ;; load ESS for R
 (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (require 'ess-site)
+;; R flymake support (if Flymake is available) This will call a script
+;; "rflymake" with the path given; make sure it is on emac's exec-path
+;; or give a full path.
+(when (require 'flymake nil)
+  (defun flymake-r-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "~/Scripts/rflymake" (list local-file))))
+
+  (add-to-list 'flymake-allowed-file-name-masks '("\\.[Rr]\\'" flymake-r-init))
+  (add-to-list 'flymake-err-line-patterns
+               '("parse(\"\\([^\"]*\\)\"): \\([0-9]+\\):\\([0-9]+\\): \\(.*\\)$"
+                 1 2 3 4))
+  (add-hook 'r-mode-hook 'flymake-mode)
+  )
 
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
@@ -66,6 +84,9 @@
   '(require 'flymake-python-pyflakes))
 
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+
+;; Sometimes you have to
+(require 'php-mode)
 
 ;; scrolling
 (setq scroll-preserve-screen-position t)
@@ -466,3 +487,8 @@
       apropos-do-all t
       mouse-yank-at-point t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
