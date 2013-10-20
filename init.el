@@ -88,9 +88,8 @@
 (global-set-key [M-up]   '(lambda () (interactive) (progn (forward-line -10) (recenter) ) ))
 
 ;; snippets
-(setq yas-snippet-dirs "~/.emacs.d/snippets"
-                       ".emacs.d/elpa/yasnippet-20131014.928/snippets")
-
+(setq yas-snippet-dirs "~/.emacs.d/snippets")
+                       
 (require 'yasnippet)
 (define-key yas-minor-mode-map [backtab] 'yas-next-field)
 (define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
@@ -442,7 +441,7 @@
 ;; mutt
 ;; mail support.
 (setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
-
+(add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Remove background color from terminal emacs,
 ;; so that it can remain transparent
