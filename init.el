@@ -69,6 +69,8 @@
                  1 2 3 4))
   (add-hook 'r-mode-hook 'flymake-mode)
   )
+(require 'r-autoyas)
+(add hook 'ess-mode-hook 'r-autoyas-ess-activate)
 
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
