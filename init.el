@@ -13,7 +13,7 @@
 (let ((default-directory "~/.emacs.d/site-lisp/"))
       (normal-top-level-add-to-load-path '("."))
       (normal-top-level-add-subdirs-to-load-path))
-
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 
 (ido-mode 1)
@@ -453,8 +453,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theming
 ;; color
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+
 ;; using prebulit cyberpunk theme
 (load-theme 'cyberpunk t)
 (icomplete-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Some saner clipboard
+(setq x-select-enable-clipboard t
+      x-select-enable-primary t
+      save-interprogram-paste-before-kill t
+      apropos-do-all t
+      mouse-yank-at-point t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
