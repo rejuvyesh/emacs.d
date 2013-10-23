@@ -7,7 +7,30 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+;; https://github.com/dimitri/el-get
+;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")  ; This is configured at the top.
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+(el-get 'sync)
+;; Make sure a package is installed
+(defun package-require (package)
+    "Install a PACKAGE unless it is already installed 
+or a feature with the same name is already active.
+Usage: (package-require 'package)"
+                                        ; try to activate the package with at least version 0.
+    (package-activate package '(0))
+                                        ; try to just require the package. Maybe the user has it in his local config
+    (condition-case nil
+        (require package)
+                                        ; if we cannot require it, it does not exist, yet. So install it.
+      (error (package-install package))))
 (package-initialize)
+(package-refresh-contents)
 
 ;; define custom lisp directory and load all subdirectories too
 (let ((default-directory "~/.emacs.d/site-lisp/"))
@@ -48,46 +71,63 @@
 
 (setq org-completion-use-ido t)
 
+;; Flycheck for code linting
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(require 'flycheck-color-mode-line)
+(eval-after-load "flycheck"
+    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+
 ;; load ESS for R
 (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (require 'ess-site)
 ;; R flymake support (if Flymake is available) This will call a script
 ;; "rflymake" with the path given; make sure it is on emac's exec-path
 ;; or give a full path.
-(when (require 'flymake nil)
-  (defun flymake-r-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "~/Scripts/rflymake" (list local-file))))
+;; (when (require 'flymake nil)
+;;   (defun flymake-r-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "~/Scripts/rflymake" (list local-file))))
 
-  (add-to-list 'flymake-allowed-file-name-masks '("\\.[Rr]\\'" flymake-r-init))
-  (add-to-list 'flymake-err-line-patterns
-               '("parse(\"\\([^\"]*\\)\"): \\([0-9]+\\):\\([0-9]+\\): \\(.*\\)$"
-                 1 2 3 4))
-  (add-hook 'r-mode-hook 'flymake-mode)
-  )
+;;   (add-to-list 'flymake-allowed-file-name-masks '("\\.[Rr]\\'" flymake-r-init))
+;;   (add-to-list 'flymake-err-line-patterns
+;;                '("parse(\"\\([^\"]*\\)\"): \\([0-9]+\\):\\([0-9]+\\): \\(.*\\)$"
+;;                  1 2 3 4))
+;;   (add-hook 'r-mode-hook 'flymake-mode)
+;;   )
 
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
+(setq-default TeX-engine 'xetex)      ; use xelatex by default
+(setq TeX-view-program-selection '((output-pdf "zathura")))
+(require 'ac-math)
+(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+(defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
+  (setq ac-sources
+        (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+                ac-sources))
+    )
 
-;; python ;;
-;; ipython as shell
-(require 'ipython)
-;; python-mode
-(require 'python-mode)
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-; On-the-fly syntax checking via flymake
-(eval-after-load 'python
-  '(require 'flymake-python-pyflakes))
-
-(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+;; ;; python ;;
+;; ;; ipython as shell
+;; (require 'ipython)
+;; ;; python-mode
+;; (require 'python-mode)
+;; (autoload 'python-mode "python-mode" "Python editing mode." t)
+;; ;; jedi completion
+;; (add-hook 'python-mode-hook 'jedi:setup)
+(elpy-enable)
+(elpy-use-ipython)
 
 ;; Sometimes you have to
 (require 'php-mode)
 
+;; C coding style
+(setq c-default-style "linux"
+             c-basic-offset 4)
 ;; scrolling
 (setq scroll-preserve-screen-position t)
 (setq mouse-wheel-progressive-speed nil)
@@ -119,8 +159,8 @@
 
 ;; text completion
 
-
-
+(require 'autopair)
+(autopair-global-mode) ;; to enable in all buffers
 
 ;; auto completion
 (require 'auto-complete-config)
@@ -327,7 +367,7 @@
 
 ;; haskell mode
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (when (eval-when-compile (>= emacs-major-version 24))
   (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
 
@@ -498,8 +538,22 @@
 (helm-mode t)
 (global-set-key (kbd "M-t") 'helm-cmd-t)
 (global-set-key [remap switch-to-buffer] 'helm-C-x-b)
+(global-set-key (kbd "C-x c g") 'helm-do-grep)
+(global-set-key (kbd "C-x c o") 'helm-occur)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 (setq helm-ff-lynx-style-map nil
       helm-input-idle-delay 0.1
       helm-idle-delay 0.1
       )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; go to last change
+;; http://www.emacswiki.org/emacs/GotoChg
+(require 'goto-chg)
+(global-set-key [f8] 'goto-last-change)
+
+;; rainbow-delimiters.el
+;; http://www.emacswiki.org/emacs/RainbowDelimiters
+(require 'rainbow-delimiters)
+(add-hook 'ess-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode) ; for programming related modes

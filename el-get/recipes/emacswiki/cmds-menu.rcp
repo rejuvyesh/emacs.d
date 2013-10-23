@@ -1,0 +1,5 @@
+(:name cmds-menu
+:auto-generated t
+:type emacswiki
+:description "Menu-bar menu of recently invoked commands."
+:website "https://raw.github.com/emacsmirror/emacswiki.org/master/cmds-menu.el")
