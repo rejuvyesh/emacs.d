@@ -14,9 +14,11 @@
   (with-current-buffer
       (url-retrieve-synchronously
        "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
     (goto-char (point-max))
-    (eval-print-last-sexp)))
+    (eval-print-last-sexp))))
 (el-get 'sync)
+
 ;; Make sure a package is installed
 (defun package-require (package)
     "Install a PACKAGE unless it is already installed 
@@ -30,7 +32,8 @@ Usage: (package-require 'package)"
                                         ; if we cannot require it, it does not exist, yet. So install it.
       (error (package-install package))))
 (package-initialize)
-(package-refresh-contents)
+(unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
+(package-refresh-contents))
 
 ;; define custom lisp directory and load all subdirectories too
 (let ((default-directory "~/.emacs.d/site-lisp/"))
@@ -119,9 +122,10 @@ Usage: (package-require 'package)"
 ;; (autoload 'python-mode "python-mode" "Python editing mode." t)
 ;; ;; jedi completion
 ;; (add-hook 'python-mode-hook 'jedi:setup)
+(autoload 'python-mode "python-mode")
 (elpy-enable)
 (elpy-use-ipython)
-
+(setq elpy-rpc-python-command "/usr/bin/ipython")
 ;; Sometimes you have to
 (require 'php-mode)
 
@@ -361,9 +365,21 @@ Usage: (package-require 'package)"
 (add-hook 'markdown-mode-hook 'turn-on-pandoc)
 
 ;; octave mode
-(autoload 'octave-mode "octave-mod" nil t)
+;; (autoload 'octave-mode "octave-mod" nil t)
+;; (setq auto-mode-alist
+;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+(load-library "matlab-load")
+(custom-set-variables
+ '(matlab-shell-command-switches '("-nodesktop -nosplash")))
+(add-hook 'matlab-mode
+          (lambda ()
+            (auto-complete-mode 1)
+            ))
 (setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+      (cons
+       '("\\.m$" . matlab-mode)
+            auto-mode-alist))
 
 ;; haskell mode
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -557,3 +573,29 @@ Usage: (package-require 'package)"
 (require 'rainbow-delimiters)
 (add-hook 'ess-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode) ; for programming related modes
+
+;; Finally giving in to being evil
+(require 'evil)
+(evil-mode 1)
+(setq evil-auto-indent t)
+(setq evil-regexp-search t)
+(setq evil-want-C-i-jump t)
+(setq evil-normal-state-cursor '("white" box))
+(setq evil-insert-state-cursor '("white" bar))
+(add-hook 'text-mode-hook 'turn-on-evil-mode)
+(add-hook 'prog-mode-hook 'turn-on-evil-mode)
+(define-key evil-normal-state-map "\C-e" 'evil-end-of-line)
+(define-key evil-insert-state-map "\C-e" 'end-of-line)
+(define-key evil-visual-state-map "\C-e" 'evil-end-of-line)
+(define-key evil-normal-state-map "\C-w" 'evil-delete)
+(define-key evil-insert-state-map "\C-w" 'evil-delete)
+(define-key evil-visual-state-map "\C-w" 'evil-delete)
+(define-key evil-normal-state-map "\C-y" 'yank)
+(define-key evil-insert-state-map "\C-y" 'yank)
+(define-key evil-visual-state-map "\C-y" 'yank)
+(define-key evil-normal-state-map "\C-k" 'kill-line)
+(define-key evil-insert-state-map "\C-k" 'kill-line)
+(define-key evil-visual-state-map "\C-k" 'kill-line)
+
+;; yascroll
+(global-yascroll-bar-mode 1)
