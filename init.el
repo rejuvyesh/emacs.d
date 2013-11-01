@@ -757,3 +757,49 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
+;; fonts
+(defvar small-font "6x10")
+(defvar normal-font "6x13")
+(defvar big-font "-gnu-unifont-*")
+(defvar font-list (list
+                   small-font
+                   normal-font
+                   big-font))
+(defvar current-font normal-font)
+
+(defun set-window-font ()
+  (set-frame-font current-font))
+(add-hook 'after-make-window-system-frame-hooks 'set-window-font)
+
+(defun cycle-fonts ()
+  "cycles through font list"
+  (interactive)
+
+  (let (currentState)
+    ;; states starts from 1.
+    (setq currentState (if (get this-command 'state) (get this-command 'state) 1))
+    (setq current-font (nth (1- currentState) font-list))
+    (put this-command 'state (1+ (% currentState (length font-list))))
+    (set-window-font)))
+(global-set-key "\C-c\C-f" 'cycle-fonts)
+
+;; shortcut for the fonts
+(defun use-big-font ()
+  "use big font"
+  (interactive)
+  (setq current-font big-font)
+  (set-window-font))
+(defun use-normal-font ()
+  "use normal font"
+  (interactive)
+  (setq current-font normal-font)
+  (set-window-font))
+(defun use-small-font ()
+  "use small font"
+  (interactive)
+  (setq current-font small-font)
+  (set-window-font))
+(global-set-key (kbd "C-c <f1>") 'use-small-font)
+(global-set-key (kbd "C-c <f2>") 'use-normal-font)
+(global-set-key (kbd "C-c <f3>") 'use-big-font)
+
