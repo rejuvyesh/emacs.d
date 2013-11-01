@@ -34,13 +34,32 @@ Usage: (package-require 'package)"
 (package-initialize)
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
 (package-refresh-contents))
-
+; (package-refresh-contents)
 ;; define custom lisp directory and load all subdirectories too
 (let ((default-directory "~/.emacs.d/site-lisp/"))
       (normal-top-level-add-to-load-path '("."))
       (normal-top-level-add-subdirs-to-load-path))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
+; try to keep windows within a max margin
+(require 'automargin)
+(setq automargin-target-width 120)
+(automargin-mode)
+;; multiple cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-c k") 'mc/edit-lines)
+(global-set-key (kbd "C-c >") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c <") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-k") 'mc/mark-all-like-this)
+(require 'phi-search)
+(require 'phi-search-mc)
+(define-key phi-search-default-map (kbd "C-c >") 'phi-search-mc/mark-next)
+(define-key phi-search-default-map (kbd "C-c <") 'phi-search-mc/mark-previous)
+(define-key phi-search-default-map (kbd "C-c C-k") 'phi-search-mc/mark-all)
+
+;; undo highlighting
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
 
 (ido-mode 1)
   (setq ido-default-buffer-method 'selected-window)
@@ -116,16 +135,30 @@ Usage: (package-require 'package)"
 
 ;; ;; python ;;
 ;; ;; ipython as shell
-;; (require 'ipython)
-;; ;; python-mode
-;; (require 'python-mode)
-;; (autoload 'python-mode "python-mode" "Python editing mode." t)
-;; ;; jedi completion
-;; (add-hook 'python-mode-hook 'jedi:setup)
-(autoload 'python-mode "python-mode")
+;; (setq
+;;  python-shell-interpreter "ipython"
+;;  python-shell-interpreter-args ""
+;;  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+;;  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+;;  python-shell-completion-setup-code
+;;  "from IPython.core.completerlib import module_completion"
+;;  python-shell-completion-module-string-code
+;;  "';'.join(module_completion('''%s'''))\n"
+;;  python-shell-completion-string-code
+;;  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
 (elpy-enable)
 (elpy-use-ipython)
-(setq elpy-rpc-python-command "/usr/bin/ipython")
+(elpy-clean-modeline)
+
+;; python-mode
+;; (require 'python-mode)
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+;; jedi completion
+(add-hook 'python-mode-hook 'auto-complete-mode)
+(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'python-mode-hook 'linum-mode)
+
 ;; Sometimes you have to
 (require 'php-mode)
 
@@ -160,6 +193,12 @@ Usage: (package-require 'package)"
 (define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
 (define-key yas-minor-mode-map [(control tab)] 'yas-prev-field)
 (yas-global-mode 1)
+
+; auto-yasnippet
+(require 'auto-yasnippet)
+(global-set-key (kbd "C-c ~") 'aya-create)
+(global-set-key (kbd "C-c C-~") 'aya-expand)
+
 
 ;; text completion
 
@@ -222,7 +261,7 @@ Usage: (package-require 'package)"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("0a47a318b366c8d5bf2a4738ff4cea9988c60f4b3b7f7a31cff565a7889406a5" "88d556f828e4ec17ac074077ef9dcaa36a59dccbaa6f2de553d6528b4df79cbd" "2282f550e7baf0ff8eb1432983676d20fed81a2fdd8c50d70e62cb58580633f4" "843a82ff3b91bec5430f9acdd11de03fc0f7874b15c1b6fbb965116b4c7bf830" "5e2ade7f65d9162ca2ba806908049fb37d602d59d90dc3a08463e1a042f177ae" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "bf7ed640479049f1d74319ed004a9821072c1d9331bc1147e01d22748c18ebdf" default)))
+ '(custom-safe-themes (quote ("7153b82e50b6f7452b4519097f880d968a6eaf6f6ef38cc45a144958e553fbc6" "a0feb1322de9e26a4d209d1cfa236deaf64662bb604fa513cca6a057ddf0ef64" "0a47a318b366c8d5bf2a4738ff4cea9988c60f4b3b7f7a31cff565a7889406a5" "88d556f828e4ec17ac074077ef9dcaa36a59dccbaa6f2de553d6528b4df79cbd" "2282f550e7baf0ff8eb1432983676d20fed81a2fdd8c50d70e62cb58580633f4" "843a82ff3b91bec5430f9acdd11de03fc0f7874b15c1b6fbb965116b4c7bf830" "5e2ade7f65d9162ca2ba806908049fb37d602d59d90dc3a08463e1a042f177ae" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "bf7ed640479049f1d74319ed004a9821072c1d9331bc1147e01d22748c18ebdf" default)))
  '(ecb-fix-window-size (quote auto))
  '(ecb-layout-name "left15")
  '(ecb-layout-window-sizes (quote (("left14" (ecb-speedbar-buffer-name 33 . 45) (ecb-history-buffer-name 33 . 23)) ("left15" (ecb-speedbar-buffer-name 33 . 34) (ecb-methods-buffer-name 33 . 34)))))
@@ -234,6 +273,7 @@ Usage: (package-require 'package)"
  '(ecb-use-speedbar-instead-native-tree-buffer (quote dir))
  '(ecb-window-width 33)
  '(ido-enable-tramp-completion nil)
+ '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
  '(safe-local-variable-values nil))
 ;; disable tramp
 (setq tramp-mode nil)
@@ -255,17 +295,19 @@ Usage: (package-require 'package)"
 (setq inhibit-splash-screen t)
 ;; power line
 (require 'powerline)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:foreground "#030303" :background "#2d5565" :box nil))))
- '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(mode-line ((t (:foreground "#030303" :background "#2d5565" :box nil))))
+;;  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
 
 ;; shows current selected region
 (setq-default transient-mark-mode t)
 (set-scroll-bar-mode 'right)
+(setq frame-title-format "%b - emacs")
+(set-fringe-mode '(0 . 1))
 
 ;; text stuff
 (setq default-major-mode 'org-mode)
@@ -315,6 +357,11 @@ Usage: (package-require 'package)"
 ;; key bindings
 (global-set-key "\C-cc" 'comment-region)
 (global-set-key "\C-cu" 'uncomment-region)
+(global-set-key (kbd "C-c SPC") 'comment-dwim)
+(global-set-key (kbd "C-c C-SPC") 'comment-dwim)
+(global-set-key "\C-cn" 'next-error)
+(global-set-key "\C-cp" 'previous-error)
+(global-set-key "\C-ci" 'indent-region)
 
 ;; save minibuffer history
 (savehist-mode 1)
@@ -370,8 +417,7 @@ Usage: (package-require 'package)"
 ;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
 (load-library "matlab-load")
-(custom-set-variables
- '(matlab-shell-command-switches '("-nodesktop -nosplash")))
+
 (add-hook 'matlab-mode
           (lambda ()
             (auto-complete-mode 1)
@@ -599,3 +645,38 @@ Usage: (package-require 'package)"
 
 ;; yascroll
 (global-yascroll-bar-mode 1)
+
+;; move to beginning of text on line
+(defun smart-beginning-of-line ()
+    "Move point to first non-whitespace character or beginning-of-line.
+
+Move point to the first non-whitespace character on this line. If point was
+already at that position, move point to beginning of line.
+
+If visual-line-mode is on, then also jump to beginning of real line."
+    (interactive) ; Use (interactive "^") in Emacs 23 to make shift-select work
+    (let ((oldpos (point))
+          (vispos (point)))
+
+      (beginning-of-visual-line)
+      (setq vispos (point))
+      (beginning-of-line-text)
+
+      (if (and (> vispos (point))
+               (not (= oldpos vispos)))
+          (goto-char vispos)
+        (when (= oldpos (point))
+          (beginning-of-line)))))
+(global-set-key "\C-a" 'smart-beginning-of-line)
+
+(defun smart-end-of-line ()
+  "Move point to end of visual line or, if already there, to end of logical line."
+  (interactive) ; Use (interactive "^") in Emacs 23 to make shift-select work
+  (let ((oldpos (point)))
+
+    (end-of-visual-line)
+    (when (= oldpos (point))
+      (end-of-line))))
+(global-set-key "\C-e" 'smart-end-of-line)
+
+
