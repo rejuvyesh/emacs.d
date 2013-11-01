@@ -162,6 +162,19 @@ Usage: (package-require 'package)"
 ;; Sometimes you have to
 (require 'php-mode)
 
+;; lua
+(require 'lua-mode)
+(setq lua-indent-level 2)
+
+;; (s)css
+(setq scss-compile-at-save nil)
+(setq css-indent-level 2)
+
+;; expand-region
+(require 'expand-region)
+(global-set-key (kbd "<C-prior>") 'er/expand-region)
+(global-set-key (kbd "<C-next>") 'er/contract-region)
+
 ;; C coding style
 (setq c-default-style "linux"
              c-basic-offset 4)
@@ -363,6 +376,21 @@ Usage: (package-require 'package)"
 (global-set-key "\C-cp" 'previous-error)
 (global-set-key "\C-ci" 'indent-region)
 
+;; if no region is active, act on current line
+(require 'whole-line-or-region)
+(setq whole-line-or-region-extensions-alist
+      '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
+        (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+        (kill-region whole-line-or-region-kill-region nil)
+        (kill-ring-save whole-line-or-region-kill-ring-save nil)
+        (yank whole-line-or-region-yank nil)
+        ))
+(whole-line-or-region-mode 1)
+
+;; better rectangle functionality
+(require 'phi-rectangle)
+(phi-rectangle-mode)
+
 ;; save minibuffer history
 (savehist-mode 1)
 (setq savehist-file "~/.emacs.d/cache/history")
@@ -411,6 +439,14 @@ Usage: (package-require 'package)"
 ;; add pandoc hook
 (add-hook 'markdown-mode-hook 'turn-on-pandoc)
 
+;; yaml
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(defun no-electric-indent-yaml ()
+  (electric-indent-mode -1)
+  (define-key yaml-mode-map [(return)] 'newline-and-indent))
+(add-hook 'yaml-mode-hook 'no-electric-indent-yaml)
 ;; octave mode
 ;; (autoload 'octave-mode "octave-mod" nil t)
 ;; (setq auto-mode-alist
@@ -440,6 +476,11 @@ Usage: (package-require 'package)"
 (diminish 'highlight-parentheses-mode)
 (diminish 'fic-mode)
 (diminish 'auto-complete-mode "AC")
+(diminish 'undo-tree-mode)
+(diminish 'visual-line-mode)
+(diminish 'volatile-highlights-mode)
+(diminish 'whole-line-or-region-mode)
+(diminish 'yas-minor-mode)
 
 ;; don't start in lisp
 (setq initial-major-mode 'org-mode)
@@ -679,4 +720,37 @@ If visual-line-mode is on, then also jump to beginning of real line."
       (end-of-line))))
 (global-set-key "\C-e" 'smart-end-of-line)
 
+
+;; semi-port of surround.vim
+(require 'surround)
+(global-set-key "\C-cd" 'surround-delete)
+(global-set-key "\C-cD" 'surround-delete-within)
+(global-set-key "\C-c\M-d" 'surround-change)
+
+;; move lines like in org-mode
+(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (setq col (current-column))
+  (beginning-of-line) (setq start (point))
+  (end-of-line) (forward-char) (setq end (point))
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (insert line-text)
+    ;; restore point to original column in moved line
+    (forward-line -1)
+    (forward-char col)))
+
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+(global-set-key (kbd "M-<up>") 'move-line-up)
+(global-set-key (kbd "M-<down>") 'move-line-down)
 
