@@ -308,6 +308,9 @@ Usage: (package-require 'package)"
 (setq inhibit-splash-screen t)
 ;; power line
 (require 'powerline)
+(setq powerline-arrow-shape 'arrow14)
+
+
 ;; (custom-set-faces
 ;;  ;; custom-set-faces was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -620,7 +623,7 @@ Usage: (package-require 'package)"
 ;; color
 
 ;; using prebulit cyberpunk theme
-(load-theme 'cyberpunk t)
+(load-theme 'molokai t)
 (icomplete-mode 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some saner clipboard
