@@ -816,3 +816,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "C-c <f2>") 'use-normal-font)
 (global-set-key (kbd "C-c <f3>") 'use-big-font)
 
+;; More emacs rocks: Join current line with the next
+(global-set-key (kbd "M-j")
+            (lambda ()
+                  (interactive)
+                  (join-line -1)))
