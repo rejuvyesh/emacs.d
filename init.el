@@ -162,6 +162,10 @@ Usage: (package-require 'package)"
 ;; Sometimes you have to
 (require 'php-mode)
 
+;; javascript
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
 ;; lua
 (require 'lua-mode)
 (setq lua-indent-level 2)
@@ -177,7 +181,11 @@ Usage: (package-require 'package)"
 
 ;; C coding style
 (setq c-default-style "linux"
-             c-basic-offset 4)
+      c-basic-offset 4)
+(add-hook 'c-mode-hook
+          (lambda ()
+          (add-to-list 'ac-sources 'ac-source-c-headers)
+          (add-to-list 'ac-sources 'ac-source-c-header-symbols t)))
 ;; scrolling
 (setq scroll-preserve-screen-position t)
 (setq mouse-wheel-progressive-speed nil)
@@ -220,7 +228,7 @@ Usage: (package-require 'package)"
 
 ;; auto completion
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete.el/ac-dict")
+;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete.el/ac-dict")
 (ac-config-default)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
@@ -285,6 +293,7 @@ Usage: (package-require 'package)"
  '(ecb-toggle-layout-sequence (quote ("left14" "left15")))
  '(ecb-use-speedbar-instead-native-tree-buffer (quote dir))
  '(ecb-window-width 33)
+ '(evernote-developer-token "S=s162:U=117b1be:E=1496c388c33:C=14214876037:P=1cd:A=en-devtoken:V=2:H=b31dbef3ff74c8b74ff117549bd396af")
  '(ido-enable-tramp-completion nil)
  '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
  '(safe-local-variable-values nil))
@@ -311,13 +320,13 @@ Usage: (package-require 'package)"
 (setq powerline-arrow-shape 'arrow14)
 
 
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(mode-line ((t (:foreground "#030303" :background "#2d5565" :box nil))))
-;;  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:foreground "#030303" :background "#98c1d1" :box nil))))
+ '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#98b3d1" :box nil)))))
 
 ;; shows current selected region
 (setq-default transient-mark-mode t)
@@ -450,6 +459,10 @@ Usage: (package-require 'package)"
   (electric-indent-mode -1)
   (define-key yaml-mode-map [(return)] 'newline-and-indent))
 (add-hook 'yaml-mode-hook 'no-electric-indent-yaml)
+
+;; json
+(require 'json-mode)
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 ;; octave mode
 ;; (autoload 'octave-mode "octave-mod" nil t)
 ;; (setq auto-mode-alist
@@ -723,9 +736,9 @@ If visual-line-mode is on, then also jump to beginning of real line."
       (end-of-line))))
 (global-set-key "\C-e" 'smart-end-of-line)
 
-
 ;; semi-port of surround.vim
 (require 'surround)
+(global-surround-mode 1)
 (global-set-key "\C-cd" 'surround-delete)
 (global-set-key "\C-cD" 'surround-delete-within)
 (global-set-key "\C-c\M-d" 'surround-change)
