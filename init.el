@@ -635,7 +635,7 @@ Usage: (package-require 'package)"
 ;; Theming
 ;; color
 
-;; using prebulit cyberpunk theme
+;; using modified molokai theme
 (load-theme 'molokai t)
 (icomplete-mode 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -821,3 +821,18 @@ If visual-line-mode is on, then also jump to beginning of real line."
             (lambda ()
                   (interactive)
                   (join-line -1)))
+
+;; Find init file
+(defun find-user-init-file ()
+  "Edit the `user-init-file', in another window."
+  (interactive)
+  (find-file-other-window user-init-file))
+
+(global-set-key (kbd "C-c I") 'find-user-init-file)
+
+;; Guide Key
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8"))
+(guide-key-mode 1)
+(setq guide-key/recursive-key-sequence-flag t)
+(setq guide-key/popup-window-position 'bottom)
