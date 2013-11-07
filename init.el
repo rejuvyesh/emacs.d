@@ -471,7 +471,75 @@ Usage: (package-require 'package)"
   (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
 
 ;; org-mode
+(setq org-special-ctrl-a/e t)
+(setq load-path (cons "~/.emacs.d/site-lisp/org-mode/lisp" load-path))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+;; loaded so that we can diminish it later
+(require 'org-indent)
+;; proper indentation / folding
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-indent-indentation-per-level 2)
+(setq org-startup-folded 'content)
+(setq org-blank-before-new-entry '(
+  (heading . nil)
+  (plain-list-item . auto)))
+;; tag column
+(setq org-tags-column -70)
+;; dependencies
+(setq org-enforce-todo-dependencies t)
+;; make clock history persistent
+(setq org-clock-persist 'history)
+(setq org-clock-persist-file "~/.emacs.d/cache/org-clock-save.el")
+(org-clock-persistence-insinuate)
+;; spoiler files
+(defadvice org-todo-list (before org-todo-list-reload activate compile)
+  "Scan for org files whenever todo list is loaded."
+  ; 'find' is faster and has better control than lisp
+  (setq org-agenda-files (mapcar 'abbreviate-file-name (split-string
+    (shell-command-to-string "find ~/Documents/spoiler -type f -name \"*.org\" | sort")
+      "\n"))))
+;; todo states
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+;; priorities
+(setq org-default-priority 67) ;C
+;; code block
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (c . t)
+   (R . t)
+   (matlab . t)
+   (sh . t)
+   (ruby . t)
+   (python . t)
+   (haskell . t)))
+(add-to-list 'org-src-lang-modes '("c" . c))
+(add-to-list 'org-src-lang-modes '("r" . ess-mode))
+(add-to-list 'org-src-lang-modes '("h" . haskell))
+(add-to-list 'org-src-lang-modes '("s" . sh))
+(add-to-list 'org-src-lang-modes '("p" . python))
+(setq org-src-fontify-natively t)
+(setq org-confirm-babel-evaluate nil)
+;; keybindings
+(define-key global-map "\C-ct" 'org-todo-list)
+(org-defkey org-mode-map "\C-c\C-t" (lambda () (interactive) (org-todo "TODO")))
+(org-defkey org-mode-map "\C-c\C-w" (lambda () (interactive) (org-todo "WAITING")))
+(org-defkey org-mode-map "\C-c\C-d" (lambda () (interactive) (org-todo "DONE")))
+;; shortcut for C-u C-c C-l
+(defun org-insert-file-link () (interactive) (org-insert-link '(4)))
+(define-key global-map "\C-cf" 'org-insert-file-link)
+(define-key global-map "\C-cl" 'org-store-link)
+;; go to last position before C-c C-o
+(define-key global-map "\C-co" 'org-mark-ring-goto)
+;; some templates
+(setcdr (assoc "c" org-structure-template-alist)
+        '("#+BEGIN_COMMENT\n?\n#+END_COMMENT"))
+(add-to-list 'org-structure-template-alist
+             '("r"
+               "#+BEGIN_SRC ruby\n?\n#+END_SRC"
+               "<src lang=\"ruby\">\n\n</src>"))
 
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
