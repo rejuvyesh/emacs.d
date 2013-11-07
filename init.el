@@ -90,6 +90,8 @@ Usage: (package-require 'package)"
 
 ;; remove the toolbar which no-one uses :)
 (tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 (setq org-completion-use-ido t)
 
@@ -102,24 +104,6 @@ Usage: (package-require 'package)"
 ;; load ESS for R
 (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (require 'ess-site)
-;; R flymake support (if Flymake is available) This will call a script
-;; "rflymake" with the path given; make sure it is on emac's exec-path
-;; or give a full path.
-;; (when (require 'flymake nil)
-;;   (defun flymake-r-init ()
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-inplace))
-;;            (local-file (file-relative-name
-;;                         temp-file
-;;                         (file-name-directory buffer-file-name))))
-;;       (list "~/Scripts/rflymake" (list local-file))))
-
-;;   (add-to-list 'flymake-allowed-file-name-masks '("\\.[Rr]\\'" flymake-r-init))
-;;   (add-to-list 'flymake-err-line-patterns
-;;                '("parse(\"\\([^\"]*\\)\"): \\([0-9]+\\):\\([0-9]+\\): \\(.*\\)$"
-;;                  1 2 3 4))
-;;   (add-hook 'r-mode-hook 'flymake-mode)
-;;   )
 
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
@@ -228,7 +212,6 @@ Usage: (package-require 'package)"
 
 ;; auto completion
 (require 'auto-complete-config)
-;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete.el/ac-dict")
 (ac-config-default)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
@@ -297,8 +280,10 @@ Usage: (package-require 'package)"
  '(ido-enable-tramp-completion nil)
  '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
  '(safe-local-variable-values nil))
+
 ;; disable tramp
 (setq tramp-mode nil)
+
 ;; safety
 (setq make-backup-files nil)
 (defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosave-dir/"))
