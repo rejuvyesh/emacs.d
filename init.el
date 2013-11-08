@@ -917,3 +917,14 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (require 'expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
 (global-set-key (kbd "<C-next>") 'er/contract-region)
+
+;; indentation-based folding
+(require 'yafolding)
+(define-key global-map (kbd "C-c C-f") 'yafolding)
+(define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
+(define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
+;; I hate outline and I'm gonna stop using it soon :<
+(define-key outline-mode-map (kbd "C-c C-f") 'yafolding)
+(define-key outline-mode-map (kbd "C-c M-f") 'yafolding-toggle-all)
+(define-key outline-mode-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
+
