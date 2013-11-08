@@ -1,6 +1,15 @@
 (setq user-full-name "Jayesh Kumar Gupta"
       user-mail-address "jayeshkg@iitk.ac.in")
 
+;; site-lisp stores manually maintained packages
+(if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+    (let* ((my-lisp-dir "~/.emacs.d/site-lisp/")
+           (default-directory my-lisp-dir))
+      (progn
+        (setq load-path (cons my-lisp-dir load-path))
+        (normal-top-level-add-subdirs-to-load-path))))
+(setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
+
 ;; package-repositories
 (require 'package)
 (add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/") t)
@@ -34,11 +43,11 @@ Usage: (package-require 'package)"
 (package-initialize)
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
 (package-refresh-contents))
-; (package-refresh-contents)
-;; define custom lisp directory and load all subdirectories too
-(let ((default-directory "~/.emacs.d/site-lisp/"))
-      (normal-top-level-add-to-load-path '("."))
-      (normal-top-level-add-subdirs-to-load-path))
+
+;; ;; define custom lisp directory and load all subdirectories too
+;; (let ((default-directory "~/.emacs.d/site-lisp/"))
+;;       (normal-top-level-add-to-load-path '("."))
+;;       (normal-top-level-add-subdirs-to-load-path))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 ; try to keep windows within a max margin
@@ -905,8 +914,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; indentation-based folding
-(require 'yafolding)
-(define-key global-map (kbd "C-c C-f") 'yafolding)
-(define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
-(define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
+;; (require 'yafolding)
+;; (define-key global-map (kbd "C-c C-f") 'yafolding)
+;; (define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
+;; (define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
 
