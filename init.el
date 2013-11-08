@@ -508,7 +508,7 @@ Usage: (package-require 'package)"
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
-   (c . t)
+   (C . t)
    (R . t)
    (matlab . t)
    (sh . t)
@@ -729,29 +729,6 @@ Usage: (package-require 'package)"
 (require 'rainbow-delimiters)
 (add-hook 'ess-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode) ; for programming related modes
-
-;; Finally giving in to being evil
-(require 'evil)
-(evil-mode 1)
-(setq evil-auto-indent t)
-(setq evil-regexp-search t)
-(setq evil-want-C-i-jump t)
-(setq evil-normal-state-cursor '("white" box))
-(setq evil-insert-state-cursor '("white" bar))
-(add-hook 'text-mode-hook 'turn-on-evil-mode)
-(add-hook 'prog-mode-hook 'turn-on-evil-mode)
-(define-key evil-normal-state-map "\C-e" 'evil-end-of-line)
-(define-key evil-insert-state-map "\C-e" 'end-of-line)
-(define-key evil-visual-state-map "\C-e" 'evil-end-of-line)
-(define-key evil-normal-state-map "\C-w" 'evil-delete)
-(define-key evil-insert-state-map "\C-w" 'evil-delete)
-(define-key evil-visual-state-map "\C-w" 'evil-delete)
-(define-key evil-normal-state-map "\C-y" 'yank)
-(define-key evil-insert-state-map "\C-y" 'yank)
-(define-key evil-visual-state-map "\C-y" 'yank)
-(define-key evil-normal-state-map "\C-k" 'kill-line)
-(define-key evil-insert-state-map "\C-k" 'kill-line)
-(define-key evil-visual-state-map "\C-k" 'kill-line)
 
 ;; yascroll
 (global-yascroll-bar-mode 1)
