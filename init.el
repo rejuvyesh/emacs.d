@@ -388,6 +388,10 @@ Usage: (package-require 'package)"
 (require 'phi-rectangle)
 (phi-rectangle-mode)
 
+;; edit symbol in multiple places simultaneously
+(require 'iedit)
+(global-set-key "\C-ce" 'iedit-mode)
+
 ;; save minibuffer history
 (savehist-mode 1)
 (setq savehist-file "~/.emacs.d/cache/history")
