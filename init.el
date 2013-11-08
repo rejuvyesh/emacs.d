@@ -279,6 +279,7 @@ Usage: (package-require 'package)"
  '(evernote-developer-token "S=s162:U=117b1be:E=1496c388c33:C=14214876037:P=1cd:A=en-devtoken:V=2:H=b31dbef3ff74c8b74ff117549bd396af")
  '(ido-enable-tramp-completion nil)
  '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
+ '(linum-format " %7i ")
  '(safe-local-variable-values nil))
 
 ;; disable tramp
@@ -372,6 +373,11 @@ Usage: (package-require 'package)"
 (global-set-key "\C-cn" 'next-error)
 (global-set-key "\C-cp" 'previous-error)
 (global-set-key "\C-ci" 'indent-region)
+
+(global-set-key "\C-f" 'forward-word)
+(global-set-key "\C-b" 'backward-word)
+(global-set-key "\M-f" 'forward-sentence)
+(global-set-key "\M-b" 'backward-sentence)
 
 ;; if no region is active, act on current line
 (require 'whole-line-or-region)
@@ -570,6 +576,16 @@ Usage: (package-require 'package)"
 ;; show #colors in matching color
 (require 'rainbow-mode)
 
+;; support for bookmarks
+(require 'breadcrumb)
+(global-set-key (kbd "C-c m") 'bc-set)
+(global-set-key (kbd "M-SPC") 'bc-previous)
+(global-set-key (kbd "M-S-SPC") 'bc-next)
+(setq bc-bookmark-limit 1000)
+(setq bc-bookmark-file (expand-file-name "~/.emacs.d/cache/breadcrumb"))
+;; normal bookmarks
+(setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
+
 ;; unset unwanted keys
 (when (eq window-system 'x)
   (if (eq (key-binding "\C-x\C-z") 'suspend-frame)
@@ -587,7 +603,6 @@ Usage: (package-require 'package)"
 (semantic-mode 1)
 (global-semantic-idle-summary-mode 1)
 (global-semantic-idle-completions-mode 1)
-(global-set-key "\C-cf" 'semantic-ia-show-summary)
 
 ;; ecb (code browser)
 (require 'ecb-autoloads)
@@ -741,6 +756,25 @@ Usage: (package-require 'package)"
 ;; yascroll
 (global-yascroll-bar-mode 1)
 
+;; better search/replace
+(require 'visual-regexp)
+(require 'visual-regexp-steroids)
+(global-set-key "\C-cr" 'vr/query-replace)
+
+;; copy end of line, like C-k
+(defun copy-line ()
+  (interactive)
+  (set 'this-command 'copy-to-kill)
+  (save-excursion
+    (set-mark (point))
+    (if (= (point) (line-end-position))
+        (forward-line)
+      (goto-char (line-end-position)))
+    (if (eq last-command 'copy-to-kill)
+        (append-next-kill))
+    (kill-ring-save (mark) (point))))
+(global-set-key "\M-k" 'copy-line)
+
 ;; move to beginning of text on line
 (defun smart-beginning-of-line ()
     "Move point to first non-whitespace character or beginning-of-line.
@@ -875,4 +909,11 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (setq guide-key/recursive-key-sequence-flag t)
 (setq guide-key/popup-window-position 'bottom)
 
+;; ace-jump (hint-style navigation)
+(require 'ace-jump-mode)
+(global-set-key (kbd "C-c j") 'ace-jump-mode)
 
+;; expand-region
+(require 'expand-region)
+(global-set-key (kbd "<C-prior>") 'er/expand-region)
+(global-set-key (kbd "<C-next>") 'er/contract-region)
