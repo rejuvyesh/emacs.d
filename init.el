@@ -551,6 +551,10 @@ Usage: (package-require 'package)"
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
 
+;; scratchpad buffers
+(require 'scratch)
+;; don't want to remember which key I used
+(global-set-key (kbd "C-c b") 'scratch)
 ;; don't start in lisp
 (setq initial-major-mode 'org-mode)
 (setq initial-scratch-message nil)
@@ -866,3 +870,5 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (guide-key-mode 1)
 (setq guide-key/recursive-key-sequence-flag t)
 (setq guide-key/popup-window-position 'bottom)
+
+
