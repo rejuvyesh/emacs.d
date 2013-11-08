@@ -117,31 +117,17 @@ Usage: (package-require 'package)"
                 ac-sources))
     )
 
-;; ;; python ;;
-;; ;; ipython as shell
-;; (setq
-;;  python-shell-interpreter "ipython"
-;;  python-shell-interpreter-args ""
-;;  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-;;  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-;;  python-shell-completion-setup-code
-;;  "from IPython.core.completerlib import module_completion"
-;;  python-shell-completion-module-string-code
-;;  "';'.join(module_completion('''%s'''))\n"
-;;  python-shell-completion-string-code
-;;  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
+;; python ;;
 (elpy-enable)
 (elpy-use-ipython)
 (elpy-clean-modeline)
 
-;; python-mode
-;; (require 'python-mode)
-(autoload 'python-mode "python-mode" "Python editing mode." t)
+
+;;(autoload 'python-mode "python-mode" "Python editing mode." t)
 ;; jedi completion
-(add-hook 'python-mode-hook 'auto-complete-mode)
-(add-hook 'python-mode-hook 'jedi:setup)
-(add-hook 'python-mode-hook 'linum-mode)
+;;(add-hook 'python-mode-hook 'auto-complete-mode)
+;;(add-hook 'python-mode-hook 'jedi:setup)
+;;(add-hook 'python-mode-hook 'linum-mode)
 
 ;; Sometimes you have to
 (require 'php-mode)
@@ -577,12 +563,12 @@ Usage: (package-require 'package)"
 (require 'rainbow-mode)
 
 ;; support for bookmarks
-(require 'breadcrumb)
-(global-set-key (kbd "C-c m") 'bc-set)
-(global-set-key (kbd "M-SPC") 'bc-previous)
-(global-set-key (kbd "M-S-SPC") 'bc-next)
-(setq bc-bookmark-limit 1000)
-(setq bc-bookmark-file (expand-file-name "~/.emacs.d/cache/breadcrumb"))
+;;(require 'breadcrumb)
+;;(global-set-key (kbd "C-c m") 'bc-set)
+;;(global-set-key (kbd "M-SPC") 'bc-previous)
+;;(global-set-key (kbd "M-S-SPC") 'bc-next)
+;;(setq bc-bookmark-limit 1000)
+;;(setq bc-bookmark-file (expand-file-name "~/.emacs.d/cache/breadcrumb"))
 ;; normal bookmarks
 (setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
 
@@ -923,8 +909,4 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (define-key global-map (kbd "C-c C-f") 'yafolding)
 (define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
 (define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
-;; I hate outline and I'm gonna stop using it soon :<
-(define-key outline-mode-map (kbd "C-c C-f") 'yafolding)
-(define-key outline-mode-map (kbd "C-c M-f") 'yafolding-toggle-all)
-(define-key outline-mode-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
 
