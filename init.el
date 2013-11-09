@@ -202,8 +202,9 @@ Usage: (package-require 'package)"
 
 ;; text completion
 
-(require 'autopair)
-(autopair-global-mode) ;; to enable in all buffers
+;; (require 'autopair)
+;; (autopair-global-mode) ;; to enable in all buffers
+(require 'smartparens-config)
 
 ;; auto completion
 (require 'auto-complete-config)
