@@ -718,11 +718,13 @@ Usage: (package-require 'package)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Checking out helm
 (require 'helm-config)
+(require 'helm-C-x-b)
 (helm-mode t)
 (global-set-key (kbd "M-t") 'helm-cmd-t)
 (global-set-key [remap switch-to-buffer] 'helm-C-x-b)
 (global-set-key (kbd "C-x c g") 'helm-do-grep)
 (global-set-key (kbd "C-x c o") 'helm-occur)
+(global-set-key [remap switch-to-buffer] 'helm-C-x-b)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (setq helm-ff-lynx-style-map nil
@@ -905,6 +907,20 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (require 'expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
 (global-set-key (kbd "<C-next>") 'er/contract-region)
+
+;; Make shell more convenient, and suspend-frame less
+(global-set-key (kbd "C-z") 'shell)
+(global-set-key (kbd "C-x M-z") 'suspend-frame)
+
+;; Webjump let's you quickly search google, wikipedia, emacs wiki
+(global-set-key (kbd "C-x g") 'webjump)
+(global-set-key (kbd "C-x M-g") 'browse-url-at-point)
+
+;; M-n and M-p to move from current symbol
+(smartscan-mode 1)
+
+;; ag mode
+(setq ag-highlight-search t)
 
 ;; indentation-based folding
 ;; (require 'yafolding)
