@@ -496,7 +496,10 @@ Usage: (package-require 'package)"
   ; 'find' is faster and has better control than lisp
   (setq org-agenda-files (mapcar 'abbreviate-file-name (split-string
     (shell-command-to-string "find ~/Documents/spoiler -type f -name \"*.org\" | sort")
-      "\n"))))
+    "\n"))))
+;; notes file
+(setq org-default-notes-file "~/Documents/spoiler/notes.org")
+(define-key global-map "\C-cC" 'org-capture)
 ;; todo states
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
