@@ -500,7 +500,14 @@ Usage: (package-require 'package)"
 ;; notes file
 (setq org-default-notes-file "~/Documents/spoiler/notes.org")
 (define-key global-map "\C-cC" 'org-capture)
-;; todo states
+(setq org-capture-templates
+      '(("l" "Link" plain (file "~/Documents/spoiler/links.org")
+        "- %?\n %x\n")
+        ("n" "note" entry (file "~/Documents/spoiler/notes.org")
+         "* %? %^g\n%U\n%a\n")
+        ("q" "quote" entry (file "~/Documents/spoiler/quotes.org")
+         "* %? \n%x\n%a\n")))
+;; Todo states
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 ;; priorities
