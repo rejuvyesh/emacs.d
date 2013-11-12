@@ -23,7 +23,7 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 ;; https://github.com/dimitri/el-get
-;; (add-to-list 'load-path "~/.emacs.d/el-get/el-get")  ; This is configured at the top.
+
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
       (url-retrieve-synchronously
