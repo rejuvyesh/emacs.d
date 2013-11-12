@@ -173,13 +173,38 @@ See the variable `align-rules-list' for more details.")
 (elpy-clean-modeline)
 
 ;; ruby ;;
+;; enhanced ruby mode
+(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+;; replace normal ruby mode
+(defalias 'ruby-mode 'enh-ruby-mode)
+;; better colors for warnings
+(defface erm-syn-warnline
+  '((t (:underline "orange")))
+  "Face used for marking warning lines."
+  :group 'enh-ruby)
+(defface erm-syn-errline
+  '((t (:underline "red")))
+  "Face used for marking error lines."
+  :group 'enh-ruby)
+;; misc stuff
+(require 'yari) ; ri documentation tool
+(require 'ruby-block) ; show what block an end belongs to
+(require 'inf-ruby) ; run ruby in emacs buffer
+(require 'robe) ; better code navigation and inf-ruby extensions
+(ruby-block-mode t)
+(setq ruby-block-highlight-toggle t)
+(setq ruby-indent-level tab-width)
+;; Rake files are Ruby, too
+(add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode))
+;; erb
+(require 'rhtml-mode)
+(add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
 
-
-;;(autoload 'python-mode "python-mode" "Python editing mode." t)
-;; jedi completion
-;;(add-hook 'python-mode-hook 'auto-complete-mode)
-;;(add-hook 'python-mode-hook 'jedi:setup)
-;;(add-hook 'python-mode-hook 'linum-mode)
 
 ;; Sometimes you have to
 (require 'php-mode)
@@ -557,6 +582,7 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'org-src-lang-modes '("h" . haskell))
 (add-to-list 'org-src-lang-modes '("s" . sh))
 (add-to-list 'org-src-lang-modes '("p" . python))
+(add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
 (setq org-src-fontify-natively t)
 (setq org-confirm-babel-evaluate nil)
 ;; keybindings
