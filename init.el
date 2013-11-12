@@ -1,3 +1,8 @@
+;;; Commentary:
+;; rejuvyesh's Emacs config
+
+;;; Code:
+
 (setq user-full-name "Jayesh Kumar Gupta"
       user-mail-address "jayeshkg@iitk.ac.in")
 
