@@ -291,16 +291,6 @@ Usage: (package-require 'package)"
 ;; optical stuff
 (blink-cursor-mode -1)
 (setq inhibit-splash-screen t)
-;; power line
-;; (require 'powerline)
-;; (setq powerline-arrow-shape 'arrow14)
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(mode-line ((t (:foreground "#030303" :background "#98c1d1" :box nil))))
-;;  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#98b3d1" :box nil)))))
 
 ;; shows current selected region
 (setq-default transient-mark-mode t)
