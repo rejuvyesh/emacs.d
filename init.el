@@ -289,6 +289,13 @@ See the variable `align-rules-list' for more details.")
 (sp-with-modes '(html-mode sgml-mode)
                (sp-local-pair "<" ">"))
 
+;; auto correction
+(setq abbrev-file-name             
+      "~/.emacs.d/abbrev_defs")
+(setq save-abbrevs t)
+(if (file-exists-p abbrev-file-name)
+    (quietly-read-abbrev-file))
+(setq default-abbrev-mode t)
 
 ;; auto completion
 (require 'auto-complete-config)
@@ -579,7 +586,7 @@ See the variable `align-rules-list' for more details.")
    (R . t)
    (matlab . t)
    (sh . t)
-   ( . t)
+   (ruby . t)
    (python . t)
    (haskell . t)))
 (add-to-list 'org-src-lang-modes '("c" . c))
@@ -618,6 +625,7 @@ See the variable `align-rules-list' for more details.")
 (diminish 'volatile-highlights-mode)
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
+(diminish 'guide-key-mode)
 
 ;; scratchpad buffers
 (require 'scratch)
