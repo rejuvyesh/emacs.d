@@ -1,0 +1,3 @@
+#name: belief state
+# --
+${1:$$(yas/choose-value '(": certain" ": highly likely" ": likely" ": not-believed" ": fiction" ": emotional" ": log"))}
