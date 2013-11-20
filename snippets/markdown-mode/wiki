@@ -1,0 +1,4 @@
+#name : wikipedia reference link
+# --
+[${1:Title}]: http://en.wikipedia.org/wiki/${2:$1}
+$0
