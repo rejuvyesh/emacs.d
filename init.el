@@ -4,7 +4,7 @@
 ;;; Code:
 
 (setq user-full-name "Jayesh Kumar Gupta"
-      user-mail-address "jayeshkg@iitk.ac.in")
+      user-mail-address "mail@rejuvyesh.com")
 
 ;; site-lisp stores manually maintained packages
 (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
@@ -63,6 +63,16 @@ Usage: (package-require 'package)"
 (require 'automargin)
 (setq automargin-target-width 120)
 (automargin-mode)
+
+;; remove the toolbar which no-one uses :)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; smart-mode
+(setq sml/theme 'dark)
+(sml/setup)
+
 ;; multiple cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-c k") 'mc/edit-lines)
@@ -106,10 +116,6 @@ Usage: (package-require 'package)"
 ;; use y/n instead of yes/no
 (fset 'yes-or-no-p 'y-or-n-p)   
 
-;; remove the toolbar which no-one uses :)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
 
 (setq org-completion-use-ido t)
 
@@ -120,9 +126,10 @@ Usage: (package-require 'package)"
     '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 ;; load ESS for R
-(setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
+;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (require 'ess-site)
-
+(setq inferior-julia-program-name "~/dev/julia/julia/usr/bin/julia-basic")
+(add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode))
 ;; auctex
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
 (setq-default TeX-engine 'xetex)      ; use xelatex by default
@@ -262,9 +269,11 @@ See the variable `align-rules-list' for more details.")
 (setq yas-snippet-dirs "~/.emacs.d/snippets")
                        
 (require 'yasnippet)
-(define-key yas-minor-mode-map [backtab] 'yas-next-field)
-(define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
-(define-key yas-minor-mode-map [(control tab)] 'yas-prev-field)
+;; (define-key yas-minor-mode-map [backtab] 'yas-next-field)
+;; (define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
+;; (define-key yas-minor-mode-map [(control tab)] 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-t") 'yas-next-field-or-maybe-expand)
+(define-key yas-minor-mode-map (kbd "M-t") 'yas-prev-field)
 (yas-global-mode 1)
 
 ; auto-yasnippet
@@ -279,6 +288,8 @@ See the variable `align-rules-list' for more details.")
 ;; (autopair-global-mode) ;; to enable in all buffers
 (require 'smartparens-config)
 (smartparens-global-mode t)
+(show-smartparens-global-mode +1)
+
 ;;; markdown-mode
 (sp-with-modes '(markdown-mode gfm-mode rst-mode)
                (sp-local-pair "*" "*" :bind "C-*")
@@ -336,6 +347,7 @@ See the variable `align-rules-list' for more details.")
 (setq recentf-exclude (append recentf-exclude
                               '("\.emacs\.d/cache"
                                 "\.emacs\.d/elpa")))
+(setq recentf-keep '(file-remote-p file-readable-p))
 (recentf-mode 1)
 
 ;; file completion
@@ -405,7 +417,6 @@ See the variable `align-rules-list' for more details.")
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
 
 ;; parentheses are connected and their content highlighted
-(show-paren-mode 1)
 (setq blink-matching-paren-distance nil)
 (setq show-paren-style 'parenthesis)
 (setq show-paren-delay 0)
@@ -625,7 +636,6 @@ See the variable `align-rules-list' for more details.")
 (diminish 'volatile-highlights-mode)
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
-(diminish 'guide-key-mode)
 
 ;; scratchpad buffers
 (require 'scratch)
@@ -999,6 +1009,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 ;; ag mode
 (setq ag-highlight-search t)
+
 
 ;; indentation-based folding
 ;; (require 'yafolding)
