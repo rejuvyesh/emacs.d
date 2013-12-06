@@ -644,7 +644,7 @@ See the variable `align-rules-list' for more details.")
 (diminish 'volatile-highlights-mode)
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
-
+(diminish 'smartparens-mode)
 ;; scratchpad buffers
 (require 'scratch)
 ;; don't want to remember which key I used
