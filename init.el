@@ -325,7 +325,7 @@ See the variable `align-rules-list' for more details.")
                                     sass-mode yaml-mode csv-mode espresso-mode haskell-mode
                                     html-mode nxml-mode sh-mode smarty-mode clojure-mode
                                     lisp-mode textile-mode markdown-mode tuareg-mode
-                                    js2-mode css-mode less-css-mode))
+                                    js2-mode css-mode less-css-mode matlab-mode))
   (add-to-list 'ac-modes mode))
 (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
                                         ;(setq ac-use-menu-map t)
