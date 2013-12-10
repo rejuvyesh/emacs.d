@@ -219,10 +219,9 @@ See the variable `align-rules-list' for more details.")
 
 
 ;; Sometimes you have to
-(require 'php-mode)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 
 ;; javascript
-(require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;; lua
