@@ -99,7 +99,10 @@
 
 (ert-deftest test-org-babel/default-inline-header-args ()
   (should(equal
-	  '((:session . "none") (:results . "replace") (:exports . "results"))
+	  '((:session . "none")
+	    (:results . "replace")
+	    (:exports . "results")
+	    (:hlines  . "yes"))
 	  org-babel-default-inline-header-args)))
 
 (ert-deftest ob-test/org-babel-combine-header-arg-lists ()
@@ -541,7 +544,7 @@ on two lines
 #+END_SRC"
     (org-babel-next-src-block 1)
     (should (string= (org-babel-execute-src-block)
-		     "A literal example\non two lines for me."))))
+		     "A literal example\non two lines\n for me."))))
 
 (ert-deftest test-ob/resolve-code-blocks-before-data-blocks ()
   (org-test-with-temp-text "

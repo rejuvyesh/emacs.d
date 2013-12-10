@@ -1,5 +1,6 @@
 ;;; molokai-theme.el --- molokai theme with Emacs theme engine
 
+;; Modified by rejuvyesh
 ;; Copyright (C) 2013 by Adam Lloyd
 ;; Copyright (C) 2013 by Syohei YOSHIDA
 

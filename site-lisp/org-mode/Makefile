@@ -5,7 +5,7 @@
 
 # set up environment
  include mk/default.mk	# defaults, customizable via "local.mk"
--include local.mk	# optional local customization, use default.mk as template
+ include local.mk	# optional local customization, use default.mk as template
 
 # default target is "all" unless overridden in local.mk
 all::

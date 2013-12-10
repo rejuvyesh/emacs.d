@@ -23,10 +23,14 @@
 
 ;;; Commentary:
 ;;
-;; This is an utility to handle BibTeX export to both LaTeX and html
-;; exports.  It uses the bibtex2html software from:
+;; This is an utility to handle BibTeX export to LaTeX, html and ascii
+;; exports.  For HTML and ascii it uses the bibtex2html software from:
 ;;
 ;;   http://www.lri.fr/~filliatr/bibtex2html/
+;;
+;; For ascii it uses the pandoc software from:
+;;
+;;   http://johnmacfarlane.net/pandoc/
 ;;
 ;; It also introduces "cite" syntax for Org links.
 ;;
@@ -71,14 +75,20 @@
 ;; 2) creates a foo.html and foo_bib.html,
 ;; 3) includes the contents of foo.html in the exported HTML file.
 ;;
+;; For ascii export it:
+;; 1) converts all \cite{foo} and [[cite:foo]] to links to the
+;;    bibliography,
+;; 2) creates a foo.txt and foo_bib.html,
+;; 3) includes the contents of foo.txt in the exported ascii file.
+;;
 ;; For LaTeX export it:
 ;; 1) converts all [[cite:foo]] to \cite{foo}.
 
 ;; Initialization
 
 (eval-when-compile (require 'cl))
-(org-add-link-type "cite" 'ebib)
-
+(let ((jump-fn (car (org-remove-if-not #'fboundp '(ebib obe-goto-citation)))))
+  (org-add-link-type "cite" jump-fn))
 
 ;;; Internal Functions
 
@@ -103,9 +113,9 @@ return nil instead."
 (defun org-bibtex-get-arguments (keyword)
   "Return \"bibtex2html\" arguments specified by the user.
 KEYWORD is a \"BIBLIOGRAPHY\" keyword. Return value is a plist
-containing `:options' and `:limit' properties. The former
-contains a list of strings to be passed as options ot
-\"bibtex2html\" process. The latter contains a boolean."
+containing `:options' and `:limit' properties.  The former
+contains a list of strings to be passed as options to
+\"bibtex2html\" process.  The latter contains a boolean."
   (let ((value (org-element-property :value keyword)))
     (and value
          (string-match "\\(\\S-+\\)[ \t]+\\(\\S-+\\)\\(.*\\)" value)
@@ -139,6 +149,139 @@ to `org-bibtex-citation-p' predicate."
 
 
 
+;;; Filters
+
+(defun org-bibtex-process-bib-files (tree backend info)
+  "Send each bibliography in parse tree to \"bibtex2html\" process.
+Return new parse tree."
+  (when (org-export-derived-backend-p backend 'ascii 'html)
+    ;; Initialize dynamically scoped variables.  The first one
+    ;; contain an alist between keyword objects and their HTML
+    ;; translation.  The second one will contain an alist between
+    ;; citation keys and names in the output (according to style).
+    (setq org-bibtex-html-entries-alist nil
+	  org-bibtex-html-keywords-alist nil)
+    (org-element-map tree 'keyword
+      (lambda (keyword)
+	(when (equal (org-element-property :key keyword) "BIBLIOGRAPHY")
+	  (let ((arguments (org-bibtex-get-arguments keyword))
+		(file (org-bibtex-get-file keyword))
+		temp-file)
+	    ;; limit is set: collect citations throughout the document
+	    ;; in TEMP-FILE and pass it to "bibtex2html" as "-citefile"
+	    ;; argument.
+	    (when (plist-get arguments :limit)
+	      (let ((citations
+		     (org-element-map tree '(latex-fragment link)
+		       (lambda (object)
+			 (and (org-bibtex-citation-p object)
+			      (org-bibtex-get-citation-key object))))))
+		(with-temp-file (setq temp-file (make-temp-file "ox-bibtex"))
+		  (insert (mapconcat 'identity citations "\n")))
+		(setq arguments
+		      (plist-put arguments
+				 :options
+				 (append (plist-get arguments :options)
+					 (list "-citefile" temp-file))))))
+	    ;; Call "bibtex2html" on specified file.
+	    (unless (eq 0 (apply 'call-process
+				 (append '("bibtex2html" nil nil nil)
+					 '("-a" "-nodoc" "-noheader" "-nofooter")
+					 (list "--style"
+					       (org-bibtex-get-style keyword))
+					 (plist-get arguments :options)
+					 (list (concat file ".bib")))))
+	      (error "Executing bibtex2html failed"))
+	    (and temp-file (delete-file temp-file))
+	    ;; Open produced HTML file, and collect Bibtex key names
+	    (with-temp-buffer
+	      (insert-file-contents (concat file ".html"))
+	      ;; Update `org-bibtex-html-entries-alist'.
+	      (goto-char (point-min))
+	      (while (re-search-forward
+		      "a name=\"\\([-_a-zA-Z0-9:]+\\)\">\\(\\w+\\)" nil t)
+		(push (cons (match-string 1) (match-string 2))
+		      org-bibtex-html-entries-alist)))
+	    ;; Open produced HTML file, wrap references within a block and
+	    ;; return it.
+	    (with-temp-buffer
+	      (cond
+	       ((org-export-derived-backend-p backend 'html)
+		(insert "<div id=\"bibliography\">\n<h2>References</h2>\n")
+		(insert-file-contents (concat file ".html"))
+		(insert "\n</div>"))
+	       ((org-export-derived-backend-p backend 'ascii)
+		;; convert HTML references to text w/pandoc
+		(unless (eq 0 (call-process "pandoc" nil nil nil
+					    (concat file ".html")
+					    "-o"
+					    (concat file ".txt")))
+		  (error "Executing pandoc failed"))
+		(insert "References\n==========\n\n")
+		(insert-file-contents (concat file ".txt"))
+		(goto-char (point-min))
+		(while (re-search-forward
+			"\\[ \\[bib\\][^ ]+ \\(\\]\\||[\n\r]\\)" nil t)
+		  (replace-match ""))
+		(goto-char (point-min))
+		(while (re-search-forward "\\( \\]\\| \\]\\| |\\)" nil t)
+		  (replace-match ""))
+		(goto-char (point-min))
+		(while (re-search-forward "[\n\r]\\([\n\r][\n\r]\\)" nil t)
+		  (replace-match "\\1"))))
+	      ;; Update `org-bibtex-html-keywords-alist'.
+	      (push (cons keyword (buffer-string))
+		    org-bibtex-html-keywords-alist)))))))
+  ;; Return parse tree unchanged.
+  tree)
+
+(defun org-bibtex-merge-contiguous-citations (tree backend info)
+  "Merge all contiguous citation in parse tree.
+As a side effect, this filter will also turn all \"cite\" links
+into \"\\cite{...}\" LaTeX fragments."
+  (when (org-export-derived-backend-p backend 'html 'latex 'ascii)
+    (org-element-map tree '(link latex-fragment)
+      (lambda (object)
+	(when (org-bibtex-citation-p object)
+	  (let ((new-citation (list 'latex-fragment
+				    (list :value ""
+					  :post-blank (org-element-property
+						       :post-blank object)))))
+	    ;; Insert NEW-CITATION right before OBJECT.
+	    (org-element-insert-before new-citation object)
+	    ;; Remove all subsequent contiguous citations from parse
+	    ;; tree, keeping only their citation key.
+	    (let ((keys (list (org-bibtex-get-citation-key object)))
+		  next)
+	      (while (and (setq next (org-export-get-next-element object info))
+			  (or (and (stringp next)
+				   (not (org-string-match-p "\\S-" next)))
+			      (org-bibtex-citation-p next)))
+		(unless (stringp next)
+		  (push (org-bibtex-get-citation-key next) keys))
+		(org-element-extract-element object)
+		(setq object next))
+	      (org-element-extract-element object)
+	      ;; Eventually merge all keys within NEW-CITATION.  Also
+	      ;; ensure NEW-CITATION has the same :post-blank property
+	      ;; as the last citation removed.
+	      (org-element-put-property
+	       new-citation
+	       :post-blank (org-element-property :post-blank object))
+	      (org-element-put-property
+	       new-citation
+	       :value (format "\\cite{%s}"
+			      (mapconcat 'identity (nreverse keys) ",")))))))))
+  tree)
+
+(eval-after-load 'ox
+  '(progn (add-to-list 'org-export-filter-parse-tree-functions
+		       'org-bibtex-process-bib-files)
+	  (add-to-list 'org-export-filter-parse-tree-functions
+		       'org-bibtex-merge-contiguous-citations)))
+
+
+
 ;;; LaTeX Part
 
 (defadvice org-latex-keyword (around bibtex-keyword)
@@ -154,16 +297,7 @@ Fallback to `latex' back-end for other keywords."
                 (concat (and style (format "\\bibliographystyle{%s}\n" style))
                         (format "\\bibliography{%s}" file))))))))
 
-(defadvice org-latex-link (around bibtex-link)
-  "Translate \"cite\" type links into LaTeX syntax.
-Fallback to `latex' back-end for other keywords."
-  (let ((link (ad-get-arg 0)))
-    (if (not (org-bibtex-citation-p link)) ad-do-it
-      (setq ad-return-value
-	    (format "\\cite{%s}" (org-bibtex-get-citation-key link))))))
-
 (ad-activate 'org-latex-keyword)
-(ad-activate 'org-latex-link)
 
 
 
@@ -190,103 +324,46 @@ Fallback to `html' back-end for other keywords."
   (let ((fragment (ad-get-arg 0)))
     (if (not (org-bibtex-citation-p fragment)) ad-do-it
       (setq ad-return-value
-            (mapconcat
-             (lambda (key)
-               (let ((key (org-trim key)))
-                 (format "[<a href=\"#%s\">%s</a>]"
-                         key
-                         (or (cdr (assoc key org-bibtex-html-entries-alist))
-                             key))))
-             (org-split-string (org-bibtex-get-citation-key fragment) ",")
-             "")))))
-
-(defadvice org-html-link (around bibtex-link)
-  "Translate \"cite:\" type links into HTML syntax.
-Fallback to `html' back-end for other types."
-  (let ((link (ad-get-arg 0)))
-    (if (not (org-bibtex-citation-p link)) ad-do-it
-      (setq ad-return-value
-	    (mapconcat
-	     (lambda (key)
-	       (format "[<a href=\"#%s\">%s</a>]"
-		       key
-		       (or (cdr (assoc key org-bibtex-html-entries-alist))
-			   key)))
-	     (org-split-string (org-bibtex-get-citation-key link)
-			       "[ \t]*,[ \t]*")
-	     "")))))
+            (format "[%s]"
+		    (mapconcat
+		     (lambda (key)
+		       (format "<a href=\"#%s\">%s</a>"
+			       key
+			       (or (cdr (assoc key org-bibtex-html-entries-alist))
+				   key)))
+		     (org-split-string
+		      (org-bibtex-get-citation-key fragment) ",") ","))))))
 
 (ad-activate 'org-html-keyword)
 (ad-activate 'org-html-latex-fragment)
-(ad-activate 'org-html-link)
 
+
+;;; Ascii Part
+(defadvice org-ascii-keyword (around bibtex-keyword)
+  "Translate \"BIBLIOGRAPHY\" keywords into ascii syntax.
+Fallback to `ascii' back-end for other keywords."
+  (let ((keyword (ad-get-arg 0)))
+    (if (not (equal (org-element-property :key keyword) "BIBLIOGRAPHY"))
+        ad-do-it
+      (setq ad-return-value
+            (cdr (assq keyword org-bibtex-html-keywords-alist))))))
 
-;;;; Filter
+(defadvice org-ascii-latex-fragment (around bibtex-citation)
+  "Translate \"\\cite\" LaTeX fragments into ascii syntax.
+Fallback to `ascii' back-end for other keywords."
+  (let ((fragment (ad-get-arg 0)))
+    (if (not (org-bibtex-citation-p fragment)) ad-do-it
+      (setq ad-return-value
+            (format "[%s]"
+		    (mapconcat
+		     (lambda (key)
+		       (or (cdr (assoc key org-bibtex-html-entries-alist))
+			   key))
+		     (org-split-string
+		      (org-bibtex-get-citation-key fragment) ",") ","))))))
 
-(defun org-bibtex-process-bib-files (tree backend info)
-  "Send each bibliography in parse tree to \"bibtex2html\" process.
-Return new parse tree.  This function assumes current back-end is HTML."
-  ;; Initialize dynamically scoped variables.  The first one
-  ;; contain an alist between keyword objects and their HTML
-  ;; translation.  The second one will contain an alist between
-  ;; citation keys and names in the output (according to style).
-  (setq org-bibtex-html-entries-alist nil
-        org-bibtex-html-keywords-alist nil)
-  (org-element-map tree 'keyword
-    (lambda (keyword)
-      (when (equal (org-element-property :key keyword) "BIBLIOGRAPHY")
-        (let ((arguments (org-bibtex-get-arguments keyword))
-              (file (org-bibtex-get-file keyword))
-              temp-file)
-          ;; limit is set: collect citations throughout the document
-          ;; in TEMP-FILE and pass it to "bibtex2html" as "-citefile"
-          ;; argument.
-          (when (plist-get arguments :limit)
-            (let ((citations
-                   (org-element-map tree '(latex-fragment link)
-                     (lambda (object)
-                       (and (org-bibtex-citation-p object)
-			    (org-bibtex-get-citation-key object))))))
-              (with-temp-file (setq temp-file (make-temp-file "ox-bibtex"))
-                (insert (mapconcat 'identity citations "\n")))
-              (setq arguments
-                    (plist-put arguments
-                               :options
-                               (append (plist-get arguments :options)
-                                       (list "-citefile" temp-file))))))
-          ;; Call "bibtex2html" on specified file.
-          (unless (eq 0 (apply 'call-process
-                               (append '("bibtex2html" nil nil nil)
-                                       '("-a" "-nodoc" "-noheader" "-nofooter")
-                                       (list "--style"
-                                             (org-bibtex-get-style keyword))
-                                       (plist-get arguments :options)
-                                       (list (concat file ".bib")))))
-            (error "Executing bibtex2html failed"))
-          (and temp-file (delete-file temp-file))
-          ;; Open produced HTML file, wrap references within a block and
-          ;; return it.
-          (with-temp-buffer
-            (insert "<div id=\"bibliography\">\n<h2>References</h2>\n")
-            (insert-file-contents (concat file ".html"))
-            (insert "\n</div>")
-            ;; Update `org-bibtex-html-keywords-alist'.
-            (push (cons keyword (buffer-string))
-                  org-bibtex-html-keywords-alist)
-            ;; Update `org-bibtex-html-entries-alist'.
-            (goto-char (point-min))
-            (while (re-search-forward
-                    "a name=\"\\([-_a-zA-Z0-9:]+\\)\">\\(\\w+\\)" nil t)
-              (push (cons (match-string 1) (match-string 2))
-                    org-bibtex-html-entries-alist)))))))
-  ;; Return parse tree unchanged.
-  tree)
-
-(eval-after-load 'ox
-  '(add-to-list 'org-export-filter-parse-tree-functions
-                'org-bibtex-process-bib-files))
-
-
+(ad-activate 'org-ascii-keyword)
+(ad-activate 'org-ascii-latex-fragment)
 
 (provide 'ox-bibtex)
 

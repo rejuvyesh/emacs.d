@@ -3,15 +3,17 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-        kill-visual-line
-        scroll-right
-        phi-rectangle-kill-region
         indent-for-tab-command
         indent-region
+        kill-visual-line
+        phi-rectangle-kill-region
         phi-rectangle-next-line
         phi-rectangle-yank
+        scroll-right
         smart-beginning-of-line
         smart-end-of-line
+        sp--self-insert-command
+        yank-and-indent
         yas-expand
         ))
 

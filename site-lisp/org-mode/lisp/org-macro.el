@@ -5,6 +5,8 @@
 ;; Author: Nicolas Goaziou <n.goaziou@gmail.com>
 ;; Keywords: outlines, hypermedia, calendar, wp
 
+;; This file is part of GNU Emacs.
+
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -39,7 +41,7 @@
 ;;; Code:
 (require 'org-macs)
 
-(declare-function org-element-at-point "org-element" (&optional keep-trail))
+(declare-function org-element-at-point "org-element" ())
 (declare-function org-element-context "org-element" (&optional element))
 (declare-function org-element-property "org-element" (property element))
 (declare-function org-element-type "org-element" (element))

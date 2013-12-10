@@ -5,8 +5,11 @@
 (setq auto-insert 'other)
 (setq auto-insert-query nil)
 (setq auto-insert-alist '(("\\.sh$" . ["sh" rejuvyesh/auto-update-defaults])
+                          ("\\.py$" . ["py" rejuvyesh/auto-update-defaults])
                           ("\\.c$" . ["c" rejuvyesh/auto-update-c-source-file])
                           ("\\.h$" . ["h" rejuvyesh/auto-update-header-file])
+                          ("\\.hs$" . ["hs" rejuvyesh/auto-update-header-file])
+                          ("\\.rb$" . ["rb" rejuvyesh/auto-update-header-file])
                           ))
 
 

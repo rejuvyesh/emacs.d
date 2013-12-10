@@ -1,9 +1,11 @@
 ;;; ox.el --- Generic Export Engine for Org Mode
 
-;; Copyright (C) 2012, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
 ;; Author: Nicolas Goaziou <n.goaziou at gmail dot com>
 ;; Keywords: outlines, hypermedia, calendar, wp
+
+;; This file is part of GNU Emacs.
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -87,6 +89,11 @@
 (defvar org-table-number-fraction)
 (defvar org-table-number-regexp)
 
+
+(defsubst org-export-get-parent (blob)
+  "Return BLOB parent or nil.
+BLOB is the element or object considered."
+  (org-element-property :parent blob))
 
 
 ;;; Internal Variables
@@ -643,11 +650,20 @@ e.g. \"stat:nil\""
 (defcustom org-export-with-sub-superscripts t
   "Non-nil means interpret \"_\" and \"^\" for export.
 
+If you want to control how Org displays those characters, see
+`org-use-sub-superscripts'.  `org-export-with-sub-superscripts'
+used to be an alias for `org-use-sub-superscripts' in Org <8.0,
+it is not anymore.
+
 When this option is turned on, you can use TeX-like syntax for
-sub- and superscripts.  Several characters after \"_\" or \"^\"
-will be considered as a single item - so grouping with {} is
-normally not needed.  For example, the following things will be
-parsed as single sub- or superscripts.
+sub- and superscripts and see them exported correctly.
+
+You can also set the option with #+OPTIONS: ^:t
+
+Several characters after \"_\" or \"^\" will be considered as a
+single item - so grouping with {} is normally not needed.  For
+example, the following things will be parsed as single sub- or
+superscripts:
 
  10^24   or   10^tau     several digits will be considered 1 item.
  10^-12  or   10^-tau    a leading sign with digits or a word
@@ -655,15 +671,14 @@ parsed as single sub- or superscripts.
 			 terminated by almost any nonword/nondigit char.
  x_{i^2} or   x^(2-i)    braces or parenthesis do grouping.
 
-Still, ambiguity is possible - so when in doubt use {} to enclose
-the sub/superscript.  If you set this variable to the symbol
-`{}', the braces are *required* in order to trigger
-interpretations as sub/superscript.  This can be helpful in
-documents that need \"_\" frequently in plain text.
-
-This option can also be set with the OPTIONS keyword,
-e.g. \"^:nil\"."
+Still, ambiguity is possible.  So when in doubt, use {} to enclose
+the sub/superscript.  If you set this variable to the symbol `{}',
+the braces are *required* in order to trigger interpretations as
+sub/superscript.  This can be helpful in documents that need \"_\"
+frequently in plain text."
   :group 'org-export-general
+  :version "24.4"
+  :package-version '(Org . "8.0")
   :type '(choice
 	  (const :tag "Interpret them" t)
 	  (const :tag "Curly brackets only" {})
@@ -852,7 +867,7 @@ Therefore, using a specific configuration makes the process to
 load faster and the export more portable."
   :group 'org-export-general
   :version "24.4"
-  :package-version '(Org . "8.3")
+  :package-version '(Org . "8.0")
   :type '(choice
 	  (const :tag "Regular startup" nil)
 	  (file :tag "Specific start-up file" :must-match t)))
@@ -2904,7 +2919,7 @@ The copy will preserve local variables, visibility, contents and
 narrowing of the original buffer.  If a region was active in
 BUFFER, contents will be narrowed to that region instead.
 
-The resulting function can be evaled at a later time, from
+The resulting function can be evaluated at a later time, from
 another buffer, effectively cloning the original buffer there.
 
 The function assumes BUFFER's major mode is `org-mode'."
@@ -2922,7 +2937,11 @@ The function assumes BUFFER's major mode is `org-mode'."
 	       (when (consp entry)
 		 (let ((var (car entry))
 		       (val (cdr entry)))
-		   (and (not (eq var 'org-font-lock-keywords))
+		   (and (not (memq var '(org-font-lock-keywords
+					 ;; Do not share cache across
+					 ;; buffers as values are
+					 ;; modified by side effect.
+					 org-element--cache)))
 			(or (memq var
 				  '(default-directory
 				     buffer-file-name
@@ -4720,7 +4739,7 @@ INFO is a plist used as a communication channel."
   "Return TABLE-ROW number.
 INFO is a plist used as a communication channel.  Return value is
 zero-based and ignores separators.  The function returns nil for
-special colums and separators."
+special columns and separators."
   (when (and (eq (org-element-property :type table-row) 'standard)
 	     (not (org-export-table-row-is-special-p table-row info)))
     (let ((number 0))
@@ -4967,6 +4986,18 @@ Return a list of src-block elements with a caption."
      (opening-single-quote :utf-8 "‘" :html "&lsquo;" :latex "`" :texinfo "`")
      (closing-single-quote :utf-8 "’" :html "&rsquo;" :latex "'" :texinfo "'")
      (apostrophe :utf-8 "’" :html "&rsquo;"))
+    ("ru"
+     ;; http://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B2%D1%8B%D1%87%D0%BA%D0%B8#.D0.9A.D0.B0.D0.B2.D1.8B.D1.87.D0.BA.D0.B8.2C_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B2_.D1.80.D1.83.D1.81.D1.81.D0.BA.D0.BE.D0.BC_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B5
+     ;; http://www.artlebedev.ru/kovodstvo/sections/104/
+     (opening-double-quote :utf-8 "«" :html "&laquo;" :latex "{}<<"
+    			   :texinfo "@guillemetleft{}")
+     (closing-double-quote :utf-8 "»" :html "&raquo;" :latex ">>{}"
+    			   :texinfo "@guillemetright{}")
+     (opening-single-quote :utf-8 "„" :html "&bdquo;" :latex "\\glqq{}"
+    			   :texinfo "@quotedblbase{}")
+     (closing-single-quote :utf-8 "“" :html "&ldquo;" :latex "\\grqq{}"
+    			   :texinfo "@quotedblleft{}")
+     (apostrophe :utf-8 "’" :html: "&#39;"))
     ("sv"
      ;; based on https://sv.wikipedia.org/wiki/Citattecken
      (opening-double-quote :utf-8 "”" :html "&rdquo;" :latex "’’" :texinfo "’’")
@@ -5142,11 +5173,6 @@ Return the new string."
 ;; `org-export-get-genealogy' returns the full genealogy of a given
 ;; element or object, from closest parent to full parse tree.
 
-(defsubst org-export-get-parent (blob)
-  "Return BLOB parent or nil.
-BLOB is the element or object considered."
-  (org-element-property :parent blob))
-
 (defun org-export-get-genealogy (blob)
   "Return full genealogy relative to a given element or object.
 
@@ -5194,30 +5220,19 @@ When optional argument N is a positive integer, return a list
 containing up to N siblings before BLOB, from farthest to
 closest.  With any other non-nil value, return a list containing
 all of them."
-  (let ((siblings
-	 ;; An object can belong to the contents of its parent or
-	 ;; to a secondary string.  We check the latter option
-	 ;; first.
-	 (let ((parent (org-export-get-parent blob)))
-	   (or (and (not (memq (org-element-type blob)
-			       org-element-all-elements))
-		    (let ((sec-value
-			   (org-element-property
-			    (cdr (assq (org-element-type parent)
-				       org-element-secondary-value-alist))
-			    parent)))
-		      (and (memq blob sec-value) sec-value)))
-	       (org-element-contents parent))))
-	prev)
+  (let* ((secondary (org-element-secondary-p blob))
+	 (parent (org-export-get-parent blob))
+	 (siblings
+	  (if secondary (org-element-property secondary parent)
+	    (org-element-contents parent)))
+	 prev)
     (catch 'exit
-      (mapc (lambda (obj)
-	      (cond ((memq obj (plist-get info :ignore-list)))
-		    ((null n) (throw 'exit obj))
-		    ((not (wholenump n)) (push obj prev))
-		    ((zerop n) (throw 'exit prev))
-		    (t (decf n) (push obj prev))))
-	    (cdr (memq blob (reverse siblings))))
-      prev)))
+      (dolist (obj (cdr (memq blob (reverse siblings))) prev)
+	(cond ((memq obj (plist-get info :ignore-list)))
+	      ((null n) (throw 'exit obj))
+	      ((not (wholenump n)) (push obj prev))
+	      ((zerop n) (throw 'exit prev))
+	      (t (decf n) (push obj prev)))))))
 
 (defun org-export-get-next-element (blob info &optional n)
   "Return next element or object.
@@ -5230,29 +5245,20 @@ When optional argument N is a positive integer, return a list
 containing up to N siblings after BLOB, from closest to farthest.
 With any other non-nil value, return a list containing all of
 them."
-  (let ((siblings
-	 ;; An object can belong to the contents of its parent or to
-	 ;; a secondary string.  We check the latter option first.
-	 (let ((parent (org-export-get-parent blob)))
-	   (or (and (not (memq (org-element-type blob)
-			       org-element-all-objects))
-		    (let ((sec-value
-			   (org-element-property
-			    (cdr (assq (org-element-type parent)
-				       org-element-secondary-value-alist))
-			    parent)))
-		      (cdr (memq blob sec-value))))
-	       (cdr (memq blob (org-element-contents parent))))))
-	next)
+  (let* ((secondary (org-element-secondary-p blob))
+	 (parent (org-export-get-parent blob))
+	 (siblings
+	  (cdr (memq blob
+		     (if secondary (org-element-property secondary parent)
+		       (org-element-contents parent)))))
+	 next)
     (catch 'exit
-      (mapc (lambda (obj)
-	      (cond ((memq obj (plist-get info :ignore-list)))
-		    ((null n) (throw 'exit obj))
-		    ((not (wholenump n)) (push obj next))
-		    ((zerop n) (throw 'exit (nreverse next)))
-		    (t (decf n) (push obj next))))
-	    siblings)
-      (nreverse next))))
+      (dolist (obj siblings (nreverse next))
+	(cond ((memq obj (plist-get info :ignore-list)))
+	      ((null n) (throw 'exit obj))
+	      ((not (wholenump n)) (push obj next))
+	      ((zerop n) (throw 'exit (nreverse next)))
+	      (t (decf n) (push obj next)))))))
 
 
 ;;;; Translation
@@ -5953,7 +5959,7 @@ files or buffers, only the display.
   "Export dispatcher for Org mode.
 
 It provides an access to common export related tasks in a buffer.
-Its interface comes in two flavours: standard and expert.
+Its interface comes in two flavors: standard and expert.
 
 While both share the same set of bindings, only the former
 displays the valid keys associations in a dedicated buffer.
@@ -5961,7 +5967,7 @@ Scrolling (resp. line-wise motion) in this buffer is done with
 SPC and DEL (resp. C-n and C-p) keys.
 
 Set variable `org-export-dispatch-use-expert-ui' to switch to one
-flavour or the other.
+flavor or the other.
 
 When ARG is \\[universal-argument], repeat the last export action, with the same set
 of options used back then, on the current buffer.
