@@ -198,6 +198,7 @@ See the variable `align-rules-list' for more details.")
   '((t (:underline "red")))
   "Face used for marking error lines."
   :group 'enh-ruby)
+
 ;; misc stuff
 (require 'yari) ; ri documentation tool
 (require 'ruby-block) ; show what block an end belongs to
@@ -216,6 +217,9 @@ See the variable `align-rules-list' for more details.")
 ;; erb
 (require 'rhtml-mode)
 (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
+;; pry
+(global-set-key [S-f9] 'pry-intercept)
+(global-set-key [f9] 'pry-intercept-rerun)
 
 
 ;; Sometimes you have to
