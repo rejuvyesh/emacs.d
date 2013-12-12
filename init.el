@@ -75,10 +75,13 @@ Usage: (package-require 'package)"
 
 ;; multiple cursors
 (require 'multiple-cursors)
-(global-set-key (kbd "C-c k") 'mc/edit-lines)
-(global-set-key (kbd "C-c >") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-c <") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-k") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c d") 'mc/edit-lines)
+(global-set-key (kbd "<C-down>") 'mc/mark-next-like-this)
+(global-set-key (kbd "<C-up>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-d") 'mc/mark-all-dwim)
+(global-set-key (kbd "C-c >") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-c <") 'mc/mark-more-like-this-extended)
+
 (require 'phi-search)
 (require 'phi-search-mc)
 (define-key phi-search-default-map (kbd "C-c >") 'phi-search-mc/mark-next)
