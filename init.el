@@ -84,8 +84,10 @@ Usage: (package-require 'package)"
 
 (require 'phi-search)
 (require 'phi-search-mc)
-(define-key phi-search-default-map (kbd "C-c >") 'phi-search-mc/mark-next)
-(define-key phi-search-default-map (kbd "C-c <") 'phi-search-mc/mark-previous)
+(global-set-key (kbd "C-c C-s") 'phi-search)
+(global-set-key (kbd "C-c C-r") 'phi-search-backward)
+(define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
+(define-key phi-search-default-map (kbd "<C-up>") 'phi-search-mc/mark-previous)
 (define-key phi-search-default-map (kbd "C-c C-k") 'phi-search-mc/mark-all)
 
 ;; undo highlighting
