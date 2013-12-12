@@ -218,6 +218,7 @@ See the variable `align-rules-list' for more details.")
 (require 'rhtml-mode)
 (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
 ;; pry
+(require 'pry)
 (global-set-key [S-f9] 'pry-intercept)
 (global-set-key [f9] 'pry-intercept-rerun)
 
@@ -896,13 +897,6 @@ If visual-line-mode is on, then also jump to beginning of real line."
     (when (= oldpos (point))
       (end-of-line))))
 (global-set-key "\C-e" 'smart-end-of-line)
-
-;; semi-port of surround.vim
-(require 'surround)
-(global-surround-mode 1)
-(global-set-key "\C-cd" 'surround-delete)
-(global-set-key "\C-cD" 'surround-delete-within)
-(global-set-key "\C-c\M-d" 'surround-change)
 
 ;; move lines like in org-mode
 (defun move-line (n)
