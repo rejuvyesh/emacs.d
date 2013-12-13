@@ -654,6 +654,7 @@ See the variable `align-rules-list' for more details.")
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
 (diminish 'smartparens-mode)
+(diminish 'anzu-mode)
 ;; scratchpad buffers
 (require 'scratch)
 ;; don't want to remember which key I used
@@ -855,6 +856,8 @@ See the variable `align-rules-list' for more details.")
 (require 'visual-regexp)
 (require 'visual-regexp-steroids)
 (global-set-key "\C-cr" 'vr/query-replace)
+;; search info
+(global-anzu-mode +1)
 
 ;; copy end of line, like C-k
 (defun copy-line ()
