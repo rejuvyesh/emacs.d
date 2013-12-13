@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        handle-switch-frame
         indent-for-tab-command
         indent-region
         kill-visual-line
