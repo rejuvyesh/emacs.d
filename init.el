@@ -411,14 +411,16 @@ See the variable `align-rules-list' for more details.")
 (setq-default save-place t)
 
 ;; optical stuff
+(require 'heartbeat-cursor)
 (blink-cursor-mode -1)
+(heartbeat-cursor-mode)
+(setq-default cursor-type 'box)
 (setq inhibit-splash-screen t)
 
 ;; shows current selected region
 (setq-default transient-mark-mode t)
-(set-scroll-bar-mode 'right)
-(setq frame-title-format "%b - emacs")
-(set-fringe-mode '(0 . 1))
+(setq frame-title-format "%b")
+(set-fringe-mode '(1 . 10))
 
 ;; text stuff
 (setq default-major-mode 'org-mode)
@@ -948,9 +950,9 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;; fonts
-(defvar small-font "Terminus 9")
-(defvar normal-font "6x13")
-(defvar big-font "-gnu-unifont-*")
+(defvar small-font "Terminus 8")
+(defvar normal-font "Consolas 9")
+(defvar big-font "Consolas 10")
 (defvar font-list (list
                    small-font
                    normal-font
