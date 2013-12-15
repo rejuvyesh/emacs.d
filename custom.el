@@ -19,6 +19,7 @@
  '(ido-enable-tramp-completion nil)
  '(linum-format " %7i ")
  '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
+ '(minimap-window-location (quote left))
  '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.pdf\\'" . system))))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces

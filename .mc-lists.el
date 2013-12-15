@@ -14,6 +14,9 @@
         smart-beginning-of-line
         smart-end-of-line
         sp--self-insert-command
+        sp-remove-active-pair-overlay
+        whole-line-or-region-kill-region
+        whole-line-or-region-kill-ring-save
         yank-and-indent
         yas-expand
         ))
@@ -22,4 +25,5 @@
       '(
         align-current
         bc-set
+        markdown-exdent-or-delete
         ))
