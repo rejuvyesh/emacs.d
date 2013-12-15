@@ -309,7 +309,7 @@ See the variable `align-rules-list' for more details.")
 (require 'smartparens-config)
 (smartparens-global-mode t)
 (show-smartparens-global-mode +1)
-
+(setq sp-highlight-pair-overlay nil)
 ;;; markdown-mode
 (sp-with-modes '(markdown-mode gfm-mode rst-mode)
                (sp-local-pair "*" "*" :bind "C-*")
