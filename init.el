@@ -830,6 +830,10 @@ See the variable `align-rules-list' for more details.")
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
 (winner-mode 1)
+
+;; number windows, i.e. M-1 .. M-0 to jump to window
+(require 'window-numbering)
+(window-numbering-mode 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Checking out helm
 (require 'helm-config)
