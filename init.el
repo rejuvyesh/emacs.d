@@ -90,6 +90,9 @@ Usage: (package-require 'package)"
 (define-key phi-search-default-map (kbd "<C-up>") 'phi-search-mc/mark-previous)
 (define-key phi-search-default-map (kbd "C-c C-k") 'phi-search-mc/mark-all)
 
+;; undo tree
+(global-undo-tree-mode)
+
 ;; undo highlighting
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
@@ -1011,7 +1014,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 ;; Guide Key
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
 (guide-key-mode 1)
 (setq guide-key/recursive-key-sequence-flag t)
 (setq guide-key/popup-window-position 'bottom)
