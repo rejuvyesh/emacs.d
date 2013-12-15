@@ -310,6 +310,7 @@ See the variable `align-rules-list' for more details.")
 (smartparens-global-mode t)
 (show-smartparens-global-mode +1)
 (setq sp-highlight-pair-overlay nil)
+(show-smartparens-global-mode t)
 ;;; markdown-mode
 (sp-with-modes '(markdown-mode gfm-mode rst-mode)
                (sp-local-pair "*" "*" :bind "C-*")
@@ -318,7 +319,20 @@ See the variable `align-rules-list' for more details.")
                (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
 ;;; html-mode
 (sp-with-modes '(html-mode sgml-mode)
-               (sp-local-pair "<" ">"))
+  (sp-local-pair "<" ">"))
+;; sp keys
+(define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
+(define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
+(define-key sp-keymap (kbd "M-f") 'sp-forward-sexp)
+(define-key sp-keymap (kbd "M-b") 'sp-backward-sexp)
+(define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
+(define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
+(define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
+(define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
+(define-key sp-keymap (kbd "C-<left>") 'sp-add-to-next-sexp)
+(define-key sp-keymap (kbd "C-<right>") 'sp-add-to-previous-sexp)
+(define-key sp-keymap (kbd "M-<delete>") 'sp-unwrap-sexp)
+(define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
 
 ;; auto correction
 (setq abbrev-file-name             
