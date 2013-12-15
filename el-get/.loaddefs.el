@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (grails-mode) "Emacs-Groovy-Mode/grails-mode" "Emacs-Groovy-Mode/grails-mode.el"
-;;;;;;  (21107 50841 150582 103000))
+;;;;;;  (21159 16319 957670 44000))
 ;;; Generated autoloads from Emacs-Groovy-Mode/grails-mode.el
 
 (autoload 'grails-mode "Emacs-Groovy-Mode/grails-mode" "\
@@ -21,8 +21,8 @@ Grails Minor Mode.
 ;;;***
 
 ;;;### (autoloads (groovy-electric-mode) "Emacs-Groovy-Mode/groovy-electric"
-;;;;;;  "Emacs-Groovy-Mode/groovy-electric.el" (21107 50841 150582
-;;;;;;  103000))
+;;;;;;  "Emacs-Groovy-Mode/groovy-electric.el" (21159 16320 17667
+;;;;;;  956000))
 ;;; Generated autoloads from Emacs-Groovy-Mode/groovy-electric.el
 
 (autoload 'groovy-electric-mode "Emacs-Groovy-Mode/groovy-electric" "\
@@ -41,7 +41,7 @@ have Font Lock enabled. ${ } is expanded when in a GString
 ;;;***
 
 ;;;### (autoloads (groovy-mode groovy-mode-hook) "Emacs-Groovy-Mode/groovy-mode"
-;;;;;;  "Emacs-Groovy-Mode/groovy-mode.el" (21107 50841 150582 103000))
+;;;;;;  "Emacs-Groovy-Mode/groovy-mode.el" (21159 16319 994335 434000))
 ;;; Generated autoloads from Emacs-Groovy-Mode/groovy-mode.el
 
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
@@ -68,7 +68,7 @@ Key bindings:
 
 ;;;### (autoloads (run-groovy inferior-groovy-mode inf-groovy-keys)
 ;;;;;;  "Emacs-Groovy-Mode/inf-groovy" "Emacs-Groovy-Mode/inf-groovy.el"
-;;;;;;  (21107 50841 150582 103000))
+;;;;;;  (21159 16320 21001 173000))
 ;;; Generated autoloads from Emacs-Groovy-Mode/inf-groovy.el
 
 (autoload 'inf-groovy-keys "Emacs-Groovy-Mode/inf-groovy" "\
@@ -128,8 +128,8 @@ of `groovy-program-name').  Runs the hooks `inferior-groovy-mode-hook'
 ;;;***
 
 ;;;### (autoloads (enh-ruby-mode) "Enhanced-Ruby-Mode/enh-ruby-mode"
-;;;;;;  "Enhanced-Ruby-Mode/enh-ruby-mode.el" (21143 64163 36885
-;;;;;;  802000))
+;;;;;;  "Enhanced-Ruby-Mode/enh-ruby-mode.el" (21159 16342 566883
+;;;;;;  137000))
 ;;; Generated autoloads from Enhanced-Ruby-Mode/enh-ruby-mode.el
 
 (autoload 'enh-ruby-mode "Enhanced-Ruby-Mode/enh-ruby-mode" "\
@@ -149,7 +149,7 @@ Enhanced Major mode for editing Ruby code.
 
 ;;;### (autoloads (ace-jump-mode ace-jump-line-mode ace-jump-word-mode
 ;;;;;;  ace-jump-char-mode ace-jump-mode-pop-mark) "ace-jump-mode/ace-jump-mode"
-;;;;;;  "ace-jump-mode/ace-jump-mode.el" (21107 50837 927382 386000))
+;;;;;;  "ace-jump-mode/ace-jump-mode.el" (21159 16320 437653 335000))
 ;;; Generated autoloads from ace-jump-mode/ace-jump-mode.el
 
 (autoload 'ace-jump-mode-pop-mark "ace-jump-mode/ace-jump-mode" "\
@@ -201,7 +201,7 @@ You can constrol whether use the case sensitive via
 ;;;***
 
 ;;;### (autoloads (auto-complete) "auto-complete/auto-complete" "auto-complete/auto-complete.el"
-;;;;;;  (21143 64208 731573 288000))
+;;;;;;  (21159 16311 887950 983000))
 ;;; Generated autoloads from auto-complete/auto-complete.el
 
 (autoload 'auto-complete "auto-complete/auto-complete" "\
@@ -213,7 +213,7 @@ Start auto-completion at current point.
 
 ;;;### (autoloads (turn-off-completing-help-mode turn-on-completing-help-mode
 ;;;;;;  completing-help-mode) "completing-help/completing-help" "completing-help/completing-help.el"
-;;;;;;  (21107 37017 836860 6000))
+;;;;;;  (21159 16342 566883 137000))
 ;;; Generated autoloads from completing-help/completing-help.el
 
 (autoload 'completing-help-mode "completing-help/completing-help" "\
@@ -236,8 +236,8 @@ Turn off a facility to display information on completions.
 
 ;;;### (autoloads (el-get-checksum el-get-make-recipes el-get-cd
 ;;;;;;  el-get-self-update el-get-update-packages-of-type el-get-update-all
-;;;;;;  el-get-version) "el-get/el-get" "el-get/el-get.el" (21096
-;;;;;;  58937 130612 512000))
+;;;;;;  el-get-version) "el-get/el-get" "el-get/el-get.el" (21159
+;;;;;;  16353 556500 756000))
 ;;; Generated autoloads from el-get/el-get.el
 
 (autoload 'el-get-version "el-get/el-get" "\
@@ -279,7 +279,7 @@ Compute the checksum of the given package, and put it in the kill-ring
 ;;;***
 
 ;;;### (autoloads (el-get-list-packages) "el-get/el-get-list-packages"
-;;;;;;  "el-get/el-get-list-packages.el" (21096 58937 130612 512000))
+;;;;;;  "el-get/el-get-list-packages.el" (21159 16353 613165 451000))
 ;;; Generated autoloads from el-get/el-get-list-packages.el
 
 (autoload 'el-get-list-packages "el-get/el-get-list-packages" "\
@@ -327,7 +327,7 @@ more structured list.
 
 ;;;### (autoloads (global-surround-mode turn-off-surround-mode turn-on-surround-mode
 ;;;;;;  surround-mode surround-change surround-delete) "evil-surround/surround"
-;;;;;;  "evil-surround/surround.el" (21107 50615 290011 277000))
+;;;;;;  "evil-surround/surround.el" (21159 16318 344392 872000))
 ;;; Generated autoloads from evil-surround/surround.el
 
 (autoload 'surround-delete "evil-surround/surround" "\
@@ -384,15 +384,15 @@ See `surround-mode' for more information on Surround mode.
 
 ;;;***
 
-;;;### (autoloads nil "evil/evil-core" "evil/evil-core.el" (21143
-;;;;;;  64209 638264 436000))
+;;;### (autoloads nil "evil/evil-core" "evil/evil-core.el" (21159
+;;;;;;  16319 747677 355000))
 ;;; Generated autoloads from evil/evil-core.el
  (autoload 'evil-mode "evil" "Toggle evil in all buffers" t)
 
 ;;;***
 
 ;;;### (autoloads (er/expand-region) "expand-region/expand-region"
-;;;;;;  "expand-region/expand-region.el" (21107 50966 652066 772000))
+;;;;;;  "expand-region/expand-region.el" (21159 16357 909682 641000))
 ;;; Generated autoloads from expand-region/expand-region.el
 
 (autoload 'er/expand-region "expand-region/expand-region" "\
@@ -412,7 +412,7 @@ before calling `er/expand-region' for the first time.
 ;;;;;;  expand-region-skip-whitespace expand-region-autocopy-register
 ;;;;;;  expand-region-guess-python-mode expand-region-preferred-python-mode
 ;;;;;;  expand-region) "expand-region/expand-region-custom" "expand-region/expand-region-custom.el"
-;;;;;;  (21107 50966 652066 772000))
+;;;;;;  (21159 16358 129674 987000))
 ;;; Generated autoloads from expand-region/expand-region-custom.el
 
 (let ((loads (get 'expand-region 'custom-loads))) (if (member '"expand-region/expand-region-custom" loads) nil (put 'expand-region 'custom-loads (cons '"expand-region/expand-region-custom" loads))))
@@ -462,8 +462,8 @@ List of modes which derive from `text-mode' for which text mode expansions are n
 ;;;***
 
 ;;;### (autoloads (find-file-in-project) "find-file-in-project/find-file-in-project"
-;;;;;;  "find-file-in-project/find-file-in-project.el" (21107 36825
-;;;;;;  158068 419000))
+;;;;;;  "find-file-in-project/find-file-in-project.el" (21159 16341
+;;;;;;  183597 940000))
 ;;; Generated autoloads from find-file-in-project/find-file-in-project.el
 
 (autoload 'find-file-in-project "find-file-in-project/find-file-in-project" "\
@@ -492,7 +492,7 @@ setting the variable `ffip-project-root'.
 ;;;***
 
 ;;;### (autoloads (flymake-lua-load) "flymake-lua/flymake-lua" "flymake-lua/flymake-lua.el"
-;;;;;;  (21143 64207 51527 699000))
+;;;;;;  (21159 16359 156305 939000))
 ;;; Generated autoloads from flymake-lua/flymake-lua.el
 
 (autoload 'flymake-lua-load "flymake-lua/flymake-lua" "\
@@ -503,7 +503,7 @@ setting the variable `ffip-project-root'.
 ;;;***
 
 ;;;### (autoloads (goto-last-change) "goto-chg/goto-chg" "goto-chg/goto-chg.el"
-;;;;;;  (21143 64213 641704 833000))
+;;;;;;  (21159 16342 583549 223000))
 ;;; Generated autoloads from goto-chg/goto-chg.el
 
 (autoload 'goto-last-change "goto-chg/goto-chg" "\
@@ -536,8 +536,8 @@ discarded. See variable `undo-limit'.
 
 ;;;### (autoloads (highlight-indentation-current-column-mode highlight-indentation-set-offset
 ;;;;;;  highlight-indentation-mode) "highlight-indentation/highlight-indentation"
-;;;;;;  "highlight-indentation/highlight-indentation.el" (21107 35117
-;;;;;;  618898 972000))
+;;;;;;  "highlight-indentation/highlight-indentation.el" (21159 16342
+;;;;;;  596882 92000))
 ;;; Generated autoloads from highlight-indentation/highlight-indentation.el
 
 (autoload 'highlight-indentation-mode "highlight-indentation/highlight-indentation" "\
@@ -562,7 +562,7 @@ a vertical bar corresponding to the indentation of the current line
 ;;;***
 
 ;;;### (autoloads (idomenu) "idomenu/idomenu" "idomenu/idomenu.el"
-;;;;;;  (21143 64207 298201 71000))
+;;;;;;  (21159 16311 807953 768000))
 ;;; Generated autoloads from idomenu/idomenu.el
 
 (autoload 'idomenu "idomenu/idomenu" "\
@@ -573,7 +573,7 @@ Switch to a buffer-local tag from Imenu via Ido.
 ;;;***
 
 ;;;### (autoloads (iedit-rectangle-mode iedit-mode-on-function iedit-mode)
-;;;;;;  "iedit/iedit" "iedit/iedit.el" (21143 64207 604876 74000))
+;;;;;;  "iedit/iedit" "iedit/iedit.el" (21159 16320 470985 508000))
 ;;; Generated autoloads from iedit/iedit.el
 
 (autoload 'iedit-mode "iedit/iedit" "\
@@ -642,7 +642,7 @@ Toggle iedit-RECT mode.
 
 ;;;### (autoloads (jedi:setup anything-jedi-related-names helm-jedi-related-names
 ;;;;;;  jedi:ac-setup jedi:complete jedi:start-dedicated-server)
-;;;;;;  "jedi/jedi" "jedi/jedi.el" (21107 37364 399481 314000))
+;;;;;;  "jedi/jedi" "jedi/jedi.el" (21159 16318 254396 5000))
 ;;; Generated autoloads from jedi/jedi.el
 
 (autoload 'jedi:start-dedicated-server "jedi/jedi" "\
@@ -707,7 +707,7 @@ what jedi can do.
 
 ;;;### (autoloads (js2-imenu-extras-mode js2-imenu-extras-setup)
 ;;;;;;  "js2-mode/js2-imenu-extras" "js2-mode/js2-imenu-extras.el"
-;;;;;;  (21143 64213 611704 36000))
+;;;;;;  (21159 16358 882982 114000))
 ;;; Generated autoloads from js2-mode/js2-imenu-extras.el
 
 (autoload 'js2-imenu-extras-setup "js2-mode/js2-imenu-extras" "\
@@ -723,7 +723,7 @@ Toggle Imenu support for frameworks and structural patterns.
 ;;;***
 
 ;;;### (autoloads (js2-mode js2-minor-mode) "js2-mode/js2-mode" "js2-mode/js2-mode.el"
-;;;;;;  (21143 64213 625037 724000))
+;;;;;;  (21159 16358 902981 418000))
 ;;; Generated autoloads from js2-mode/js2-mode.el
 
 (autoload 'js2-minor-mode "js2-mode/js2-mode" "\
@@ -742,7 +742,7 @@ Major mode for editing JavaScript code.
 ;;;***
 
 ;;;### (autoloads (lua-mode) "lua-mode/lua-mode" "lua-mode/lua-mode.el"
-;;;;;;  (21098 20259 349764 959000))
+;;;;;;  (21159 16355 659760 916000))
 ;;; Generated autoloads from lua-mode/lua-mode.el
 
 (autoload 'lua-mode "lua-mode/lua-mode" "\
@@ -758,7 +758,7 @@ Major mode for editing Lua code.
 
 ;;;### (autoloads (mc/edit-beginnings-of-lines mc/edit-ends-of-lines
 ;;;;;;  mc/edit-lines) "multiple-cursors/mc-edit-lines" "multiple-cursors/mc-edit-lines.el"
-;;;;;;  (21143 64212 231667 319000))
+;;;;;;  (21159 16356 909717 429000))
 ;;; Generated autoloads from multiple-cursors/mc-edit-lines.el
 
 (autoload 'mc/edit-lines "multiple-cursors/mc-edit-lines" "\
@@ -796,7 +796,7 @@ Add one cursor to the beginning of each line in the active region.
 ;;;;;;  mc/mark-next-lines mc/mark-previous-symbol-like-this mc/mark-previous-word-like-this
 ;;;;;;  mc/mark-previous-like-this mc/mark-next-symbol-like-this
 ;;;;;;  mc/mark-next-word-like-this mc/mark-next-like-this) "multiple-cursors/mc-mark-more"
-;;;;;;  "multiple-cursors/mc-mark-more.el" (21107 48678 680965 739000))
+;;;;;;  "multiple-cursors/mc-mark-more.el" (21159 16356 473065 952000))
 ;;; Generated autoloads from multiple-cursors/mc-mark-more.el
 
 (autoload 'mc/mark-next-like-this "multiple-cursors/mc-mark-more" "\
@@ -952,7 +952,7 @@ Mark the tag we're in and its pair for renaming.
 ;;;***
 
 ;;;### (autoloads (mc/mark-pop) "multiple-cursors/mc-mark-pop" "multiple-cursors/mc-mark-pop.el"
-;;;;;;  (21107 48678 680965 739000))
+;;;;;;  (21159 16356 366402 995000))
 ;;; Generated autoloads from multiple-cursors/mc-mark-pop.el
 
 (autoload 'mc/mark-pop "multiple-cursors/mc-mark-pop" "\
@@ -965,7 +965,7 @@ to the popped mark.
 
 ;;;### (autoloads (mc/sort-regions mc/reverse-regions mc/insert-numbers)
 ;;;;;;  "multiple-cursors/mc-separate-operations" "multiple-cursors/mc-separate-operations.el"
-;;;;;;  (21107 48678 680965 739000))
+;;;;;;  (21159 16356 403068 388000))
 ;;; Generated autoloads from multiple-cursors/mc-separate-operations.el
 
 (autoload 'mc/insert-numbers "multiple-cursors/mc-separate-operations" "\
@@ -986,8 +986,8 @@ Insert increasing numbers for each cursor, starting at 0 or ARG.
 ;;;***
 
 ;;;### (autoloads (set-rectangular-region-anchor) "multiple-cursors/rectangular-region-mode"
-;;;;;;  "multiple-cursors/rectangular-region-mode.el" (21107 48678
-;;;;;;  680965 739000))
+;;;;;;  "multiple-cursors/rectangular-region-mode.el" (21159 16356
+;;;;;;  889718 124000))
 ;;; Generated autoloads from multiple-cursors/rectangular-region-mode.el
 
 (autoload 'set-rectangular-region-anchor "multiple-cursors/rectangular-region-mode" "\
@@ -1001,7 +1001,7 @@ an exceedingly quick way of adding multiple cursors to multiple lines.
 ;;;***
 
 ;;;### (autoloads (pkgbuild-mode) "pkgbuild-mode/pkgbuild-mode" "pkgbuild-mode/pkgbuild-mode.el"
-;;;;;;  (21096 57906 86533 264000))
+;;;;;;  (21159 16356 963048 907000))
 ;;; Generated autoloads from pkgbuild-mode/pkgbuild-mode.el
 
 (autoload 'pkgbuild-mode "pkgbuild-mode/pkgbuild-mode" "\
@@ -1015,8 +1015,8 @@ with no args, if that value is non-nil.
 
 ;;;### (autoloads (global-rainbow-delimiters-mode rainbow-delimiters-mode-disable
 ;;;;;;  rainbow-delimiters-mode-enable rainbow-delimiters-mode) "rainbow-delimiters/rainbow-delimiters"
-;;;;;;  "rainbow-delimiters/rainbow-delimiters.el" (21096 57826 595837
-;;;;;;  753000))
+;;;;;;  "rainbow-delimiters/rainbow-delimiters.el" (21159 16359 152972
+;;;;;;  721000))
 ;;; Generated autoloads from rainbow-delimiters/rainbow-delimiters.el
 
 (autoload 'rainbow-delimiters-mode "rainbow-delimiters/rainbow-delimiters" "\
@@ -1062,8 +1062,8 @@ See `rainbow-delimiters-mode' for more information on Rainbow-Delimiters mode.
 ;;;;;;  turn-on-smartparens-mode smartparens-global-mode turn-on-smartparens-strict-mode
 ;;;;;;  smartparens-global-strict-mode smartparens-strict-mode smartparens-mode
 ;;;;;;  sp-use-smartparens-bindings sp-use-paredit-bindings sp-cheat-sheet)
-;;;;;;  "smartparens/smartparens" "smartparens/smartparens.el" (21143
-;;;;;;  64215 541755 58000))
+;;;;;;  "smartparens/smartparens" "smartparens/smartparens.el" (21165
+;;;;;;  12859 529873 743000))
 ;;; Generated autoloads from smartparens/smartparens.el
 
 (autoload 'sp-cheat-sheet "smartparens/smartparens" "\
@@ -1227,7 +1227,7 @@ Turn off `show-smartparens-mode'.
 ;;;***
 
 ;;;### (autoloads (global-undo-tree-mode undo-tree-mode) "undo-tree/undo-tree"
-;;;;;;  "undo-tree/undo-tree.el" (21143 64215 988433 489000))
+;;;;;;  "undo-tree/undo-tree.el" (21159 16320 300991 426000))
 ;;; Generated autoloads from undo-tree/undo-tree.el
 
 (autoload 'undo-tree-mode "undo-tree/undo-tree" "\
@@ -1274,8 +1274,8 @@ See `undo-tree-mode' for more information on Undo-Tree mode.
 ;;;***
 
 ;;;### (autoloads (virtualenv-minor-mode virtualenv-deactivate virtualenv-workon)
-;;;;;;  "virtualenv/virtualenv" "virtualenv/virtualenv.el" (21107
-;;;;;;  34986 101008 597000))
+;;;;;;  "virtualenv/virtualenv" "virtualenv/virtualenv.el" (21159
+;;;;;;  16341 56935 681000))
 ;;; Generated autoloads from virtualenv/virtualenv.el
 
 (autoload 'virtualenv-workon "virtualenv/virtualenv" "\
@@ -1302,7 +1302,7 @@ the mode if ARG is omitted or nil, and toggle it if ARG is `toggle'.
 ;;;***
 
 ;;;### (autoloads (webjump++) "webjump++/webjumps++" "webjump++/webjumps++.el"
-;;;;;;  (21118 33308 152620 518000))
+;;;;;;  (21159 16354 996450 657000))
 ;;; Generated autoloads from webjump++/webjumps++.el
 
 (autoload 'webjump++ "webjump++/webjumps++" "\
@@ -1323,7 +1323,7 @@ QUERY is read from minibuffer if called with
 ;;;***
 
 ;;;### (autoloads (writegood-mode) "writegood/writegood-mode" "writegood/writegood-mode.el"
-;;;;;;  (21097 4286 614300 631000))
+;;;;;;  (21159 16356 266406 476000))
 ;;; Generated autoloads from writegood/writegood-mode.el
 
 (autoload 'writegood-mode "writegood/writegood-mode" "\
@@ -1334,7 +1334,7 @@ Colorize issues with the writing in the buffer.
 ;;;***
 
 ;;;### (autoloads (yaml-mode yaml) "yaml-mode/yaml-mode" "yaml-mode/yaml-mode.el"
-;;;;;;  (21107 51530 985902 575000))
+;;;;;;  (21159 16341 316926 633000))
 ;;; Generated autoloads from yaml-mode/yaml-mode.el
 
 (let ((loads (get 'yaml 'custom-loads))) (if (member '"yaml-mode/yaml-mode" loads) nil (put 'yaml 'custom-loads (cons '"yaml-mode/yaml-mode" loads))))
@@ -1352,7 +1352,7 @@ Simple mode to edit YAML.
 
 ;;;### (autoloads (global-yascroll-bar-mode yascroll-bar-mode yascroll:hide-scroll-bar
 ;;;;;;  yascroll:show-scroll-bar) "yascroll/yascroll" "yascroll/yascroll.el"
-;;;;;;  (21097 11160 832245 730000))
+;;;;;;  (21159 16354 926453 92000))
 ;;; Generated autoloads from yascroll/yascroll.el
 
 (autoload 'yascroll:show-scroll-bar "yascroll/yascroll" "\
@@ -1394,7 +1394,7 @@ See `yascroll-bar-mode' for more information on Yascroll-Bar mode.
 ;;;***
 
 ;;;### (autoloads (yas-global-mode yas-minor-mode) "yasnippet/yasnippet"
-;;;;;;  "yasnippet/yasnippet.el" (21143 64217 725145 647000))
+;;;;;;  "yasnippet/yasnippet.el" (21159 16314 761184 283000))
 ;;; Generated autoloads from yasnippet/yasnippet.el
 
 (autoload 'yas-minor-mode "yasnippet/yasnippet" "\
@@ -1436,37 +1436,11 @@ See `yas-minor-mode' for more information on Yas minor mode.
 
 ;;;***
 
-;;;### (autoloads nil nil ("ac-math/ac-math.el" "auto-complete/auto-complete-config.el"
-;;;;;;  "auto-complete/auto-complete-pkg.el" "ctable/ctable.el" "ctable/test-ctable.el"
-;;;;;;  "dash/dash-functional.el" "dash/dash.el" "deferred/concurrent-sample.el"
-;;;;;;  "deferred/concurrent.el" "deferred/deferred-samples.el" "deferred/deferred.el"
-;;;;;;  "deferred/test-concurrent.el" "deferred/test-deferred.el"
-;;;;;;  "el-get/el-get-autoloads.el" "el-get/el-get-build.el" "el-get/el-get-byte-compile.el"
-;;;;;;  "el-get/el-get-core.el" "el-get/el-get-custom.el" "el-get/el-get-dependencies.el"
-;;;;;;  "el-get/el-get-install.el" "el-get/el-get-methods.el" "el-get/el-get-notify.el"
-;;;;;;  "el-get/el-get-recipes.el" "el-get/el-get-status.el" "elpy/elpy-pkg.el"
-;;;;;;  "elpy/elpy-refactor.el" "epc/epc.el" "epc/epcs.el" "epc/test-epc.el"
-;;;;;;  "expand-region/cc-mode-expansions.el" "expand-region/clojure-mode-expansions.el"
-;;;;;;  "expand-region/cperl-mode-expansions.el" "expand-region/css-mode-expansions.el"
-;;;;;;  "expand-region/enh-ruby-mode-expansions.el" "expand-region/er-basic-expansions.el"
-;;;;;;  "expand-region/erlang-mode-expansions.el" "expand-region/expand-region-core.el"
-;;;;;;  "expand-region/expand-region-pkg.el" "expand-region/feature-mode-expansions.el"
-;;;;;;  "expand-region/html-mode-expansions.el" "expand-region/js-mode-expansions.el"
-;;;;;;  "expand-region/js2-mode-expansions.el" "expand-region/jsp-expansions.el"
-;;;;;;  "expand-region/latex-mode-expansions.el" "expand-region/nxml-mode-expansions.el"
-;;;;;;  "expand-region/octave-expansions.el" "expand-region/python-el-expansions.el"
-;;;;;;  "expand-region/python-el-fgallina-expansions.el" "expand-region/python-mode-expansions.el"
-;;;;;;  "expand-region/ruby-mode-expansions.el" "expand-region/sml-mode-expansions.el"
-;;;;;;  "expand-region/text-mode-expansions.el" "expand-region/the-org-mode-expansions.el"
-;;;;;;  "expand-region/web-mode-expansions.el" "fuzzy/fuzzy.el" "jedi/jedi-pkg.el"
-;;;;;;  "jedi/test-jedi.el" "jedi/tryout-jedi.el" "multiple-cursors/mc-cycle-cursors.el"
-;;;;;;  "multiple-cursors/multiple-cursors-core.el" "multiple-cursors/multiple-cursors-pkg.el"
-;;;;;;  "multiple-cursors/multiple-cursors.el" "nose/nose.el" "popup/popup.el"
-;;;;;;  "smartparens/smartparens-config.el" "smartparens/smartparens-html.el"
-;;;;;;  "smartparens/smartparens-latex.el" "smartparens/smartparens-lua.el"
-;;;;;;  "smartparens/smartparens-pkg.el" "smartparens/smartparens-ruby.el"
-;;;;;;  "volatile-highlights/volatile-highlights.el" "yasnippet/yasnippet-debug.el"
-;;;;;;  "yasnippet/yasnippet-tests.el") (21143 64315 164460 983000))
+;;;### (autoloads nil nil ("auto-complete/auto-complete-config.el"
+;;;;;;  "auto-complete/auto-complete-pkg.el" "smartparens/smartparens-config.el"
+;;;;;;  "smartparens/smartparens-html.el" "smartparens/smartparens-latex.el"
+;;;;;;  "smartparens/smartparens-lua.el" "smartparens/smartparens-pkg.el"
+;;;;;;  "smartparens/smartparens-ruby.el") (21165 12876 261167 715000))
 
 ;;;***
 
