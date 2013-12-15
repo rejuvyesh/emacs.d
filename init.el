@@ -298,11 +298,14 @@ See the variable `align-rules-list' for more details.")
 (global-set-key (kbd "C-c ~") 'aya-create)
 (global-set-key (kbd "C-c C-~") 'aya-expand)
 
+;; indentation-based folding
+;; (require 'yafolding)
+;; (define-key global-map (kbd "C-c C-f") 'yafolding)
+;; (define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
+;; (define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
+
 
 ;; text completion
-
-;; (require 'autopair)
-;; (autopair-global-mode) ;; to enable in all buffers
 (require 'smartparens-config)
 (smartparens-global-mode t)
 (show-smartparens-global-mode +1)
@@ -644,17 +647,6 @@ See the variable `align-rules-list' for more details.")
                "#+BEGIN_SRC ruby\n?\n#+END_SRC"
                "<src lang=\"ruby\">\n\n</src>"))
 
-(require 'diminish)
-(diminish 'highlight-parentheses-mode)
-(diminish 'fic-mode)
-(diminish 'auto-complete-mode "AC")
-(diminish 'undo-tree-mode)
-(diminish 'visual-line-mode)
-(diminish 'volatile-highlights-mode)
-(diminish 'whole-line-or-region-mode)
-(diminish 'yas-minor-mode)
-(diminish 'smartparens-mode)
-(diminish 'anzu-mode)
 ;; scratchpad buffers
 (require 'scratch)
 ;; don't want to remember which key I used
@@ -741,7 +733,8 @@ See the variable `align-rules-list' for more details.")
 (global-set-key (kbd "C-c d") 'insert-date)
 
 ;; spell-checking
-(require 'wcheck-mode)
+(autoload 'wcheck-mode "wcheck-mode"
+  "Toggle wcheck-mode." t)
 (setq ispell-really-hunspell t)
 (setq wcheck-timer-idle .2)
 (define-key global-map "\C-cs" 'wcheck-actions)
@@ -857,7 +850,8 @@ See the variable `align-rules-list' for more details.")
 (require 'visual-regexp-steroids)
 (global-set-key "\C-cr" 'vr/query-replace)
 ;; search info
-(global-anzu-mode +1)
+(require 'anzu)
+(global-anzu-mode t)
 
 ;; copy end of line, like C-k
 (defun copy-line ()
@@ -934,7 +928,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;; fonts
-(defvar small-font "6x10")
+(defvar small-font "Terminus 9")
 (defvar normal-font "6x13")
 (defvar big-font "-gnu-unifont-*")
 (defvar font-list (list
@@ -1023,10 +1017,17 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; ag mode
 (setq ag-highlight-search t)
 
+;; diminish
+(require 'diminish)
+(diminish 'highlight-parentheses-mode)
+(diminish 'fic-mode)
+(diminish 'auto-complete-mode "AC")
+(diminish 'undo-tree-mode)
+(diminish 'visual-line-mode)
+(diminish 'volatile-highlights-mode)
+(diminish 'whole-line-or-region-mode)
+(diminish 'yas-minor-mode)
+(diminish 'smartparens-mode)
+(diminish 'anzu-mode)
 
-;; indentation-based folding
-;; (require 'yafolding)
-;; (define-key global-map (kbd "C-c C-f") 'yafolding)
-;; (define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
-;; (define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
 
