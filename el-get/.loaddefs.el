@@ -325,72 +325,6 @@ more structured list.
 
 ;;;***
 
-;;;### (autoloads (global-surround-mode turn-off-surround-mode turn-on-surround-mode
-;;;;;;  surround-mode surround-change surround-delete) "evil-surround/surround"
-;;;;;;  "evil-surround/surround.el" (21159 16318 344392 872000))
-;;; Generated autoloads from evil-surround/surround.el
-
-(autoload 'surround-delete "evil-surround/surround" "\
-Delete the surrounding delimiters represented by CHAR.
-Alternatively, the text to delete can be represented with
-the overlays OUTER and INNER, where OUTER includes the delimiters
-and INNER excludes them. The intersection (i.e., difference)
-between these overlays is what is deleted.
-
-\(fn CHAR &optional OUTER INNER)" t nil)
-
-(autoload 'surround-change "evil-surround/surround" "\
-Change the surrounding delimiters represented by CHAR.
-Alternatively, the text to delete can be represented with the
-overlays OUTER and INNER, which are passed to `surround-delete'.
-
-\(fn CHAR &optional OUTER INNER)" t nil)
-
-(autoload 'surround-mode "evil-surround/surround" "\
-Buffer-local minor mode to emulate surround.vim.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'turn-on-surround-mode "evil-surround/surround" "\
-Enable surround-mode in the current buffer.
-
-\(fn)" nil nil)
-
-(autoload 'turn-off-surround-mode "evil-surround/surround" "\
-Disable surround-mode in the current buffer.
-
-\(fn)" nil nil)
-
-(defvar global-surround-mode nil "\
-Non-nil if Global-Surround mode is enabled.
-See the command `global-surround-mode' for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `global-surround-mode'.")
-
-(custom-autoload 'global-surround-mode "evil-surround/surround" nil)
-
-(autoload 'global-surround-mode "evil-surround/surround" "\
-Toggle Surround mode in all buffers.
-With prefix ARG, enable Global-Surround mode if ARG is positive;
-otherwise, disable it.  If called from Lisp, enable the mode if
-ARG is omitted or nil.
-
-Surround mode is enabled in all buffers where
-`turn-on-surround-mode' would do it.
-See `surround-mode' for more information on Surround mode.
-
-\(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads nil "evil/evil-core" "evil/evil-core.el" (21159
-;;;;;;  16319 747677 355000))
-;;; Generated autoloads from evil/evil-core.el
- (autoload 'evil-mode "evil" "Toggle evil in all buffers" t)
-
-;;;***
-
 ;;;### (autoloads (er/expand-region) "expand-region/expand-region"
 ;;;;;;  "expand-region/expand-region.el" (21159 16357 909682 641000))
 ;;; Generated autoloads from expand-region/expand-region.el
@@ -1437,10 +1371,14 @@ See `yas-minor-mode' for more information on Yas minor mode.
 ;;;***
 
 ;;;### (autoloads nil nil ("auto-complete/auto-complete-config.el"
-;;;;;;  "auto-complete/auto-complete-pkg.el" "smartparens/smartparens-config.el"
+;;;;;;  "auto-complete/auto-complete-pkg.el" "el-get/el-get-autoloads.el"
+;;;;;;  "el-get/el-get-build.el" "el-get/el-get-byte-compile.el"
+;;;;;;  "el-get/el-get-core.el" "el-get/el-get-custom.el" "el-get/el-get-dependencies.el"
+;;;;;;  "el-get/el-get-install.el" "el-get/el-get-methods.el" "el-get/el-get-notify.el"
+;;;;;;  "el-get/el-get-recipes.el" "el-get/el-get-status.el" "smartparens/smartparens-config.el"
 ;;;;;;  "smartparens/smartparens-html.el" "smartparens/smartparens-latex.el"
 ;;;;;;  "smartparens/smartparens-lua.el" "smartparens/smartparens-pkg.el"
-;;;;;;  "smartparens/smartparens-ruby.el") (21165 12876 261167 715000))
+;;;;;;  "smartparens/smartparens-ruby.el") (21165 19833 624650 109000))
 
 ;;;***
 
