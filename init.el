@@ -848,7 +848,6 @@ See the variable `align-rules-list' for more details.")
 (global-set-key [remap switch-to-buffer] 'helm-C-x-b)
 (global-set-key (kbd "C-x c g") 'helm-do-grep)
 (global-set-key (kbd "C-x c o") 'helm-occur)
-(global-set-key [remap switch-to-buffer] 'helm-C-x-b)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (setq helm-ff-lynx-style-map nil
