@@ -1,0 +1,6 @@
+#name : trollop
+# --
+opts = Trollop::options do
+  opt :${1:monkey}, "${2:Use monkey mode}"
+end
+$0
