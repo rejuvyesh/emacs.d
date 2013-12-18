@@ -689,6 +689,10 @@ See the variable `align-rules-list' for more details.")
              '("r"
                "#+BEGIN_SRC ruby\n?\n#+END_SRC"
                "<src lang=\"ruby\">\n\n</src>"))
+(add-hook 'org-mode-hook
+          (lambda()
+            (add-to-list 'ac-sources 'ac-source-math-unicode)
+            (add-to-list 'ac-sources 'ac-source-math-latex)))
 
 ;; scratchpad buffers
 (require 'scratch)
