@@ -26,4 +26,5 @@
         align-current
         bc-set
         markdown-exdent-or-delete
+        save-buffers-kill-terminal
         ))
