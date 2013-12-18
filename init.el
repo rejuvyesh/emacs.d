@@ -88,7 +88,7 @@ Usage: (package-require 'package)"
 
 ;; using modified molokai theme
 (load-theme 'molokai t)
-(icomplete-mode 1)
+;; (icomplete-mode 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; multiple cursors
