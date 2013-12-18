@@ -576,7 +576,6 @@ See the variable `align-rules-list' for more details.")
 (add-hook 'markdown-mode-hook 'turn-on-pandoc)
 
 ;; yaml
-(require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (defun no-electric-indent-yaml ()
@@ -585,7 +584,6 @@ See the variable `align-rules-list' for more details.")
 (add-hook 'yaml-mode-hook 'no-electric-indent-yaml)
 
 ;; json
-(require 'json-mode)
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 ;; octave mode
 ;; (autoload 'octave-mode "octave-mod" nil t)
