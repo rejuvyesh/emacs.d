@@ -78,6 +78,8 @@ Usage: (package-require 'package)"
 (global-set-key (kbd "C-c d") 'mc/edit-lines)
 (global-set-key (kbd "<C-down>") 'mc/mark-next-like-this)
 (global-set-key (kbd "<C-up>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "<M-C-down>") 'mc/skip-to-next-like-this)
+(global-set-key (kbd "<M-C-up>") 'mc/skip-to-previous-like-this)
 (global-set-key (kbd "C-c C-d") 'mc/mark-all-dwim)
 (global-set-key (kbd "C-c >") 'mc/mark-more-like-this-extended)
 (global-set-key (kbd "C-c <") 'mc/mark-more-like-this-extended)
@@ -126,6 +128,20 @@ Usage: (package-require 'package)"
 
 
 (setq org-completion-use-ido t)
+
+;; indentation
+(setq-default tab-width 2)
+(setq-default indent-tabs-mode nil)
+;; automatically turn on indenting
+(electric-indent-mode 1)
+;; also when yanked
+(defun yank-and-indent ()
+  "Yank and then indent the newly formed region according to mode."
+  (interactive)
+  (yank)
+  (call-interactively 'indent-region))
+(global-set-key "\C-y" 'yank-and-indent)
+
 
 ;; Flycheck for code linting
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -513,18 +529,6 @@ See the variable `align-rules-list' for more details.")
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
 
-;; indentation
-(setq-default tab-width 2)
-(setq-default indent-tabs-mode nil)
-;; automatically turn on indenting
-(electric-indent-mode 1)
-;; also when yanked
-(defun yank-and-indent ()
-  "Yank and then indent the newly formed region according to mode."
-  (interactive)
-  (yank)
-  (call-interactively 'indent-region))
-(global-set-key "\C-y" 'yank-and-indent)
 
 ; mark stuff like FIXME
 (require 'fic-mode)
@@ -953,8 +957,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 ;; fonts
 (defvar small-font "Terminus 8")
-(defvar normal-font "Consolas 9")
-(defvar big-font "Consolas 10")
+(defvar normal-font "Consolas 10")
+(defvar big-font "Ricty 12")
 (defvar font-list (list
                    small-font
                    normal-font
@@ -1040,6 +1044,11 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 ;; ag mode
 (setq ag-highlight-search t)
+
+;; enable some stuff
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
 
 ;; diminish
 (require 'diminish)
