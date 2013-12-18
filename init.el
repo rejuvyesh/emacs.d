@@ -559,12 +559,10 @@ See the variable `align-rules-list' for more details.")
 (autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
 (add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
 (autoload 'csv-nav-mode "csv-nav-mode" "Major mode for navigating comma-separated value files." t)
-
 (setq csv-separators '("," ";" "|" " "))
 
-
 ;; markdown
-(require 'markdown-mode)
+;; (require 'markdown-mode)
 (setq markdown-command "pandoc --smart -f markdown -t html")
 (add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
@@ -574,6 +572,9 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'auto-mode-alist '("\\/.page$" . markdown-mode))
 ;; add pandoc hook
 (add-hook 'markdown-mode-hook 'turn-on-pandoc)
+(add-hook 'markdown-mode-hook
+          (lambda()
+            (add-to-list 'ac-sources 'ac-source-math-latex)))
 
 ;; yaml
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
