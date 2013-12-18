@@ -73,6 +73,24 @@ Usage: (package-require 'package)"
 (setq sml/theme 'dark)
 (sml/setup)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Remove background color from terminal emacs,
+;; so that it can remain transparent
+;; http://stackoverflow.com/questions/19054228/emacs-disable-theme-background-color-in-terminal
+(defun on-frame-open (frame)
+  (if (not (display-graphic-p frame))
+      (set-face-background 'default "unspecified-bg" frame)))
+(on-frame-open (selected-frame))
+(add-hook 'after-make-frame-functions 'on-frame-open)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Theming
+;; color
+
+;; using modified molokai theme
+(load-theme 'molokai t)
+(icomplete-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; multiple cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-c d") 'mc/edit-lines)
@@ -811,23 +829,7 @@ See the variable `align-rules-list' for more details.")
 ;; mail support.
 (setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
 (add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Remove background color from terminal emacs,
-;; so that it can remain transparent
-;; http://stackoverflow.com/questions/19054228/emacs-disable-theme-background-color-in-terminal
-(defun on-frame-open (frame)
-  (if (not (display-graphic-p frame))
-      (set-face-background 'default "unspecified-bg" frame)))
-(on-frame-open (selected-frame))
-(add-hook 'after-make-frame-functions 'on-frame-open)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Theming
-;; color
 
-;; using modified molokai theme
-(load-theme 'molokai t)
-(icomplete-mode 1)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some saner clipboard
 (setq x-select-enable-clipboard t
       x-select-enable-primary t
