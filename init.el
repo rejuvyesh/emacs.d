@@ -261,6 +261,9 @@ See the variable `align-rules-list' for more details.")
 (setq scss-compile-at-save nil)
 (setq css-indent-level 2)
 
+;; go
+(add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+
 ;; expand-region
 (require 'expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
@@ -1062,5 +1065,5 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (diminish 'yas-minor-mode)
 (diminish 'smartparens-mode)
 (diminish 'anzu-mode)
-
+(diminish 'guide-key-mode)
 
