@@ -1042,6 +1042,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; Make shell more convenient, and suspend-frame less
 (global-set-key (kbd "C-z") 'shell)
 (global-set-key (kbd "C-x M-z") 'suspend-frame)
+;; make zsh aliases work
+(setq shell-command-switch "-ic")
 
 ;; Webjump let's you quickly search google, wikipedia, emacs wiki
 (global-set-key (kbd "C-x g") 'webjump)
