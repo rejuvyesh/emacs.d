@@ -1064,6 +1064,9 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (require 'cipher/aes)
 (setq yagist-encrypt-risky-config t)
 
+;; mu4e
+(require 'mu-config)
+
 ;; diminish
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
