@@ -1060,12 +1060,6 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;; gist
-(autoload 'gist-region "gist" nil t)
-(autoload 'gist-buffer "gist" nil t)
-(autoload 'gist-list "gist" nil t)
-(eval-after-load 'gist '(load "~/.emaacs.d/github_token.el"))
-
 ;; diminish
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
