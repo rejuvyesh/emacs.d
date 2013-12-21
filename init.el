@@ -1060,6 +1060,10 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
+;; gist
+(require 'cipher/aes)
+(setq yagist-encrypt-risky-config t)
+
 ;; diminish
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
