@@ -1040,7 +1040,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; Make shell more convenient, and suspend-frame less
-(global-set-key (kbd "C-z") 'shell)
+(global-set-key (kbd "C-z") 'ansi-term)
 (global-set-key (kbd "C-x M-z") 'suspend-frame)
 ;; make zsh aliases work
 (setq shell-command-switch "-ic")
@@ -1059,6 +1059,12 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+;; gist
+(autoload 'gist-region "gist" nil t)
+(autoload 'gist-buffer "gist" nil t)
+(autoload 'gist-list "gist" nil t)
+(eval-after-load 'gist '(load "~/.emaacs.d/github_token.el"))
 
 ;; diminish
 (require 'diminish)
