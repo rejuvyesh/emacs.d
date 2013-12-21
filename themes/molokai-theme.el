@@ -126,11 +126,14 @@
  '(enh-ruby-op-face ((t (:foreground "#66D9EF"))))
  '(enh-ruby-string-delimiter-face ((t (:foreground "#65b042"))))
 ;;; mu4e
- '((mu4e-header-highlight-face ((t (:background ,"#2b2b2b" :weight bold :underline nil)))))
- `(mu4e-unread-face ((t (:foreground , "#66D9EF" :weight normal))))
- `(mu4e-replied-face ((t (:foreground , "#A6E22E" :weight normal))))
- `(mu4e-header-face ((t (:foreground , "#8B8989" :weight normal))))
- `(mu4e-view-header-key-face ((t (:foreground , "#AE81FF" :weight normal)))))
+ '(mu4e-header-highlight-face ((t (:background "#2b2b2b" :weight bold :underline nil))))
+ '(mu4e-unread-face ((t (:foreground "#66D9EF" :weight normal))))
+ '(mu4e-replied-face ((t (:foreground "#A6E22E" :weight normal))))
+ '(mu4e-header-face ((t (:foreground "#8B8989" :weight normal))))
+ '(mu4e-view-header-key-face ((t (:foreground "#AE81FF" :weight normal))))
+ '(mu4e-cited-1-face ((t (:foreground "#F92672"    :slant italic))))
+ '(mu4e-replied-face ((t (:foreground "#66D9AA"))))
+ '(mu4e-trashed-face ((t (:foreground "#FF9999" :strike-through t)))))
 ;;;###autoload
 (when load-file-name
   (add-to-list 'custom-theme-load-path
