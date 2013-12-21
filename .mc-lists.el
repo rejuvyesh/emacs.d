@@ -3,6 +3,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        align-repeat
+        down-list
         handle-switch-frame
         indent-for-tab-command
         indent-region
@@ -14,6 +16,7 @@
         smart-beginning-of-line
         smart-end-of-line
         sp--self-insert-command
+        sp-forward-sexp
         sp-remove-active-pair-overlay
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
