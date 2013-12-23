@@ -252,6 +252,8 @@ See the variable `align-rules-list' for more details.")
 (ruby-block-mode t)
 (setq ruby-block-highlight-toggle t)
 (setq ruby-indent-level tab-width)
+(setq enh-ruby-bounce-deep-indent t)
+(setq enh-ruby-deep-indent-paren nil)
 ;; Rake files are Ruby, too
 (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
