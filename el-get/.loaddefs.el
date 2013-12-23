@@ -1375,10 +1375,15 @@ See `yas-minor-mode' for more information on Yas minor mode.
 ;;;;;;  "el-get/el-get-build.el" "el-get/el-get-byte-compile.el"
 ;;;;;;  "el-get/el-get-core.el" "el-get/el-get-custom.el" "el-get/el-get-dependencies.el"
 ;;;;;;  "el-get/el-get-install.el" "el-get/el-get-methods.el" "el-get/el-get-notify.el"
-;;;;;;  "el-get/el-get-recipes.el" "el-get/el-get-status.el" "smartparens/smartparens-config.el"
+;;;;;;  "el-get/el-get-recipes.el" "el-get/el-get-status.el" "mu4e/mu4e/mu4e-about.el"
+;;;;;;  "mu4e/mu4e/mu4e-actions.el" "mu4e/mu4e/mu4e-contrib.el" "mu4e/mu4e/mu4e-draft.el"
+;;;;;;  "mu4e/mu4e/mu4e-headers.el" "mu4e/mu4e/mu4e-lists.el" "mu4e/mu4e/mu4e-main.el"
+;;;;;;  "mu4e/mu4e/mu4e-mark.el" "mu4e/mu4e/mu4e-message.el" "mu4e/mu4e/mu4e-meta.el"
+;;;;;;  "mu4e/mu4e/mu4e-proc.el" "mu4e/mu4e/mu4e-utils.el" "mu4e/mu4e/mu4e-vars.el"
+;;;;;;  "mu4e/mu4e/mu4e-view.el" "mu4e/mu4e/org-mu4e.el" "smartparens/smartparens-config.el"
 ;;;;;;  "smartparens/smartparens-html.el" "smartparens/smartparens-latex.el"
 ;;;;;;  "smartparens/smartparens-lua.el" "smartparens/smartparens-pkg.el"
-;;;;;;  "smartparens/smartparens-ruby.el") (21165 19833 624650 109000))
+;;;;;;  "smartparens/smartparens-ruby.el") (21173 39515 136247 946000))
 
 ;;;***
 

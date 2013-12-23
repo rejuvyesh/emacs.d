@@ -1,11 +1,13 @@
 ;;; Commentary:
 
 ;;; Code:
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
 (require 'smtpmail)
 (require 'org-mu4e)
 ;; (require 'mu4e-multi)
 
+(setq mu4e-msg2pdf "/usr/bin/msg2pdf")
 (setq mu4e-maildir "~/mail")
 (setq mu4e-get-mail-command "offlineimap")
 (setq message-kill-buffer-on-exit t)
@@ -20,6 +22,7 @@
 (setq
  mu4e-view-show-images t
  mu4e-view-image-max-width 800)
+(setq mu4e-use-fancy-chars t)
 
 ;; use imagemagick, if available
 (when (fboundp 'imagemagick-register-types)
@@ -96,6 +99,23 @@
 
 (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
 
+;; convert org mode to HTML automatically
+(setq org-mu4e-convert-to-html t)
+
+;; org-mode integration
+(setq mu4e-org-contacts-file "~/Documents/spoiler/contacts.org")
+;; headers in the overview
+
+(add-hook 'mu4e-compose-mode-hook
+          (defun my-compose-stuff ()
+            (set-fill-column 72)))
+
+(add-to-list 'mu4e-headers-actions
+             '("org-contact-add" . mu4e-action-add-org-contact) t)
+(add-to-list 'mu4e-view-actions
+             '("org-contact-add" . mu4e-action-add-org-contact) t)
+
+(defalias 'org-mail 'org-mu4e-compose-org-mode)
 
 (provide 'mu-config)
 ;; (setq mu4e-multi-account-alist

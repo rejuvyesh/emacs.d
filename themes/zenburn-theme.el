@@ -201,6 +201,11 @@
    `(popup-scroll-bar-background-face ((t (:background ,zenburn-bg-1))))
    `(popup-isearch-match ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
 
+   ;; clojure-test-mode
+   `(clojure-test-failure-face ((t (:foreground ,zenburn-orange :weight bold :underline t))))
+   `(clojure-test-error-face ((t (:foreground ,zenburn-red :weight bold :underline t))))
+   `(clojure-test-success-face ((t (:foreground ,zenburn-green+1 :weight bold :underline t))))
+
    ;; diff
    `(diff-added ((,class (:foreground ,zenburn-green+4))
                  (t (:foreground ,zenburn-green-1))))
@@ -229,6 +234,10 @@
    `(eshell-ls-product ((t (:inherit font-lock-doc))))
    `(eshell-ls-special ((t (:foreground ,zenburn-yellow :weight bold))))
    `(eshell-ls-symlink ((t (:foreground ,zenburn-cyan :weight bold))))
+
+   ;; flycheck
+   `(flycheck-error-face ((t (:foreground ,zenburn-red-1 :weight bold :underline t))))
+   `(flycheck-warning-face ((t (:foreground ,zenburn-orange :weight bold :underline t))))
 
    ;; flymake
    `(flymake-errline ((t (:foreground ,zenburn-red-1 :weight bold :underline t))))
@@ -437,6 +446,17 @@
    `(nav-face-file ((t (:foreground ,zenburn-fg))))
    `(nav-face-hfile ((t (:foreground ,zenburn-red-4))))
 
+   ;; mu4e
+   `(mu4e-cited-1-face ((t (:foreground ,zenburn-blue    :slant italic))))
+   `(mu4e-cited-2-face ((t (:foreground ,zenburn-green+2 :slant italic))))
+   `(mu4e-cited-3-face ((t (:foreground ,zenburn-blue-2  :slant italic))))
+   `(mu4e-cited-4-face ((t (:foreground ,zenburn-green   :slant italic))))
+   `(mu4e-cited-5-face ((t (:foreground ,zenburn-blue-4  :slant italic))))
+   `(mu4e-cited-6-face ((t (:foreground ,zenburn-green-1 :slant italic))))
+   `(mu4e-cited-7-face ((t (:foreground ,zenburn-blue    :slant italic))))
+   `(mu4e-replied-face ((t (:foreground ,zenburn-bg+3))))
+   `(mu4e-trashed-face ((t (:foreground ,zenburn-bg+3 :strike-through t))))
+
    ;; mumamo
    `(mumamo-background-chunk-major ((t (:background nil))))
    `(mumamo-background-chunk-submode1 ((t (:background ,zenburn-bg-1))))
@@ -562,15 +582,15 @@
    `(w3m-lnum-minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
 
    ;; whitespace-mode
-   `(whitespace-space ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
-   `(whitespace-hspace ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
-   `(whitespace-tab ((t (:background ,zenburn-bg :foreground ,zenburn-red))))
+   `(whitespace-space ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
+   `(whitespace-hspace ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
+   `(whitespace-tab ((t (:background ,zenburn-red-1))))
    `(whitespace-newline ((t (:foreground ,zenburn-bg+1))))
-   `(whitespace-trailing ((t (:foreground ,zenburn-red :background ,zenburn-bg))))
-   `(whitespace-line ((t (:background ,zenburn-bg-05 :foreground ,zenburn-magenta))))
+   `(whitespace-trailing ((t (:background ,zenburn-red))))
+   `(whitespace-line ((t (:background ,zenburn-bg :foreground ,zenburn-magenta))))
    `(whitespace-space-before-tab ((t (:background ,zenburn-orange :foreground ,zenburn-orange))))
    `(whitespace-indentation ((t (:background ,zenburn-yellow :foreground ,zenburn-red))))
-   `(whitespace-empty ((t (:background ,zenburn-yellow :foreground ,zenburn-red))))
+   `(whitespace-empty ((t (:background ,zenburn-yellow))))
    `(whitespace-space-after-tab ((t (:background ,zenburn-yellow :foreground ,zenburn-red))))
 
    ;; wanderlust
@@ -615,15 +635,11 @@
    'zenburn
    `(ansi-color-names-vector [,zenburn-bg ,zenburn-red ,zenburn-green ,zenburn-yellow
                                           ,zenburn-blue ,zenburn-magenta ,zenburn-cyan ,zenburn-fg])
+   `(ansi-term-color-vector [,zenburn-bg ,zenburn-red ,zenburn-green ,zenburn-yellow
+                                         ,zenburn-blue ,zenburn-magenta ,zenburn-cyan ,zenburn-fg])
 
    ;; fill-column-indicator
-   `(fci-rule-color ,zenburn-bg-05))
-
-  ;;; colors for the ansi-term
-  (eval-after-load 'term
-    `(setq ansi-term-color-vector
-           (vector 'unspecified ,zenburn-bg ,zenburn-red ,zenburn-green ,zenburn-yellow
-                   ,zenburn-blue ,zenburn-magenta ,zenburn-cyan ,zenburn-fg))))
+   `(fci-rule-color ,zenburn-bg-05)))
 
 ;;;###autoload
 (and load-file-name

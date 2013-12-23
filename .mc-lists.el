@@ -28,6 +28,9 @@
       '(
         align-current
         bc-set
+        helm-M-x
         markdown-exdent-or-delete
         save-buffers-kill-terminal
+        select-window-2
+        sp-add-to-next-sexp
         ))
