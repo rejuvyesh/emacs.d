@@ -228,6 +228,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; ruby ;;
 ;; enhanced ruby mode
+(setq enh-ruby-program "~/.rbenv/shims/ruby")
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 ;; replace normal ruby mode
 (defalias 'ruby-mode 'enh-ruby-mode)
@@ -241,6 +242,8 @@ See the variable `align-rules-list' for more details.")
   "Face used for marking error lines."
   :group 'enh-ruby)
 
+(global-set-key (kbd "C-c C-n") 'enh-ruby-find-error)
+(global-set-key (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
 ;; misc stuff
 (require 'yari) ; ri documentation tool
 (require 'ruby-block) ; show what block an end belongs to
@@ -384,15 +387,16 @@ See the variable `align-rules-list' for more details.")
 
 ;; auto completion
 (require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/el-get/auto-complete/dict")
 (ac-config-default)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
-(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
-                                    sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                                    html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                                    lisp-mode textile-mode markdown-mode tuareg-mode
-                                    js2-mode css-mode less-css-mode matlab-mode))
-  (add-to-list 'ac-modes mode))
+;; (dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
+;;                                     sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+;;                                     html-mode nxml-mode sh-mode smarty-mode clojure-mode
+;;                                     lisp-mode textile-mode markdown-mode tuareg-mode
+;;                                     js2-mode css-mode less-css-mode matlab-mode))
+;;   (add-to-list 'ac-modes mode))
 (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
                                         ;(setq ac-use-menu-map t)
 ;; disabling Yasnippet completion
@@ -473,18 +477,6 @@ See the variable `align-rules-list' for more details.")
 ;; deltete selected
 (delete-selection-mode t)
 
-;; evernote-mode
-(require 'evernote-mode)
-(setq evernote-username "jayeshkg") ; optional: you can use this username as default.
-(setq evernote-enml-formatter-command '("w3m" "-dump" "-I" "UTF8" "-O" "UTF8")) ; option
-(global-set-key "\C-cec" 'evernote-create-note)
-(global-set-key "\C-ceo" 'evernote-open-note)
-(global-set-key "\C-ces" 'evernote-search-notes)
-(global-set-key "\C-ceS" 'evernote-do-saved-search)
-(global-set-key "\C-cew" 'evernote-write-note)
-(global-set-key "\C-cep" 'evernote-post-region)
-(global-set-key "\C-ceb" 'evernote-browser)
-
 ;; don't hard-wrap text, but use nice virtual wrapping
 (setq-default fill-column 80)
 (global-visual-line-mode 1)
@@ -504,6 +496,7 @@ See the variable `align-rules-list' for more details.")
 (add-hook 'python-mode-hook 'turn-on-highlight-parentheses)
 (add-hook 'c-mode-hook 'turn-on-highlight-parentheses)
 (add-hook 'haskell-mode-hook 'turn-on-highlight-parentheses)
+(add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
 (add-hook 'text-mode-hook 'turn-on-highlight-parentheses)
 
 ;; key bindings
