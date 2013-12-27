@@ -33,4 +33,5 @@
         save-buffers-kill-terminal
         select-window-2
         sp-add-to-next-sexp
+        sp-add-to-previous-sexp
         ))
