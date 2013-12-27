@@ -1,0 +1,3 @@
+[submodule "el-get/Enhanced-Ruby-Mode"]
+	path = el-get/Enhanced-Ruby-Mode
+	url = http://github.com/zenspider/enhanced-ruby-mode.git
