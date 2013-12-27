@@ -1062,6 +1062,9 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; mu4e
 (require 'mu-config)
 
+;; irc
+(require 'erc-config)
+
 ;; diminish
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
