@@ -1,6 +1,4 @@
-((Emacs-Groovy-Mode status "installed" recipe
-                    (:name Emacs-Groovy-Mode :type github :pkgname "russel/Emacs-Groovy-Mode" :description "This is a collection of (X)Emacs modes for use with Groovy-related technology -- Groovy, Grails, etc."))
- (Enhanced-Ruby-Mode status "installed" recipe
+((Enhanced-Ruby-Mode status "installed" recipe
                      (:name Enhanced-Ruby-Mode :description "Major mode for editing Ruby files" :type github :pkgname "zenspider/enhanced-ruby-mode"))
  (ac-math status "installed" recipe
           (:name ac-math :type http :website "http://code.google.com/p/ac-math/" :description "This is an add-on which defines three ac-sources for the auto-complete package" :url "https://ac-math.googlecode.com/svn/trunk/ac-math.el" :autoloads t))
