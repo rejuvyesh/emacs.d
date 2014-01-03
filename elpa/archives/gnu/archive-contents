@@ -215,7 +215,7 @@
 	    ((:url . "http://elpa.gnu.org/packages/omn-mode.html")
 	     (:keywords))])
  (org .
-      [(20131223)
+      [(20131230)
        nil "Outline-based notes management and organizer" tar nil])
  (quarter-plane .
 		[(0 1)
@@ -287,7 +287,7 @@
 	((:url . "http://www.dr-qubit.org/emacs.php")
 	 (:keywords "extensions" "matching" "data structures"))])
  (undo-tree .
-	    [(0 6 3)
+	    [(0 6 5)
 	     nil "Treat undo history as a tree" single
 	     ((:url . "http://www.dr-qubit.org/emacs.php")
 	      (:keywords "convenience" "files" "undo" "redo" "history" "tree"))])
