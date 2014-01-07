@@ -640,6 +640,8 @@ as well. Make sure you have loaded the file using `inferior-haskell-load-file'."
       (newline)
       (previous-line)
       (insert func-type))))
+(define-key haskell-mode-map (kbd "C-c h t") 'haskell-insert-type)
+(define-key haskell-mode-map (kbd "C-c h i") 'haskell-insert-type-infix)
 
 ;; org-mode
 (setq org-special-ctrl-a/e t)
