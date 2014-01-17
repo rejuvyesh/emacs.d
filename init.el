@@ -598,50 +598,16 @@ See the variable `align-rules-list' for more details.")
             auto-mode-alist))
 
 ;; haskell mode
+(require 'shm)
+(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (when (eval-when-compile (>= emacs-major-version 24))
   (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
-(defun haskell-insert-type ()
-  "Insert the type of the function on the previous line.
-You have to be be on the first line of the function.
-Use `haskell-insert-type-infix' for infix functions.
-It uses the Haskell inferior process in order to get the class constraints
-as well"
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (zap-up-to-char 1 ?\s)
-    (yank)
-    (let ((func-type (inferior-haskell-type (yank-peek))))
-      (beginning-of-line)
-      (newline)
-      (previous-line)
-      (insert func-type))))
-
-(defun haskell-insert-type-infix ()
-  "Insert a type of the infix function on the previous line.
-Also see `haskell-insert-type'. Note that this works by using the spaces between
-arguments to determine the of function so it will fail if your first argument
-contains a space, for example when matching on a String.
-It uses the Haskell inferior process in order to get the class constraints
-as well. Make sure you have loaded the file using `inferior-haskell-load-file'."
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (zap-up-to-char 1 ?\s)
-    (yank)
-    (forward-char)
-    (zap-up-to-char 1 ?\s)
-    (yank)
-    (let ((func-type (inferior-haskell-type
-                      (concat "(" (yank-peek) ")"))))
-      (beginning-of-line)
-      (newline)
-      (previous-line)
-      (insert func-type))))
-(define-key haskell-mode-map (kbd "C-c h t") 'haskell-insert-type)
-(define-key haskell-mode-map (kbd "C-c h i") 'haskell-insert-type-infix)
+(define-key haskell-mode-map (kbd "-") 'smart-hyphen)
+(define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+(define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+(define-key shm-map (kbd "SPC") 'shm-contextual-space)
 
 ;; org-mode
 (setq org-special-ctrl-a/e t)
