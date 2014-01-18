@@ -539,6 +539,8 @@ See the variable `align-rules-list' for more details.")
 (global-set-key "\C-b" 'backward-word)
 (global-set-key "\M-f" 'forward-sentence)
 (global-set-key "\M-b" 'backward-sentence)
+(global-set-key "\C-p" 'undo-tree-undo)
+(global-set-key "\M-p" 'undo-tree-redo)
 
 ;; if no region is active, act on current line
 (require 'whole-line-or-region)
