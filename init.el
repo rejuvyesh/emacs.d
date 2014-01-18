@@ -978,18 +978,6 @@ If visual-line-mode is on, then also jump to beginning of real line."
   (set-frame-font current-font))
 (add-hook 'after-make-window-system-frame-hooks 'set-window-font)
 
-(defun cycle-fonts ()
-  "cycles through font list"
-  (interactive)
-
-  (let (currentState)
-    ;; states starts from 1.
-    (setq currentState (if (get this-command 'state) (get this-command 'state) 1))
-    (setq current-font (nth (1- currentState) font-list))
-    (put this-command 'state (1+ (% currentState (length font-list))))
-    (set-window-font)))
-(global-set-key "\C-c\C-f" 'cycle-fonts)
-
 ;; shortcut for the fonts
 (defun use-big-font ()
   "use big font"
