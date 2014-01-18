@@ -343,12 +343,14 @@ See the variable `align-rules-list' for more details.")
 (global-set-key (kbd "C-c ~") 'aya-create)
 (global-set-key (kbd "C-c C-~") 'aya-expand)
 
-;; indentation-based folding
-;; (require 'yafolding)
-;; (define-key global-map (kbd "C-c C-f") 'yafolding)
-;; (define-key global-map (kbd "C-c M-f") 'yafolding-toggle-all)
-;; (define-key global-map (kbd "C-c C-b") 'yafolding-toggle-all-by-current-level)
-
+;; folding
+(require 'hideshow)
+(require 'hideshowvis)
+(require 'fold-dwim)
+(define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
+(define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
+(define-key global-map (kbd "C-c M-f") 'fold-dwim-show-all)
+(add-hook 'enh-ruby-hook   'hs-minor-mode)
 
 ;; text completion
 (require 'smartparens-config)
@@ -1072,4 +1074,4 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (diminish 'smartparens-mode)
 (diminish 'anzu-mode)
 (diminish 'guide-key-mode)
-
+(diminish 'hs-minor-mode)
