@@ -287,6 +287,9 @@ See the variable `align-rules-list' for more details.")
 ;; go
 (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
 
+;; crontab
+(add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
+
 ;; expand-region
 (require 'expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
