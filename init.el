@@ -887,7 +887,14 @@ See the variable `align-rules-list' for more details.")
 ;; better search/replace
 (require 'visual-regexp)
 (require 'visual-regexp-steroids)
-(global-set-key "\C-cr" 'vr/query-replace)
+(global-set-key (kbd "C-c r") 'vr/query-replace)
+(defun vr/query-replace-from-beginning ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (call-interactively 'vr/query-replace)))
+(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
+
 ;; search info
 (require 'anzu)
 (global-anzu-mode t)
