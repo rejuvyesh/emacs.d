@@ -349,8 +349,21 @@ See the variable `align-rules-list' for more details.")
 (require 'fold-dwim)
 (define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
 (define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
-(define-key global-map (kbd "C-c M-f") 'fold-dwim-show-all)
+(define-key global-map (kbd "C-c F") 'fold-dwim-show-all)
 (add-hook 'enh-ruby-hook   'hs-minor-mode)
+
+;; fast navigation
+(require 'imenu)
+(require 'idomenu)
+(require 'imenu-anywhere)
+(define-key global-map (kbd "C-c [") 'idomenu)
+(define-key global-map (kbd "C-c C-[") 'idomenu)
+(define-key global-map (kbd "C-c ]") 'imenu-anywhere)
+(define-key global-map (kbd "C-c C-]") 'imenu-anywhere)
+
+;; recentering
+(setq recenter-positions '(2 middle))
+(add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
 
 ;; text completion
 (require 'smartparens-config)
