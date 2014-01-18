@@ -454,6 +454,18 @@ See the variable `align-rules-list' for more details.")
       (find-file file))))
 (global-set-key "\C-x\C-r" 'recentf-ido-find-file)
 
+;; use regexp search by default
+(global-set-key "\C-s" 'isearch-forward-regexp)
+(global-set-key "\C-r" 'isearch-backward-regexp)
+;; make backspace sane
+(define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
+
+(define-key isearch-mode-map (kbd "C-c C-w") 'isearch-toggle-word)
+(define-key isearch-mode-map (kbd "C-c C-r") 'isearch-toggle-regexp)
+(define-key isearch-mode-map (kbd "C-c C-i") 'isearch-toggle-case-fold)
+(define-key isearch-mode-map (kbd "C-c C-s") 'isearch-toggle-symbol)
+(define-key isearch-mode-map (kbd "C-c C-SPC") 'isearch-toggle-lax-whitespace)
+(define-key isearch-mode-map (kbd "C-c C-o") 'isearch-occur)
 
 
 ;; safety
