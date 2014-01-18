@@ -453,10 +453,8 @@ See the variable `align-rules-list' for more details.")
     (when file
       (find-file file))))
 (global-set-key "\C-x\C-r" 'recentf-ido-find-file)
-;; stop tramp file competions
 
-;; disable tramp
-(setq tramp-mode nil)
+
 
 ;; safety
 (setq make-backup-files nil)
