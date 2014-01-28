@@ -628,16 +628,12 @@ See the variable `align-rules-list' for more details.")
             auto-mode-alist))
 
 ;; haskell mode
-(require 'shm)
-(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (when (eval-when-compile (>= emacs-major-version 24))
   (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
-(define-key haskell-mode-map (kbd "-") 'smart-hyphen)
 (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
 (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-(define-key shm-map (kbd "SPC") 'shm-contextual-space)
 
 ;; org-mode
 (setq org-special-ctrl-a/e t)
