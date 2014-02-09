@@ -6,9 +6,11 @@
         align-repeat
         down-list
         handle-switch-frame
+        haskell-indentation-delete-backward-char
         indent-for-tab-command
         indent-region
         kill-visual-line
+        org-self-insert-command
         phi-rectangle-kill-region
         phi-rectangle-next-line
         phi-rectangle-yank
@@ -29,6 +31,8 @@
         align-current
         bc-set
         helm-M-x
+        helm-find-files
+        ido-switch-buffer
         markdown-exdent-or-delete
         save-buffers-kill-terminal
         select-window-2
