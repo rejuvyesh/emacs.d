@@ -397,6 +397,9 @@ See the variable `align-rules-list' for more details.")
 (define-key sp-keymap (kbd "M-<delete>") 'sp-unwrap-sexp)
 (define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
 
+;; wrap text
+;;(wrap-region-mode t)
+
 ;; auto correction
 (setq abbrev-file-name             
       "~/.emacs.d/abbrev_defs")
@@ -594,7 +597,7 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\/.page$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
 ;; add pandoc hook
 (add-hook 'markdown-mode-hook 'turn-on-pandoc)
 (add-hook 'markdown-mode-hook
