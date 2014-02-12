@@ -245,6 +245,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; ruby ;;
 ;; enhanced ruby mode
+(require 'enh-ruby-mode)
 (setq enh-ruby-program "~/.rbenv/shims/ruby")
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 ;; replace normal ruby mode
@@ -283,8 +284,8 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
 ;; pry
 (require 'pry)
-(define-key enh-ruby-mode-map (kbd "<S-f9") 'pry-intercept)
-(define-key enh-ruby-mode-map (kbd "<f9")   'pry-intercept-rerun)
+(define-key enh-ruby-mode-map (kbd "<S-f9>") 'pry-intercept)
+(define-key enh-ruby-mode-map (kbd "<f9>")   'pry-intercept-rerun)
 (add-hook 'robe-mode-hook 'robe-ac-setup)
 ;; documentation
 (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)
@@ -1132,5 +1133,3 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (diminish 'anzu-mode)
 (diminish 'guide-key-mode)
 (diminish 'hs-minor-mode)
-(diminish 'haskell-doc-mode)
-(diminish 'haskell-indentation-mode)
