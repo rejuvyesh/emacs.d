@@ -210,6 +210,23 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'align-open-comment-modes 'enh-ruby-mode)
 (dolist (it ruby-align-rules-list)
   (add-to-list 'align-rules-list it))
+;; haskell alignments
+(add-to-list 'align-rules-list
+             '(haskell-types
+               (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-assignment
+               (regexp . "\\(\\s-+\\)=\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-arrows
+               (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-left-arrows
+               (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
 ;; align current region
 (global-set-key (kbd "C-c =") 'align-current)
 ;; repeat regex (teh fuck ain't that the default?!)
@@ -238,12 +255,12 @@ See the variable `align-rules-list' for more details.")
   "Face used for marking warning lines."
   :group 'enh-ruby)
 (defface erm-syn-errline
-  '((t (:underline "red")))
+  '((t (:underline "pink")))
   "Face used for marking error lines."
   :group 'enh-ruby)
 
-(global-set-key (kbd "C-c C-n") 'enh-ruby-find-error)
-(global-set-key (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
+(define-key enh-ruby-mode-map (kbd "C-c C-n") 'enh-ruby-find-error)
+(define-key enh-ruby-mode-map (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
 ;; misc stuff
 (require 'yari) ; ri documentation tool
 (require 'ruby-block) ; show what block an end belongs to
@@ -266,8 +283,11 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
 ;; pry
 (require 'pry)
-(global-set-key [S-f9] 'pry-intercept)
-(global-set-key [f9] 'pry-intercept-rerun)
+(define-key enh-ruby-mode-map (kbd "<S-f9") 'pry-intercept)
+(define-key enh-ruby-mode-map (kbd "<f9")   'pry-intercept-rerun)
+(add-hook 'robe-mode-hook 'robe-ac-setup)
+;; documentation
+(define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)
 
 
 ;; Sometimes you have to
@@ -386,8 +406,8 @@ See the variable `align-rules-list' for more details.")
 ;; sp keys
 (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
 (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
-(define-key sp-keymap (kbd "M-f") 'sp-forward-sexp)
-(define-key sp-keymap (kbd "M-b") 'sp-backward-sexp)
+(define-key sp-keymap (kbd "M-f") 'sp-forward-symbol)
+(define-key sp-keymap (kbd "M-b") 'sp-backward-symbol)
 (define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
 (define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
 (define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
@@ -410,7 +430,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; auto completion
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/el-get/auto-complete/dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
@@ -421,7 +441,9 @@ See the variable `align-rules-list' for more details.")
                                     js2-mode css-mode less-css-mode matlab-mode enh-ruby-mode))
   (add-to-list 'ac-modes mode))
 (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
-                                        ;(setq ac-use-menu-map t)
+(setq ac-use-menu-map t)
+(setq ac-auto-show-menu nil)
+(setq ac-ignore-case nil)
 ;; disabling Yasnippet completion
 (defun epy-snips-from-table (table)
   (with-no-warnings
@@ -631,12 +653,13 @@ See the variable `align-rules-list' for more details.")
             auto-mode-alist))
 
 ;; haskell mode
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (when (eval-when-compile (>= emacs-major-version 24))
   (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
-(define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-(define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+(define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
+(define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info)
 
 ;; org-mode
 (setq org-special-ctrl-a/e t)
@@ -1109,3 +1132,5 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (diminish 'anzu-mode)
 (diminish 'guide-key-mode)
 (diminish 'hs-minor-mode)
+(diminish 'haskell-doc-mode)
+(diminish 'haskell-indentation-mode)
