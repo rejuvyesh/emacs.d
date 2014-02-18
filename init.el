@@ -35,7 +35,7 @@
 
 ;; Make sure a package is installed
 (defun package-require (package)
-    "Install a PACKAGE unless it is already installed 
+    "Install a PACKAGE unless it is already installed
 or a feature with the same name is already active.
 Usage: (package-require 'package)"
                                         ; try to activate the package with at least version 0.
@@ -93,22 +93,24 @@ Usage: (package-require 'package)"
 
 ;; multiple cursors
 (require 'multiple-cursors)
-(global-set-key (kbd "C-c d") 'mc/edit-lines)
-(global-set-key (kbd "<C-down>") 'mc/mark-next-like-this)
-(global-set-key (kbd "<C-up>") 'mc/mark-previous-like-this)
-(global-set-key (kbd "<M-C-down>") 'mc/skip-to-next-like-this)
-(global-set-key (kbd "<M-C-up>") 'mc/skip-to-previous-like-this)
-(global-set-key (kbd "C-c C-d") 'mc/mark-all-dwim)
-(global-set-key (kbd "C-c >") 'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-c <") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-c d")         'mc/edit-lines)
+(global-set-key (kbd "<C-down>")      'mc/mark-next-like-this)
+(global-set-key (kbd "<C-up>")        'mc/mark-previous-like-this)
+(global-set-key (kbd "<M-C-down>")    'mc/skip-to-next-like-this)
+(global-set-key (kbd "<M-C-up>")      'mc/skip-to-previous-like-this)
+(global-set-key (kbd "C-c C-d")       'mc/mark-all-dwim)
+(global-set-key (kbd "C-c >")         'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+(global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click)
 
 (require 'phi-search)
 (require 'phi-search-mc)
 (global-set-key (kbd "C-c C-s") 'phi-search)
 (global-set-key (kbd "C-c C-r") 'phi-search-backward)
 (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
-(define-key phi-search-default-map (kbd "<C-up>") 'phi-search-mc/mark-previous)
-(define-key phi-search-default-map (kbd "C-c C-k") 'phi-search-mc/mark-all)
+(define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
+(define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)
 
 ;; undo tree
 (global-undo-tree-mode)
@@ -129,7 +131,7 @@ Usage: (package-require 'package)"
   (setq ido-case-fold t) ; case insensitive
   (defun ido-sort-mtime ()
     (setq ido-temp-list
-          (sort ido-temp-list 
+          (sort ido-temp-list
                 (lambda (a b)
                   (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
                         (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
@@ -142,7 +144,7 @@ Usage: (package-require 'package)"
                 ido-temp-list))))
 
 ;; use y/n instead of yes/no
-(fset 'yes-or-no-p 'y-or-n-p)   
+(fset 'yes-or-no-p 'y-or-n-p)
 
 
 (setq org-completion-use-ido t)
@@ -353,7 +355,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; snippets
 (setq yas-snippet-dirs "~/.emacs.d/snippets")
-                       
+
 (require 'yasnippet)
 ;; (define-key yas-minor-mode-map [backtab] 'yas-next-field)
 ;; (define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
@@ -422,7 +424,7 @@ See the variable `align-rules-list' for more details.")
 ;;(wrap-region-mode t)
 
 ;; auto correction
-(setq abbrev-file-name             
+(setq abbrev-file-name
       "~/.emacs.d/abbrev_defs")
 (setq save-abbrevs t)
 (if (file-exists-p abbrev-file-name)
@@ -556,20 +558,22 @@ See the variable `align-rules-list' for more details.")
 (add-hook 'text-mode-hook 'turn-on-highlight-parentheses)
 
 ;; key bindings
-(global-set-key "\C-cc" 'comment-region)
-(global-set-key "\C-cu" 'uncomment-region)
-(global-set-key (kbd "C-c SPC") 'comment-dwim)
+(global-set-key (kbd "\C-c c")    'comment-region)
+(global-set-key (kbd "\C-c u")    'uncomment-region)
+(global-set-key (kbd "C-c SPC")   'comment-dwim)
 (global-set-key (kbd "C-c C-SPC") 'comment-dwim)
-(global-set-key "\C-cn" 'next-error)
-(global-set-key "\C-cp" 'previous-error)
-(global-set-key "\C-ci" 'indent-region)
+(global-set-key (kbd "\C-c n")    'next-error)
+(global-set-key (kbd "\C-c p")    'previous-error)
+(global-set-key (kbd "\C-c i")    'indent-region)
 
-(global-set-key "\C-f" 'forward-word)
-(global-set-key "\C-b" 'backward-word)
-(global-set-key "\M-f" 'forward-sentence)
-(global-set-key "\M-b" 'backward-sentence)
-(global-set-key "\C-p" 'undo-tree-undo)
-(global-set-key "\M-p" 'undo-tree-redo)
+(global-set-key (kbd "\C-f")   'forward-word)
+(global-set-key (kbd "\C-b")   'backward-word)
+(global-set-key (kbd "\M-f")   'forward-sentence)
+(global-set-key (kbd "\M-b")   'backward-sentence)
+(global-set-key (kbd "\C-p")   'undo-tree-undo)
+(global-set-key (kbd "\M-p")   'undo-tree-redo)
+(global-set-key (kbd "<home>") 'beginning-of-buffer)
+(global-set-key (kbd "<end>")  'end-of-buffer)
 
 ;; if no region is active, act on current line
 (require 'whole-line-or-region)
@@ -592,6 +596,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; save minibuffer history
 (savehist-mode 1)
+(setq history-length 1500)
 (setq savehist-file "~/.emacs.d/cache/history")
 (setq savehist-additional-variables '(search-ring
                                        regexp-search-ring
@@ -601,6 +606,8 @@ See the variable `align-rules-list' for more details.")
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
 
+;; move files to trash instead
+(setq delete-by-moving-to-trash t)
 
 ; mark stuff like FIXME
 (require 'fic-mode)
@@ -773,16 +780,80 @@ See the variable `align-rules-list' for more details.")
 ;; normal bookmarks
 (setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
 
-;; unset unwanted keys
-(when (eq window-system 'x)
-  (if (eq (key-binding "\C-x\C-z") 'suspend-frame)
-      (global-unset-key "\C-x\C-z"))
-  (if (eq (key-binding "\C-z") 'suspend-frame)
-      (global-unset-key "\C-z")))
-(if (eq (key-binding [(insert)]) 'overwrite-mode)
-    (global-unset-key [(insert)]))
-(if (eq (key-binding [(insertchar)]) 'overwrite-mode)
-    (global-unset-key [(insertchar)]))
+;; unset unwanted default keys
+(loop for key in `(
+                   (,(kbd "C-x C-z") suspend-frame)
+                   (,(kbd "C-z") suspend-frame)
+                   ([(insert)] overwrite-mode)
+                   ([(insertchar)] overwrite-mode)
+                   (,(kbd "C-v") scroll-up-command)
+                   (,(kbd "M-v") scroll-down-command)
+                   (,(kbd "C-]") abort-recursive-edit)
+                   (,(kbd "C-@") set-mark-command)
+                   (,(kbd "<C-down-mouse-1>") mouse-buffer-menu)
+                   (,(kbd "<C-down-mouse-2>") facemenu-menu)
+                   (,(kbd "<S-down-mouse-1>") mouse-appearance-menu)
+                   (,(kbd "C-x C-t") transpose-lines)
+                   (,(kbd "C-x C-q") read-only-mode)
+                   (,(kbd "C-x C-o") delete-blank-lines)
+                   (,(kbd "C-x C-n") set-goal-column)
+                   (,(kbd "C-x TAB") indent-rigidly)
+                   (,(kbd "C-x C-e") eval-last-sexp)
+                   (,(kbd "C-x C-d") list-directory)
+                   (,(kbd "C-x C-@") pop-global-mark)
+                   (,(kbd "C-x SPC") gud-break)
+                   (,(kbd "C-x #") server-edit)
+                   (,(kbd "C-x $") set-selective-display)
+                   (,(kbd "C-x '") expand-abbrev)
+                   (,(kbd "C-x <") scroll-left)
+                   (,(kbd "C-x =") what-cursor-position)
+                   (,(kbd "C-x >") scroll-right)
+                   (,(kbd "C-x [") backward-page)
+                   (,(kbd "C-x ]") forward-page)
+                   (,(kbd "C-x ^") enlarge-window)
+                   (,(kbd "C-x `") next-error)
+                   (,(kbd "C-x l") count-lines-page)
+                   (,(kbd "C-x v") vc-prefix-map)
+                   (,(kbd "C-x {") shrink-window-horizontally)
+                   (,(kbd "C-x }") enlarge-window-horizontally)
+                   (,(kbd "C-M-@") mark-sexp)
+                   (,(kbd "C-M-d") down-list)
+                   (,(kbd "C-M-l") reposition-window)
+                   (,(kbd "C-M-n") forward-list)
+                   (,(kbd "C-M-p") backward-list)
+                   (,(kbd "C-M-t") transpose-sexps)
+                   (,(kbd "C-M-u") backward-up-list)
+                   (,(kbd "C-M-v") scroll-other-window)
+                   (,(kbd "C-M-\\") indent-region)
+                   (,(kbd "M-$") ispell-word)
+                   (,(kbd "M-%") query-replace)
+                   (,(kbd "M-'") abbrev-prefix-mark)
+                   (,(kbd "M-(") insert-parentheses)
+                   (,(kbd "M-)") move-past-close-and-reindent)
+                   (,(kbd "M-*") pop-tag-mark)
+                   (,(kbd "M-.") find-tag)
+                   (,(kbd "M-,") tags-loop-continue)
+                   (,(kbd "M-/") dabbrev-expand)
+                   (,(kbd "M-=") count-words-region)
+                   (,(kbd "M-@") mark-word)
+                   (,(kbd "M-\\") delete-horizontal-space)
+                   (,(kbd "M-`") tmm-menubar)
+                   (,(kbd "M-a") backward-sentence)
+                   (,(kbd "M-e") forward-sentence)
+                   (,(kbd "M-m") back-to-indentation)
+                   (,(kbd "M-o") facemenu-keymap)
+                   (,(kbd "M-r") move-to-window-line-top-bottom)
+                   (,(kbd "M-{") backward-paragraph)
+                   (,(kbd "M-}") forward-paragraph)
+                   (,(kbd "M-~") not-modified)
+                   (,(kbd "C-M-S-v") scroll-other-window-down)
+                   (,(kbd "C-M-%") query-replace-regexp)
+                   (,(kbd "C-M-.") find-tag-regexp)
+                   (,(kbd "C-M-/") dabbrev-completion)
+                   )
+      collect (if (eq (key-binding (first key)) (second key))
+                  (global-unset-key (first key))))
+
 
 ;; semantic (code parser)
 (require 'semantic)
@@ -797,7 +868,7 @@ See the variable `align-rules-list' for more details.")
 (unless (boundp 'stack-trace-on-error)
   (defvar stack-trace-on-error nil))
 
-   
+
 ;; keys
 (global-set-key "\C-c\C-t" 'ecb-toggle-layout)
 (global-set-key "\C-c;" 'ecb-minor-mode)
