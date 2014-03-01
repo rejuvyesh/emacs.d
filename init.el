@@ -813,7 +813,6 @@ See the variable `align-rules-list' for more details.")
                    (,(kbd "C-x ^") enlarge-window)
                    (,(kbd "C-x `") next-error)
                    (,(kbd "C-x l") count-lines-page)
-                   (,(kbd "C-x v") vc-prefix-map)
                    (,(kbd "C-x {") shrink-window-horizontally)
                    (,(kbd "C-x }") enlarge-window-horizontally)
                    (,(kbd "C-M-@") mark-sexp)
@@ -1183,12 +1182,6 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; gist
 (require 'cipher/aes)
 (setq yagist-encrypt-risky-config t)
-
-;; mu4e
-(require 'mu-config)
-
-;; irc
-(require 'erc-config)
 
 ;; diminish
 (require 'diminish)
