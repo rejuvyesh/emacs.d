@@ -432,6 +432,7 @@ See the variable `align-rules-list' for more details.")
 (setq default-abbrev-mode t)
 
 ;; auto completion
+(require 'fuzzy)
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
@@ -955,8 +956,8 @@ See the variable `align-rules-list' for more details.")
 ;; mutt
 ;; mail support.
 (setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
+(add-hook 'mail-mode-hook 'turn-on-auto-fill)
 (add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
-
 ;; Some saner clipboard
 (setq x-select-enable-clipboard t
       x-select-enable-primary t
@@ -1183,12 +1184,15 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (require 'cipher/aes)
 (setq yagist-encrypt-risky-config t)
 
+;; cleanup whitepace on save
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
 ;; diminish
 (require 'diminish)
 (diminish 'highlight-parentheses-mode)
 (diminish 'fic-mode)
-(diminish 'auto-complete-mode "AC")
-(diminish 'undo-tree-mode)
+(diminish 'auto-complete-mode "↝")
+(diminish 'undo-tree-mode "↺")
 (diminish 'visual-line-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'whole-line-or-region-mode)
