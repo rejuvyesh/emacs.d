@@ -435,15 +435,13 @@ See the variable `align-rules-list' for more details.")
 (require 'fuzzy)
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
+(setq ac-auto-show-menu t
+      ac-quick-help-delay 0.5
+      ac-use-fuzzy t)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
-(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
-                                    sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                                    html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                                    lisp-mode textile-mode markdown-mode tuareg-mode
-                                    js2-mode css-mode less-css-mode matlab-mode enh-ruby-mode))
-  (add-to-list 'ac-modes mode))
+(global-auto-complete-mode +1)
+
 (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
 (setq ac-use-menu-map t)
 (setq ac-auto-show-menu nil)
@@ -1098,7 +1096,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; fonts
 (defvar small-font "Terminus 8")
 (defvar normal-font "Consolas 10")
-(defvar big-font "Ricty 12")
+(defvar big-font "Ricty 14")
 (defvar font-list (list
                    small-font
                    normal-font
