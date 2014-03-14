@@ -435,17 +435,27 @@ See the variable `align-rules-list' for more details.")
 (require 'fuzzy)
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-auto-show-menu t
+(setq ac-auto-start 1)
+(setq ac-use-menu-map t
+      ac-auto-show-menu t
       ac-quick-help-delay 0.5
-      ac-use-fuzzy t)
+      ac-use-fuzzy t
+      ac-ignore-case nil)
 (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
 ;; extra modes auto-complete must support
-(global-auto-complete-mode +1)
+(global-auto-complete-mode t)
+(define-key ac-completing-map (kbd "RET") 'ac-complete)
+(define-key ac-complete-mode-map "\M-n" 'ac-next)
+(define-key ac-complete-mode-map "\M-p" 'ac-previous)
+(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
+                                    sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                                    html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                                    lisp-mode textile-mode markdown-mode tuareg-mode
+                                    js2-mode css-mode less-css-mode matlab-mode enh-ruby-mode))
+  (add-to-list 'ac-modes mode))
 
 (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
-(setq ac-use-menu-map t)
-(setq ac-auto-show-menu nil)
-(setq ac-ignore-case nil)
+
 ;; disabling Yasnippet completion
 (defun epy-snips-from-table (table)
   (with-no-warnings
