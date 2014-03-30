@@ -1,6 +1,6 @@
-;;; ob-sh.el --- org-babel functions for shell evaluation
+;;; ob-shell.el --- org-babel functions for shell evaluation
 
-;; Copyright (C) 2009-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2009-2014 Free Software Foundation, Inc.
 
 ;; Author: Eric Schulte
 ;; Keywords: literate programming, reproducible research
@@ -38,9 +38,12 @@
 
 (defvar org-babel-default-header-args:sh '())
 
-(defvar org-babel-sh-command "bash"
+(defcustom org-babel-sh-command shell-file-name
   "Command used to invoke a shell.
-This will be passed to  `shell-command-on-region'")
+Set by default to the value of `shell-file-name'.  This will be
+passed to `shell-command-on-region'"
+  :group 'org-babel
+  :type 'string)
 
 (defcustom org-babel-sh-var-quote-fmt
   "$(cat <<'BABEL_TABLE'\n%s\nBABEL_TABLE\n)"
@@ -48,7 +51,23 @@ This will be passed to  `shell-command-on-region'")
   :group 'org-babel
   :type 'string)
 
-(defun org-babel-execute:sh (body params)
+(defcustom org-babel-shell-names
+  '("sh" "bash" "csh" "ash" "dash" "ksh" "mksh" "posh")
+  "List of names of shell supported by babel shell code blocks."
+  :group 'org-babel
+  :type 'string
+  :initialize
+  (lambda (symbol value)
+    (set-default symbol (second value))
+    (mapc
+     (lambda (name)
+       (eval `(defun ,(intern (concat "org-babel-execute:" name)) (body params)
+		,(format "Execute a block of %s commands with Babel." name)
+		(let ((org-babel-sh-command ,name))
+		  (org-babel-execute:shell body params)))))
+     (second value))))
+
+(defun org-babel-execute:shell (body params)
   "Execute a block of Shell commands with Babel.
 This function is called by `org-babel-execute-src-block'."
   (let* ((session (org-babel-sh-initiate-session
@@ -56,10 +75,11 @@ This function is called by `org-babel-execute-src-block'."
 	 (stdin (let ((stdin (cdr (assoc :stdin params))))
                   (when stdin (org-babel-sh-var-to-string
                                (org-babel-ref-resolve stdin)))))
+	 (cmdline (cdr (assoc :cmdline params)))
          (full-body (org-babel-expand-body:generic
 		     body params (org-babel-variable-assignments:sh params))))
     (org-babel-reassemble-table
-     (org-babel-sh-evaluate session full-body params stdin)
+     (org-babel-sh-evaluate session full-body params stdin cmdline)
      (org-babel-pick-name
       (cdr (assoc :colname-names params)) (cdr (assoc :colnames params)))
      (org-babel-pick-name
@@ -130,14 +150,14 @@ Emacs-lisp table, otherwise return the results as a string."
 (defvar org-babel-sh-eoe-output "org_babel_sh_eoe"
   "String to indicate that evaluation has completed.")
 
-(defun org-babel-sh-evaluate (session body &optional params stdin)
+(defun org-babel-sh-evaluate (session body &optional params stdin cmdline)
   "Pass BODY to the Shell process in BUFFER.
 If RESULT-TYPE equals 'output then return a list of the outputs
 of the statements in BODY, if RESULT-TYPE equals 'value then
 return the value of the last statement in BODY."
   (let ((results
          (cond
-          (stdin                        ; external shell script w/STDIN
+          ((or stdin cmdline)	       ; external shell script w/STDIN
            (let ((script-file (org-babel-temp-file "sh-script-"))
                  (stdin-file (org-babel-temp-file "sh-stdin-"))
                  (shebang (cdr (assoc :shebang params)))
@@ -147,14 +167,14 @@ return the value of the last statement in BODY."
                (when padline (insert "\n"))
                (insert body))
              (set-file-modes script-file #o755)
-             (with-temp-file stdin-file (insert stdin))
+             (with-temp-file stdin-file (insert (or stdin "")))
              (with-temp-buffer
                (call-process-shell-command
                 (if shebang
                     script-file
                   (format "%s %s" org-babel-sh-command script-file))
                 stdin-file
-                (current-buffer))
+                (current-buffer) nil cmdline)
                (buffer-string))))
           (session                      ; session evaluation
            (mapconcat
@@ -205,8 +225,8 @@ return the value of the last statement in BODY."
     (setq string (substring string (match-end 0))))
   string)
 
-(provide 'ob-sh)
+(provide 'ob-shell)
 
 
 
-;;; ob-sh.el ends here
+;;; ob-shell.el ends here

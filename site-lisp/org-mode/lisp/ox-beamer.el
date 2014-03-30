@@ -1,6 +1,6 @@
 ;;; ox-beamer.el --- Beamer Back-End for Org Export Engine
 
-;; Copyright (C) 2007-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2007-2014 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten.dominik AT gmail DOT com>
 ;;         Nicolas Goaziou <n.goaziou AT gmail DOT com>
@@ -36,10 +36,7 @@
 (unless (assoc "beamer" org-latex-classes)
   (add-to-list 'org-latex-classes
 	       '("beamer"
-		 "\\documentclass[presentation]{beamer}
-\[DEFAULT-PACKAGES]
-\[PACKAGES]
-\[EXTRA]"
+		 "\\documentclass[presentation]{beamer}"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
@@ -234,15 +231,14 @@ Return overlay specification, as a string, or nil."
 	      (if a (org-beamer-export-to-pdf t s v b)
 		(org-open-file (org-beamer-export-to-pdf nil s v b)))))))
   :options-alist
-  '((:beamer-theme "BEAMER_THEME" nil org-beamer-theme)
+  '((:latex-class "LATEX_CLASS" nil "beamer" t)
+    (:beamer-theme "BEAMER_THEME" nil org-beamer-theme)
     (:beamer-color-theme "BEAMER_COLOR_THEME" nil nil t)
     (:beamer-font-theme "BEAMER_FONT_THEME" nil nil t)
     (:beamer-inner-theme "BEAMER_INNER_THEME" nil nil t)
     (:beamer-outer-theme "BEAMER_OUTER_THEME" nil nil t)
     (:beamer-header-extra "BEAMER_HEADER" nil nil newline)
-    ;; Modify existing properties.
-    (:headline-levels nil "H" org-beamer-frame-level)
-    (:latex-class "LATEX_CLASS" nil "beamer" t))
+    (:headline-levels nil "H" org-beamer-frame-level))
   :translate-alist '((bold . org-beamer-bold)
 		     (export-block . org-beamer-export-block)
 		     (export-snippet . org-beamer-export-snippet)
@@ -1094,6 +1090,7 @@ aid, but the tag does not have any semantic meaning."
 			  envs)
 		  '((:endgroup))
 		  '(("BMCOL" . ?|))))
+	 (org-use-fast-tag-selection t)
 	 (org-fast-tag-selection-single-key t))
     (org-set-tags)
     (let ((tags (or (ignore-errors (org-get-tags-string)) "")))

@@ -1,6 +1,6 @@
 ;;; ox-bibtex.el --- Export bibtex fragments
 
-;; Copyright (C) 2009-2013 Taru Karttunen
+;; Copyright (C) 2009-2014 Taru Karttunen
 
 ;; Author: Taru Karttunen <taruti@taruti.net>
 ;;      Nicolas Goaziou <n dot goaziou at gmail dot com>
@@ -41,6 +41,8 @@
 ;; e.g. given foo.bib and using style plain:
 ;;
 ;;   #+BIBLIOGRAPHY: foo plain option:-d
+;;
+;; "stylename" can also be "nil", in which case no style will be used.
 ;;
 ;; Optional options are of the form:
 ;;
@@ -184,13 +186,16 @@ Return new parse tree."
 				 (append (plist-get arguments :options)
 					 (list "-citefile" temp-file))))))
 	    ;; Call "bibtex2html" on specified file.
-	    (unless (eq 0 (apply 'call-process
-				 (append '("bibtex2html" nil nil nil)
-					 '("-a" "-nodoc" "-noheader" "-nofooter")
-					 (list "--style"
-					       (org-bibtex-get-style keyword))
-					 (plist-get arguments :options)
-					 (list (concat file ".bib")))))
+	    (unless (eq 0 (apply
+			   'call-process
+			   (append '("bibtex2html" nil nil nil)
+				   '("-a" "-nodoc" "-noheader" "-nofooter")
+				   (let ((style
+					  (org-not-nil
+					   (org-bibtex-get-style keyword))))
+				     (and style (list "--style" style)))
+				   (plist-get arguments :options)
+				   (list (concat file ".bib")))))
 	      (error "Executing bibtex2html failed"))
 	    (and temp-file (delete-file temp-file))
 	    ;; Open produced HTML file, and collect Bibtex key names
@@ -291,7 +296,7 @@ Fallback to `latex' back-end for other keywords."
     (if (not (equal (org-element-property :key keyword) "BIBLIOGRAPHY"))
         ad-do-it
       (let ((file (org-bibtex-get-file keyword))
-            (style (org-bibtex-get-style keyword)))
+            (style (org-not-nil (org-bibtex-get-style keyword))))
         (setq ad-return-value
               (when file
                 (concat (and style (format "\\bibliographystyle{%s}\n" style))

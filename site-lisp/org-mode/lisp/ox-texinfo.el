@@ -1,6 +1,6 @@
 ;;; ox-texinfo.el --- Texinfo Back-End for Org Export Engine
 
-;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
 ;; Author: Jonathan Leech-Pepin <jonathan.leechpepin at gmail dot com>
 ;; Keywords: outlines, hypermedia, calendar, wp
 
@@ -96,7 +96,6 @@
     (planning . org-texinfo-planning)
     (property-drawer . org-texinfo-property-drawer)
     (quote-block . org-texinfo-quote-block)
-    (quote-section . org-texinfo-quote-section)
     (radio-target . org-texinfo-radio-target)
     (section . org-texinfo-section)
     (special-block . org-texinfo-special-block)
@@ -289,7 +288,9 @@ When nil, no transformation is made."
 	  (const :tag "No formatting")))
 
 (defcustom org-texinfo-def-table-markup "@samp"
-  "Default setting for @table environments.")
+  "Default setting for @table environments."
+  :group 'org-export-texinfo
+  :type 'string)
 
 ;;; Text markup
 
@@ -349,7 +350,7 @@ The function must accept six parameters:
 The function should return the string to be exported.
 
 For example, the variable could be set to the following function
-in order to mimic default behaviour:
+in order to mimic default behavior:
 
 \(defun org-texinfo-format-inlinetask \(todo type priority name tags contents\)
 \"Format an inline task element for Texinfo export.\"
@@ -1434,15 +1435,6 @@ holding contextual information."
 			      (if title
 				  (format " %s" title)))))
     (format "%s\n%s@end quotation" start-quote contents)))
-
-;;; Quote Section
-
-(defun org-texinfo-quote-section (quote-section contents info)
-  "Transcode a QUOTE-SECTION element from Org to Texinfo.
-CONTENTS is nil.  INFO is a plist holding contextual information."
-  (let ((value (org-remove-indentation
-		(org-element-property :value quote-section))))
-    (when value (format "@verbatim\n%s@end verbatim" value))))
 
 ;;; Radio Target
 

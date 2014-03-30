@@ -1,6 +1,6 @@
 ;;; ox-md.el --- Markdown Back-End for Org Export Engine
 
-;; Copyright (C) 2012-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
 
 ;; Author: Nicolas Goaziou <n.goaziou@gmail.com>
 ;; Keywords: org, wp, markdown
@@ -71,14 +71,17 @@ This variable can be set to either `atx' or `setext'."
 		     (comment . (lambda (&rest args) ""))
 		     (comment-block . (lambda (&rest args) ""))
 		     (example-block . org-md-example-block)
+		     (export-block . org-md-export-block)
 		     (fixed-width . org-md-example-block)
 		     (footnote-definition . ignore)
 		     (footnote-reference . ignore)
 		     (headline . org-md-headline)
 		     (horizontal-rule . org-md-horizontal-rule)
 		     (inline-src-block . org-md-verbatim)
+		     (inner-template . org-md-inner-template)
 		     (italic . org-md-italic)
 		     (item . org-md-item)
+		     (keyword . org-md-keyword)
 		     (line-break . org-md-line-break)
 		     (link . org-md-link)
 		     (node-property . org-md-node-property)
@@ -87,30 +90,35 @@ This variable can be set to either `atx' or `setext'."
 		     (plain-text . org-md-plain-text)
 		     (property-drawer . org-md-property-drawer)
 		     (quote-block . org-md-quote-block)
-		     (quote-section . org-md-example-block)
 		     (section . org-md-section)
 		     (src-block . org-md-example-block)
 		     (template . org-md-template)
 		     (verbatim . org-md-verbatim)))
 
-
 
 ;;; Filters
 
 (defun org-md-separate-elements (tree backend info)
-  "Make sure elements are separated by at least one blank line.
+  "Fix blank lines between elements.
 
 TREE is the parse tree being exported.  BACKEND is the export
 back-end used.  INFO is a plist used as a communication channel.
 
+Make sure there's no blank line before a plain list, unless it is
+located right after a paragraph.  Otherwise, add a blank line
+between elements.  Blank lines between items are preserved.
+
 Assume BACKEND is `md'."
-  (org-element-map tree org-element-all-elements
+  (org-element-map tree (remq 'item org-element-all-elements)
     (lambda (elem)
-      (unless (eq (org-element-type elem) 'org-data)
-	(org-element-put-property
-	 elem :post-blank
-	 (let ((post-blank (org-element-property :post-blank elem)))
-	   (if (not post-blank) 1 (max 1 post-blank)))))))
+      (org-element-put-property
+       elem :post-blank
+       (if (and (eq (org-element-type (org-export-get-next-element elem info))
+		    'plain-list)
+		(not (and (eq (org-element-type elem) 'paragraph)
+			  (org-export-get-previous-element elem info))))
+	   0
+	 1))))
   ;; Return updated tree.
   tree)
 
@@ -142,7 +150,7 @@ channel."
 	    value)))
 
 
-;;;; Example Block and Src Block
+;;;; Example Block, Src Block and export Block
 
 (defun org-md-example-block (example-block contents info)
   "Transcode EXAMPLE-BLOCK element into Markdown format.
@@ -152,6 +160,14 @@ channel."
    "^" "    "
    (org-remove-indentation
     (org-element-property :value example-block))))
+
+(defun org-md-export-block (export-block contents info)
+  "Transcode a EXPORT-BLOCK element from Org to Markdown.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  (if (member (org-element-property :type export-block) '("MARKDOWN" "MD"))
+      (org-remove-indentation (org-element-property :value export-block))
+    ;; Also include HTML export blocks.
+    (org-export-with-backend 'html export-block contents info)))
 
 
 ;;;; Headline
@@ -246,7 +262,20 @@ a communication channel."
 	      (off "[ ] "))
 	    (let ((tag (org-element-property :tag item)))
 	      (and tag (format "**%s:** "(org-export-data tag info))))
-	    (org-trim (replace-regexp-in-string "^" "    " contents)))))
+	    (and contents
+		 (org-trim (replace-regexp-in-string "^" "    " contents))))))
+
+
+
+;;;; Keyword
+
+(defun org-md-keyword (keyword contents info)
+  "Transcode a KEYWORD element into Markdown format.
+CONTENTS is nil.  INFO is a plist used as a communication
+channel."
+  (if (member (org-element-property :key keyword) '("MARKDOWN" "MD"))
+      (org-element-property :value keyword)
+    (org-export-with-backend 'html keyword contents info)))
 
 
 ;;;; Line Break
@@ -295,12 +324,13 @@ a communication channel."
 	  ((org-export-inline-image-p link org-html-inline-image-rules)
 	   (let ((path (let ((raw-path (org-element-property :path link)))
 			 (if (not (file-name-absolute-p raw-path)) raw-path
-			   (expand-file-name raw-path)))))
-	     (format "![%s](%s)"
-		     (let ((caption (org-export-get-caption
-				     (org-export-get-parent-element link))))
-		       (when caption (org-export-data caption info)))
-		     path)))
+			   (expand-file-name raw-path))))
+		 (caption (org-export-data
+			   (org-export-get-caption
+			    (org-export-get-parent-element link)) info)))
+	     (format "![img](%s)"
+		     (if (not (org-string-nw-p caption)) path
+		       (format "%s \"%s\"" path caption)))))
 	  ((string= type "coderef")
 	   (let ((ref (org-element-property :path link)))
 	     (format (org-export-get-coderef-format ref contents)
@@ -426,6 +456,14 @@ a communication channel."
 
 
 ;;;; Template
+
+(defun org-md-inner-template (contents info)
+  "Return body of document after converting it to Markdown syntax.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options."
+  ;; Make sure CONTENTS is separated from table of contents and
+  ;; footnotes with at least a blank line.
+  (org-trim (org-html-inner-template (concat "\n" contents "\n") info)))
 
 (defun org-md-template (contents info)
   "Return complete document string after Markdown conversion.

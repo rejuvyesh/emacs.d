@@ -1,6 +1,6 @@
 ;;; test-ob-exp.el
 
-;; Copyright (c) 2010-2013 Eric Schulte
+;; Copyright (c) 2010-2014 Eric Schulte
 ;; Authors: Eric Schulte
 
 ;; This file is not part of GNU Emacs.
@@ -282,6 +282,79 @@ Here is one at the end of a line. =2=
       (should (string-match (regexp-quote (format nil "%S" '(:foo :bar)))
 			    ascii)))))
 
+(ert-deftest ob-export/export-with-results-before-block ()
+  "Test export when results are inserted before source block."
+  (should
+   (equal
+    "#+RESULTS: src1
+: 2
+
+#+NAME: src1
+#+BEGIN_SRC emacs-lisp
+\(+ 1 1)
+#+END_SRC"
+    (org-test-with-temp-text
+	"#+RESULTS: src1
+
+#+NAME: src1
+#+BEGIN_SRC emacs-lisp :exports both
+\(+ 1 1)
+#+END_SRC"
+      (org-export-execute-babel-code)
+      (buffer-string)))))
+
+(ert-deftest ob-export/export-src-block-with-switches ()
+  "Test exporting a source block with switches."
+  (should
+   (string-match
+    "\\`#\\+BEGIN_SRC emacs-lisp -n -r$"
+    (org-test-with-temp-text
+	"#+BEGIN_SRC emacs-lisp -n -r\n\(+ 1 1)\n#+END_SRC"
+      (org-export-execute-babel-code)
+      (buffer-string)))))
+
+(ert-deftest ob-export/export-src-block-with-flags ()
+  "Test exporting a source block with a flag."
+  (should
+   (string-match
+    "\\`#\\+BEGIN_SRC emacs-lisp -some-flag$"
+    (org-test-with-temp-text
+	"#+BEGIN_SRC emacs-lisp :flags -some-flag\n\(+ 1 1)\n#+END_SRC"
+      (org-export-execute-babel-code)
+      (buffer-string)))))
+
+(ert-deftest ob-export/export-and-indentation ()
+  "Test indentation of evaluated source blocks during export."
+  ;; No indentation.
+  (should
+   (string-match
+    "^t"
+    (org-test-with-temp-text "#+BEGIN_SRC emacs-lisp\n t\n#+END_SRC"
+      (let ((indent-tabs-mode t)
+	    (tab-width 1)
+	    (org-src-preserve-indentation nil))
+	(org-export-execute-babel-code)
+	(buffer-string)))))
+  ;; Preserve indentation with "-i" flag.
+  (should
+   (string-match
+    "^ t"
+    (org-test-with-temp-text "#+BEGIN_SRC emacs-lisp -i\n t\n#+END_SRC"
+      (let ((indent-tabs-mode t)
+	    (tab-width 1))
+	(org-export-execute-babel-code)
+	(buffer-string)))))
+  ;; Preserve indentation with a non-nil
+  ;; `org-src-preserve-indentation'.
+  (should
+   (string-match
+    "^ t"
+    (org-test-with-temp-text "#+BEGIN_SRC emacs-lisp\n t\n#+END_SRC"
+      (let ((indent-tabs-mode t)
+	    (tab-width 1)
+	    (org-src-preserve-indentation t))
+	(org-export-execute-babel-code)
+	(buffer-string))))))
 
 (provide 'test-ob-exp)
 

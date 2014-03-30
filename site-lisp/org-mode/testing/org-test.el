@@ -1,6 +1,6 @@
 ;;;; org-test.el --- Tests for Org-mode
 
-;; Copyright (c) 2010-2013 Sebastian Rose, Eric Schulte
+;; Copyright (c) 2010-2014 Sebastian Rose, Eric Schulte
 ;; Authors:
 ;;     Sebastian Rose, Hannover, Germany, sebastian_rose gmx de
 ;;     Eric Schulte, Santa Fe, New Mexico, USA, schulte.eric gmail com
@@ -52,7 +52,7 @@
       (require 'org-id)
       (require 'ox)
       (org-babel-do-load-languages
-       'org-babel-load-languages '((sh . t) (org . t))))
+       'org-babel-load-languages '((shell . t) (org . t))))
 
     (let* ((load-path (cons
 		       org-test-dir

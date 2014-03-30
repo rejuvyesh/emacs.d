@@ -1,6 +1,6 @@
 ;;; org-table.el --- The table editor for Org-mode
 
-;; Copyright (C) 2004-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2014 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
@@ -1142,12 +1142,12 @@ copying.  In the case of a timestamp, increment by one day."
 		   (< (string-to-number txt) 100000000))
 	      (setq txt (format "%d" (+ (string-to-number txt) 1))))
 	  (insert txt)
-	  (org-move-to-column col)
+	  (org-move-to-column col nil nil t)
 	  (if (and org-table-copy-increment (org-at-timestamp-p t))
 	      (org-timestamp-up-day)
 	    (org-table-maybe-recalculate-line))
 	  (org-table-align)
-	  (org-move-to-column col))
+	  (org-move-to-column col nil nil t))
       (user-error "No non-empty field found"))))
 
 (defun org-table-check-inside-data-field (&optional noerror)
@@ -1247,6 +1247,7 @@ is always the old value."
 (defun org-table-field-info (arg)
   "Show info about the current field, and highlight any reference at point."
   (interactive "P")
+  (unless (org-at-table-p) (user-error "Not at a table"))
   (org-table-get-specials)
   (save-excursion
     (let* ((pos (point))
@@ -1375,12 +1376,12 @@ However, when FORCE is non-nil, create new columns if necessary."
       t
     (let ((col (current-column))
 	  (end (org-table-end)))
-      (org-move-to-column col)
+      (org-move-to-column col nil nil t)
       (while (and (< (point) end)
 		  (or (not (= (current-column) col))
 		      (org-at-table-hline-p)))
 	(beginning-of-line 2)
-	(org-move-to-column col))
+	(org-move-to-column col nil nil t))
       (if (and (org-at-table-p)
 	       (not (org-at-table-hline-p)))
 	  t
@@ -1529,7 +1530,7 @@ first dline below it is used.  When ABOVE is non-nil, the one above is used."
     (beginning-of-line tonew)
     (insert txt)
     (beginning-of-line 0)
-    (org-move-to-column col)
+    (org-move-to-column col nil nil t)
     (unless (or hline1p hline2p
 		(not (or (not org-table-fix-formulas-confirm)
 			 (funcall org-table-fix-formulas-confirm
@@ -1581,7 +1582,7 @@ With prefix ABOVE, insert above the current line."
     (beginning-of-line (if above 1 2))
     (insert line "\n")
     (beginning-of-line (if above 1 -1))
-    (org-move-to-column col)
+    (org-move-to-column col nil nil t)
     (and org-table-overlay-coordinates (org-table-align))))
 
 ;;;###autoload
@@ -1621,7 +1622,7 @@ In particular, this does handle wide and invisible characters."
 	(dline (org-table-current-dline)))
     (kill-region (point-at-bol) (min (1+ (point-at-eol)) (point-max)))
     (if (not (org-at-table-p)) (beginning-of-line 0))
-    (org-move-to-column col)
+    (org-move-to-column col nil nil t)
     (when (or (not org-table-fix-formulas-confirm)
 	      (funcall org-table-fix-formulas-confirm "Fix formulas? "))
       (org-table-fix-formulas "@" (list (cons (number-to-string dline) "INVALID"))
@@ -2289,7 +2290,7 @@ KEY is \"@\" or \"$\".  REPLACE is an alist of numbers to replace.
 For all numbers larger than LIMIT, shift them by DELTA."
   (save-excursion
     (goto-char (org-table-end))
-    (when (let ((case-fold-search t)) (looking-at "[ \t]*#\\+tblfm:"))
+    (while (let ((case-fold-search t)) (looking-at "[ \t]*#\\+tblfm:"))
       (let ((msg "The formulas in #+TBLFM have been updated")
 	    (re (concat key "\\([0-9]+\\)"))
 	    (re2
@@ -2303,8 +2304,9 @@ For all numbers larger than LIMIT, shift them by DELTA."
 	  (while (re-search-forward re2 (point-at-eol) t)
 	    (unless (save-match-data (org-in-regexp "remote([^)]+?)"))
 	      (if (equal (char-before (match-beginning 0)) ?.)
-		  (user-error "Change makes TBLFM term %s invalid, use undo to recover"
-			 (match-string 0))
+		  (user-error
+		   "Change makes TBLFM term %s invalid, use undo to recover"
+		   (match-string 0))
 		(replace-match "")))))
 	(while (re-search-forward re (point-at-eol) t)
 	  (unless (save-match-data (org-in-regexp "remote([^)]+?)"))
@@ -2315,7 +2317,8 @@ For all numbers larger than LIMIT, shift them by DELTA."
 	      (message msg))
 	     ((and limit (> n limit))
 	      (replace-match (concat key (int-to-string (+ n delta))) t t)
-	      (message msg)))))))))
+	      (message msg))))))
+      (forward-line))))
 
 (defun org-table-get-specials ()
   "Get the column names and local parameters for this table."
@@ -2655,6 +2658,7 @@ not overwrite the stored one."
 	;; Check for old vertical references
 	(setq form (org-table-rewrite-old-row-references form))
 	;; Insert remote references
+	(setq form (org-table-remote-reference-indirection form))
 	(while (string-match "\\<remote([ \t]*\\([-_a-zA-Z0-9]+\\)[ \t]*,[ \t]*\\([^\n)]+\\))" form)
 	  (setq form
 		(replace-match
@@ -5007,6 +5011,36 @@ list of the fields in the rectangle."
 		    (save-match-data
 		      (org-table-get-range (match-string 0 form) tbeg 1))
 		  form)))))))))
+
+(defun org-table-remote-reference-indirection (form)
+  "Return formula with table remote references substituted by indirection.
+For example \"remote($1, @>$2)\" => \"remote(year_2013, @>$1)\".
+This indirection works only with the format @ROW$COLUMN.  The
+format \"B3\" is not supported because it can not be
+distinguished from a plain table name or ID."
+  (let ((start 0))
+    (while (string-match (concat
+			  ;; Same as in `org-table-eval-formula'.
+			  "\\<remote([ \t]*\\("
+			  ;; Allow "$1", "@<", "$-1", "@<<$1" etc.
+			  "[@$][^ \t,]+"
+			  ;; Same as in `org-table-eval-formula'.
+			  "\\)[ \t]*,[ \t]*\\([^\n)]+\\))")
+			 form
+			 start)
+      ;; The position of the character as far as possible to the right
+      ;; that will not be replaced and particularly not be shifted by
+      ;; `replace-match'.
+      (setq start (match-beginning 1))
+      ;; Substitute the remote reference with the value found in the
+      ;; field.
+      (setq form
+	    (replace-match
+	     (save-match-data
+	       (org-table-get-range (org-table-formula-handle-first/last-rc
+				     (match-string 1 form))))
+	     t t form 1))))
+  form)
 
 (defmacro org-define-lookup-function (mode)
   (let ((mode-str (symbol-name mode))

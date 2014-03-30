@@ -1,6 +1,6 @@
 ;;; ob-core.el --- working with code blocks in org-mode
 
-;; Copyright (C) 2009-2013  Free Software Foundation, Inc.
+;; Copyright (C) 2009-2014 Free Software Foundation, Inc.
 
 ;; Authors: Eric Schulte
 ;;	Dan Davison
@@ -224,7 +224,7 @@ Returns non-nil if match-data set"
   (let ((src-at-0-p (save-excursion
 		      (beginning-of-line 1)
 		      (string= "src" (thing-at-point 'word))))
-	(first-line-p (= 1 (line-number-at-pos)))
+	(first-line-p (= (line-beginning-position) (point-min)))
 	(orig (point)))
     (let ((search-for (cond ((and src-at-0-p first-line-p  "src_"))
 			    (first-line-p "[[:punct:] \t]src_")
@@ -1219,7 +1219,20 @@ the current subtree."
 			      (member (car arg) '(:results :exports)))
 			 (mapconcat #'identity (sort (funcall rm (split-string v))
 						     #'string<) " "))
-			(t v)))))))
+			(t v))))))
+	   ;; expanded body
+	   (lang (nth 0 info))
+	   (params (nth 2 info))
+	   (body (if (org-babel-noweb-p params :eval)
+			   (org-babel-expand-noweb-references info) (nth 1 info)))
+	   (expand-cmd (intern (concat "org-babel-expand-body:" lang)))
+	   (assignments-cmd (intern (concat "org-babel-variable-assignments:"
+					    lang)))
+	   (expanded
+	    (if (fboundp expand-cmd) (funcall expand-cmd body params)
+	      (org-babel-expand-body:generic
+	       body params (and (fboundp assignments-cmd)
+				(funcall assignments-cmd params))))))
       (let* ((it (format "%s-%s"
                          (mapconcat
                           #'identity
@@ -1228,19 +1241,19 @@ the current subtree."
                                                 (when normalized
                                                   (format "%S" normalized))))
                                             (nth 2 info))) ":")
-                         (nth 1 info)))
+                         expanded))
              (hash (sha1 it)))
         (when (org-called-interactively-p 'interactive) (message hash))
         hash))))
 
-(defun org-babel-current-result-hash ()
+(defun org-babel-current-result-hash (&optional info)
   "Return the current in-buffer hash."
-  (org-babel-where-is-src-block-result)
+  (org-babel-where-is-src-block-result nil info)
   (org-no-properties (match-string 5)))
 
-(defun org-babel-set-current-result-hash (hash)
+(defun org-babel-set-current-result-hash (hash info)
   "Set the current in-buffer hash to HASH."
-  (org-babel-where-is-src-block-result)
+  (org-babel-where-is-src-block-result nil info)
   (save-excursion (goto-char (match-beginning 5))
 		  (mapc #'delete-overlay (overlays-at (point)))
 		  (forward-char org-babel-hash-show)
@@ -1927,29 +1940,30 @@ following the source block."
 	  (progn (end-of-line 1)
 		 (if (eobp) (insert "\n") (forward-char 1))
 		 (setq end (point))
-		 (or (and
-		      (not name)
-		      (progn ;; unnamed results line already exists
-			(catch 'non-comment
-			  (while (re-search-forward "[^ \f\t\n\r\v]" nil t)
-			    (beginning-of-line 1)
-			    (cond
-			     ((looking-at (concat org-babel-result-regexp "\n"))
-			      (throw 'non-comment t))
-			     ((and (looking-at "^[ \t]*#")
-				   (not (looking-at
-					 org-babel-lob-one-liner-regexp)))
-			      (end-of-line 1))
-			     (t (throw 'non-comment nil))))))
-		      (let ((this-hash (match-string 5)))
-			(prog1 (point)
-			  ;; must remove and rebuild if hash!=old-hash
-			  (if (and hash (not (string= hash this-hash)))
-			      (prog1 nil
-				(forward-line 1)
-				(delete-region
-				 end (org-babel-result-end)))
-			    (setq end nil)))))))))))
+		 (and
+		  (not name)
+		  (progn ;; unnamed results line already exists
+		    (catch 'non-comment
+		      (while (re-search-forward "[^ \f\t\n\r\v]" nil t)
+			(beginning-of-line 1)
+			(cond
+			 ((looking-at (concat org-babel-result-regexp "\n"))
+			  (throw 'non-comment t))
+			 ((and (looking-at "^[ \t]*#")
+			       (not (looking-at
+				     org-babel-lob-one-liner-regexp)))
+			  (end-of-line 1))
+			 (t (throw 'non-comment nil))))))
+		  (let ((this-hash (match-string 5)))
+		    (prog1 (point)
+		      ;; must remove and rebuild if hash!=old-hash
+		      (if (and hash (not (string= hash this-hash)))
+			  (progn
+			    (setq end (point-at-bol))
+			    (forward-line 1)
+			    (delete-region end (org-babel-result-end))
+			    (setq beg end))
+			(setq end nil))))))))))
       (if (not (and insert end)) found
 	(goto-char end)
 	(unless beg
@@ -2205,7 +2219,7 @@ code ---- the results are extracted in the syntax of the source
 		  (funcall wrap ":RESULTS:" ":END:" 'no-escape))
 		 ((and (not (funcall proper-list-p result))
 		       (not (member "file" result-params)))
-		  (org-babel-examplize-region beg end results-switches)
+		  (org-babel-examplify-region beg end results-switches)
 		  (setq end (point)))))
 	      ;; possibly indent the results to match the #+results line
 	      (when (and (not inlinep) (numberp indent) indent (> indent 0)
@@ -2270,18 +2284,27 @@ file's directory then expand relative links."
 	      result)
 	    (if description (concat "[" description "]") ""))))
 
-(defvar org-babel-capitalize-examplize-region-markers nil
+(defvar org-babel-capitalize-example-region-markers nil
   "Make true to capitalize begin/end example markers inserted by code blocks.")
 
-(defun org-babel-examplize-region (beg end &optional results-switches)
+(define-obsolete-function-alias
+  'org-babel-examplize-region
+  'org-babel-examplify-region "24.5")
+
+(defun org-babel-examplify-region (beg end &optional results-switches)
   "Comment out region using the inline '==' or ': ' org example quote."
   (interactive "*r")
   (let ((chars-between (lambda (b e)
-			 (not (string-match "^[\\s]*$" (buffer-substring b e)))))
-	(maybe-cap (lambda (str) (if org-babel-capitalize-examplize-region-markers
-				     (upcase str) str))))
-    (if (or (funcall chars-between (save-excursion (goto-char beg) (point-at-bol)) beg)
-	    (funcall chars-between end (save-excursion (goto-char end) (point-at-eol))))
+			 (not (string-match "^[\\s]*$"
+					    (buffer-substring b e)))))
+	(maybe-cap (lambda (str) (if org-babel-capitalize-example-region-markers
+				(upcase str) str)))
+	(beg-bol (save-excursion (goto-char beg) (point-at-bol)))
+	(end-bol (save-excursion (goto-char end) (point-at-bol)))
+	(end-eol (save-excursion (goto-char end) (point-at-eol))))
+    (if (and (not (= end end-bol))
+	     (or (funcall chars-between beg-bol beg)
+		 (funcall chars-between end end-eol)))
 	(save-excursion
 	  (goto-char beg)
 	  (insert (format org-babel-inline-result-wrap

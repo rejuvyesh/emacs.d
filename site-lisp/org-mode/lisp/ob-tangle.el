@@ -1,6 +1,6 @@
 ;;; ob-tangle.el --- extract source code from org-mode files
 
-;; Copyright (C) 2009-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2009-2014 Free Software Foundation, Inc.
 
 ;; Author: Eric Schulte
 ;; Keywords: literate programming, reproducible research
@@ -38,6 +38,7 @@
 (declare-function org-babel-update-block-body "org" (new-body))
 (declare-function org-up-heading-safe "org" ())
 (declare-function make-directory "files" (dir &optional parents))
+(declare-function org-before-first-heading-p "org" ())
 
 (defcustom org-babel-tangle-lang-exts
   '(("emacs-lisp" . "el"))
@@ -358,12 +359,13 @@ that the appropriate major-mode is set.  SPEC has the form:
 (defvar org-comment-string) ;; Defined in org.el
 (defun org-babel-under-commented-heading-p ()
   "Return t if currently under a commented heading."
-  (if (let ((hd (nth 4 (org-heading-components))))
-	(and hd (string-match (concat "^" org-comment-string) hd)))
-      t
-    (save-excursion
-      (and (org-up-heading-safe)
-	   (org-babel-under-commented-heading-p)))))
+  (unless (org-before-first-heading-p)
+    (if (let ((hd (nth 4 (org-heading-components))))
+	  (and hd (string-match (concat "^" org-comment-string) hd)))
+	t
+      (save-excursion
+	(and (org-up-heading-safe)
+	     (org-babel-under-commented-heading-p))))))
 
 (defun org-babel-tangle-collect-blocks (&optional language tangle-file)
   "Collect source blocks in the current Org-mode file.

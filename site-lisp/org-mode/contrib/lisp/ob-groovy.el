@@ -1,8 +1,8 @@
-;;; ob-scala.el --- org-babel functions for Scala evaluation
+;;; ob-groovy.el --- org-babel functions for Groovy evaluation
 
-;; Copyright (C) 2012-2014 Free Software Foundation, Inc.
+;; Copyright (C) 2013-2014 Free Software Foundation, Inc.
 
-;; Author: Andrzej Lichnerowicz
+;; Author: Miro Bezjak
 ;; Keywords: literate programming, reproducible research
 ;; Homepage: http://orgmode.org
 
@@ -25,32 +25,32 @@
 ;; Currently only supports the external execution.  No session support yet.
 
 ;;; Requirements:
-;; - Scala language :: http://www.scala-lang.org/
-;; - Scala major mode :: Can be installed from Scala sources
-;;  https://github.com/scala/scala-dist/blob/master/tool-support/src/emacs/scala-mode.el
+;; - Groovy language :: http://groovy.codehaus.org
+;; - Groovy major mode :: Can be installed from MELPA or
+;;   https://github.com/russel/Emacs-Groovy-Mode
 
 ;;; Code:
 (require 'ob)
 (eval-when-compile (require 'cl))
 
 (defvar org-babel-tangle-lang-exts) ;; Autoloaded
-(add-to-list 'org-babel-tangle-lang-exts '("scala" . "scala"))
-(defvar org-babel-default-header-args:scala '())
-(defvar org-babel-scala-command "scala"
-  "Name of the command to use for executing Scala code.")
+(add-to-list 'org-babel-tangle-lang-exts '("groovy" . "groovy"))
+(defvar org-babel-default-header-args:groovy '())
+(defvar org-babel-groovy-command "groovy"
+  "Name of the command to use for executing Groovy code.")
 
-(defun org-babel-execute:scala (body params)
-  "Execute a block of Scala code with org-babel.  This function is
+(defun org-babel-execute:groovy (body params)
+  "Execute a block of Groovy code with org-babel.  This function is
 called by `org-babel-execute-src-block'"
-  (message "executing Scala source code block")
+  (message "executing Groovy source code block")
   (let* ((processed-params (org-babel-process-params params))
-         (session (org-babel-scala-initiate-session (nth 0 processed-params)))
+         (session (org-babel-groovy-initiate-session (nth 0 processed-params)))
          (vars (nth 1 processed-params))
          (result-params (nth 2 processed-params))
          (result-type (cdr (assoc :result-type params)))
          (full-body (org-babel-expand-body:generic
                      body params))
-         (result (org-babel-scala-evaluate
+         (result (org-babel-groovy-evaluate
                   session full-body result-type result-params)))
 
     (org-babel-reassemble-table
@@ -61,64 +61,60 @@ called by `org-babel-execute-src-block'"
       (cdr (assoc :rowname-names params)) (cdr (assoc :rownames params))))))
 
 
-(defun org-babel-scala-table-or-string (results)
+(defun org-babel-groovy-table-or-string (results)
   "Convert RESULTS into an appropriate elisp value.
 If RESULTS look like a table, then convert them into an
 Emacs-lisp table, otherwise return the results as a string."
   (org-babel-script-escape results))
 
 
-(defvar org-babel-scala-wrapper-method
+(defvar org-babel-groovy-wrapper-method
 
-"var str_result :String = null;
-
-Console.withOut(new java.io.OutputStream() {def write(b: Int){
-}}) {
-  str_result = {
-%s
-  }.toString
+  "class Runner extends Script {
+    def out = new PrintWriter(new ByteArrayOutputStream())
+    def run() { %s }
 }
 
-print(str_result)
+println(new Runner().run())
 ")
 
 
-(defun org-babel-scala-evaluate
+(defun org-babel-groovy-evaluate
   (session body &optional result-type result-params)
-  "Evaluate BODY in external Scala process.
+  "Evaluate BODY in external Groovy process.
 If RESULT-TYPE equals 'output then return standard output as a string.
 If RESULT-TYPE equals 'value then return the value of the last statement
 in BODY as elisp."
-  (when session (error "Sessions are not (yet) supported for Scala"))
+  (when session (error "Sessions are not (yet) supported for Groovy"))
   (case result-type
     (output
-     (let ((src-file (org-babel-temp-file "scala-")))
+     (let ((src-file (org-babel-temp-file "groovy-")))
        (progn (with-temp-file src-file (insert body))
               (org-babel-eval
-               (concat org-babel-scala-command " " src-file) ""))))
+               (concat org-babel-groovy-command " " src-file) ""))))
     (value
-     (let* ((src-file (org-babel-temp-file "scala-"))
-            (wrapper (format org-babel-scala-wrapper-method body)))
+     (let* ((src-file (org-babel-temp-file "groovy-"))
+            (wrapper (format org-babel-groovy-wrapper-method body)))
        (with-temp-file src-file (insert wrapper))
        (let ((raw (org-babel-eval
-                   (concat org-babel-scala-command " " src-file) "")))
+                   (concat org-babel-groovy-command " " src-file) "")))
          (org-babel-result-cond result-params
 	   raw
-           (org-babel-scala-table-or-string raw)))))))
+           (org-babel-groovy-table-or-string raw)))))))
 
 
-(defun org-babel-prep-session:scala (session params)
+(defun org-babel-prep-session:groovy (session params)
   "Prepare SESSION according to the header arguments specified in PARAMS."
-  (error "Sessions are not (yet) supported for Scala"))
+  (error "Sessions are not (yet) supported for Groovy"))
 
-(defun org-babel-scala-initiate-session (&optional session)
+(defun org-babel-groovy-initiate-session (&optional session)
   "If there is not a current inferior-process-buffer in SESSION
 then create.  Return the initialized session.  Sessions are not
-supported in Scala."
+supported in Groovy."
   nil)
 
-(provide 'ob-scala)
+(provide 'ob-groovy)
 
 
 
-;;; ob-scala.el ends here
+;;; ob-groovy.el ends here

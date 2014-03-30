@@ -1,6 +1,6 @@
 ;;; ox-groff.el --- Groff Back-End for Org Export Engine
 
-;; Copyright (C) 2011-2013  Free Software Foundation, Inc.
+;; Copyright (C) 2011-2014  Free Software Foundation, Inc.
 
 ;; Author: Nicolas Goaziou <n.goaziou at gmail dot com>
 ;; Author: Luis R Anaya <papoanaya aroba hot mail punto com>
@@ -77,7 +77,6 @@
     (planning . org-groff-planning)
     (property-drawer . org-groff-property-drawer)
     (quote-block . org-groff-quote-block)
-    (quote-section . org-groff-quote-section)
     (radio-target . org-groff-radio-target)
     (section . org-groff-section)
     (special-block . org-groff-special-block)
@@ -1456,15 +1455,6 @@ holding contextual information."
   (org-groff--wrap-label
    quote-block
    (format ".DS I\n.I\n%s\n.R\n.DE" contents)))
-
-;;; Quote Section
-
-(defun org-groff-quote-section (quote-section contents info)
-  "Transcode a QUOTE-SECTION element from Org to Groff.
-CONTENTS is nil.  INFO is a plist holding contextual information."
-  (let ((value (org-remove-indentation
-                (org-element-property :value quote-section))))
-    (when value (format ".DS L\n\\fI%s\\fP\n.DE\n" value))))
 
 ;;; Radio Target
 

@@ -1,6 +1,6 @@
 ;;; org-src.el --- Source code examples in Org
 ;;
-;; Copyright (C) 2004-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2014 Free Software Foundation, Inc.
 ;;
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;;	   Bastien Guerry <bzg@gnu.org>
@@ -348,7 +348,7 @@ the display of windows containing the Org buffer and the code buffer."
 	  (condition-case e
 	      (funcall lang-f)
 	    (error
-	     (error "Language mode `%s' fails with: %S" lang-f (nth 1 e)))))
+	     (message "Language mode `%s' fails with: %S" lang-f (nth 1 e)))))
 	(dolist (pair transmitted-variables)
 	  (org-set-local (car pair) (cadr pair)))
 	;; Remove protecting commas from visible part of buffer.

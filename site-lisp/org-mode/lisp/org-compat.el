@@ -1,6 +1,6 @@
 ;;; org-compat.el --- Compatibility code for Org-mode
 
-;; Copyright (C) 2004-2013 Free Software Foundation, Inc.
+;; Copyright (C) 2004-2014 Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
@@ -259,6 +259,12 @@ ignored in this case."
 		  n (1+ n)
 		  next (+ from (* n inc)))))
 	(nreverse seq)))))
+
+;; `set-transient-map' is only in Emacs >= 24.4
+(defalias 'org-set-transient-map
+  (if (fboundp 'set-transient-map)
+      'set-transient-map
+    'set-temporary-overlay-map))
 
 ;; Region compatibility
 

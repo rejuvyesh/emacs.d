@@ -1,6 +1,6 @@
 ;;; test-org-element.el --- Tests for org-element.el
 
-;; Copyright (C) 2012, 2013  Nicolas Goaziou
+;; Copyright (C) 2012, 2013, 2014  Nicolas Goaziou
 
 ;; Author: Nicolas Goaziou <n.goaziou at gmail dot com>
 
@@ -934,40 +934,6 @@ Some other text
 
 ;;;; Headline
 
-(ert-deftest test-org-element/headline-quote-keyword ()
-  "Test QUOTE keyword recognition."
-  ;; Reference test.
-  (org-test-with-temp-text "* Headline"
-    (let ((org-quote-string "QUOTE"))
-      (should-not (org-element-property :quotedp (org-element-at-point)))))
-  ;; Standard position.
-  (org-test-with-temp-text "* QUOTE Headline"
-    (let* ((org-quote-string "QUOTE")
-	   (headline (org-element-at-point)))
-      (should (org-element-property :quotedp headline))
-      ;; Test removal from raw value.
-      (should (equal (org-element-property :raw-value headline) "Headline"))))
-  ;; Case sensitivity.
-  (org-test-with-temp-text "* QUOTE Headline"
-    (let* ((org-quote-string "Quote")
-	   (headline (org-element-at-point)))
-      (should-not (org-element-property :quotedp headline))
-      (should (equal (org-element-property :raw-value headline)
-		     "QUOTE Headline"))))
-  ;; With another keyword.
-  (org-test-with-temp-text "* TODO QUOTE Headline"
-    (let* ((org-quote-string "QUOTE")
-	   (org-todo-keywords '((sequence "TODO" "DONE")))
-	   (headline (org-element-at-point)))
-      (should (org-element-property :quotedp headline))
-      (should (equal (org-element-property :raw-value headline) "Headline"))))
-  ;; With the keyword only.
-  (org-test-with-temp-text "* QUOTE"
-    (let* ((org-quote-string "QUOTE")
-	   (headline (org-element-at-point)))
-      (should (org-element-property :quotedp headline))
-      (should (equal (org-element-property :raw-value headline) "")))))
-
 (ert-deftest test-org-element/headline-comment-keyword ()
   "Test COMMENT keyword recognition."
   ;; Reference test.
@@ -1712,20 +1678,6 @@ Outside list"
      (= (org-element-property :end (org-element-at-point)) (point-max)))))
 
 
-;;;; Quote Section
-
-(ert-deftest test-org-element/quote-section-parser ()
-  "Test `quote-section' parser."
-  (should
-   (let ((org-quote-string "QUOTE"))
-     (org-test-with-temp-text "* QUOTE Headline\nBody"
-       (org-element-map (org-element-parse-buffer) 'quote-section 'identity))))
-  (should-not
-   (let ((org-quote-string "TEST"))
-     (org-test-with-temp-text "* QUOTE Headline\nBody"
-       (org-element-map (org-element-parse-buffer) 'quote-section 'identity)))))
-
-
 ;;;; Radio Target
 
 (ert-deftest test-org-element/radio-target-parser ()
@@ -2213,12 +2165,7 @@ Outside list"
    (equal (let ((org-comment-string "COMMENT"))
 	    (org-test-parse-and-interpret "* COMMENT Headline"))
 	  "* COMMENT Headline\n"))
-  ;; 6. With quote section.
-  (should
-   (equal (let ((org-quote-string "QUOTE"))
-	    (org-test-parse-and-interpret "* QUOTE Headline"))
-	  "* QUOTE Headline\n"))
-  ;; 7. Keep same number of blank lines before body.
+  ;; 6. Keep same number of blank lines before body.
   (should
    (equal (org-test-parse-and-interpret
 	   "* Headline\n\n\nText after two blank lines.")
@@ -2896,34 +2843,38 @@ Paragraph \\alpha."
 
 (ert-deftest test-org-element/normalize-contents ()
   "Test `org-element-normalize-contents' specifications."
-  ;; 1. Remove maximum common indentation from element's contents.
+  ;; Remove maximum common indentation from element's contents.
   (should
    (equal
     (org-element-normalize-contents
      '(paragraph nil "  Two spaces\n   Three spaces"))
     '(paragraph nil "Two spaces\n Three spaces")))
-  ;; 2. Ignore objects within contents when computing maximum common
-  ;;    indentation.
+  ;; Ignore objects within contents when computing maximum common
+  ;; indentation.
   (should
    (equal
     (org-element-normalize-contents
      '(paragraph nil " One " (emphasis nil "space") "\n  Two spaces"))
     '(paragraph nil "One " (emphasis nil "space") "\n Two spaces")))
-  ;; 3. Ignore blank lines.
+  ;; Ignore blank lines.
   (should
    (equal
     (org-element-normalize-contents
      '(paragraph nil "  Two spaces\n\n \n  Two spaces"))
     '(paragraph nil "Two spaces\n\n \nTwo spaces")))
-  ;; 4. Recursively enter objects in order to compute common
-  ;;    indentation.
+  (should
+   (equal
+    '(paragraph nil " Two spaces\n" (verbatim nil "V") "\n Two spaces")
+    (org-element-normalize-contents
+     '(paragraph nil "  Two spaces\n " (verbatim nil "V") "\n  Two spaces"))))
+  ;; Recursively enter objects in order to compute common indentation.
   (should
    (equal
     (org-element-normalize-contents
      '(paragraph nil "  Two spaces " (bold nil " and\n One space")))
     '(paragraph nil " Two spaces " (bold nil " and\nOne space"))))
-  ;; 5. When optional argument is provided, ignore first line
-  ;;    indentation.
+  ;; When optional argument is provided, ignore first line
+  ;; indentation.
   (should
    (equal
     (org-element-normalize-contents

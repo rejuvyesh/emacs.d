@@ -11,6 +11,12 @@ Please send Org bug reports to emacs-orgmode@gnu.org.
 * Version 8.2
 
 ** Incompatible changes
+*** =ob-sh.el= renamed to =ob-shell=
+This may require two changes in user config.
+
+1. In =org-babel-do-load-languages=, change =(sh . t)= to =(shell . t)=.
+2. Edit =local.mk= files to change the value of =BTEST_OB_LANGUAGES=
+   to remove "sh" and include "shell".
 
 *** Combine org-mac-message.el and org-mac-link-grabber into org-mac-link.el
 
@@ -170,6 +176,18 @@ then inline code snippets will be wrapped into the formatting string.
 
 - =org-screenshot.el= by Max Mikhanosha :: an utility to handle
      screenshots easily from Org, using the external tool [[http://freecode.com/projects/scrot][scrot]].
+
+** Miscellaneous
+
+*** "QUOTE" keywords in headlines are deprecated
+
+"QUOTE" keywords are an undocumented feature in Org.  When a headline
+starts with the keyword "QUOTE", its contents are parsed as
+a ~quote-section~ and treated as an example block.  You can achieve
+the same with example blocks.
+
+This feature is deprecated and will be removed in the next Org
+release.
 
 * Version 8.0.1
 
@@ -1069,7 +1087,7 @@ See http://orgmode.org/elpa/
    | =k=             |        | [[doc::org-agenda-capture][org-agenda-capture]]          |
    | C-c ,           | ,      | [[doc::org-priority][org-priority]]                |
 
-** New package and Babel langage
+** New package and Babel language
 
 *** =org-eshell.el= by Konrad Hinsen is now in Org
 
