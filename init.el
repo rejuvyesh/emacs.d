@@ -1139,7 +1139,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 ;; More emacs rocks: Join current line with the next
 (global-set-key (kbd "M-j")
-            (lambda ()
+                (lambda ()
                   (interactive)
                   (join-line -1)))
 
@@ -1192,8 +1192,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (require 'cipher/aes)
 (setq yagist-encrypt-risky-config t)
 
-;; cleanup whitepace on save
-(add-hook 'before-save-hook 'whitespace-cleanup)
+;; makefile has its issues
+(add-hook 'makefile-mode-hook 'indent-tabs-mode)
 
 ;; diminish
 (require 'diminish)
