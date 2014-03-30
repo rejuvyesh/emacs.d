@@ -5,6 +5,7 @@
       '(
         align-repeat
         down-list
+        ghc-save-buffer
         handle-switch-frame
         haskell-indentation-delete-backward-char
         indent-for-tab-command
@@ -22,6 +23,7 @@
         sp-remove-active-pair-overlay
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
+        yaml-electric-dash-and-dot
         yank-and-indent
         yas-expand
         ))
