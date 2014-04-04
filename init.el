@@ -87,6 +87,12 @@
 (setq frame-title-format "%b")
 (set-fringe-mode '(1 . 10))
 
+;; highlight current line
+(defface hl-line '((t (:background "aquagreen")))
+  "Face to use for `hl-line-face'." :group 'hl-line)
+(setq hl-line-face 'hl-line)
+(global-hl-line-mode t)
+
 ;; smart-mode
 (setup "smart-mode-line"
        (setq sml/theme 'dark)
@@ -104,6 +110,8 @@
        ;; necessary or scrolling is really slow
        (setq-default bidi-display-reordering nil)
        (setq auto-window-vscroll nil))
+;; yascroll
+(global-yascroll-bar-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Remove background color from terminal emacs,
@@ -288,9 +296,10 @@ See the variable `align-rules-list' for more details."))
                  (global-set-key (kbd "C-c C-=") 'align-repeat))
 
 ;; python ;;
-(elpy-enable)
-(elpy-use-ipython)
-(elpy-clean-modeline)
+(setup "elpy"
+       (elpy-enable)
+       (elpy-use-ipython)
+       (elpy-clean-modeline))
 
 ;; ruby ;;
 ;; enhanced ruby mode
@@ -613,6 +622,9 @@ See the variable `align-rules-list' for more details."))
 (column-number-mode t)
 (setq-default indicate-empty-lines t)
 
+;; load raw text in a basic mode (for performance reasons)
+(add-to-list 'auto-mode-alist '("\\.log$" . fundamental-mode))
+
 ;; deltete selected
 (delete-selection-mode t)
 
@@ -920,8 +932,6 @@ See the variable `align-rules-list' for more details."))
       collect (if (eq (key-binding (first key)) (second key))
                   (global-unset-key (first key))))
 
-
-
 ;; I never use set-fill-column and I hate hitting it by accident.
 (global-set-key "\C-x\ f" 'find-file)
 
@@ -931,11 +941,6 @@ See the variable `align-rules-list' for more details."))
           (lambda () (run-at-time 10 nil
                                   (lambda () (delete-windows-on "*Completions*")))))
 
-;; highlight current line
-(defface hl-line '((t (:background "aquagreen")))
-  "Face to use for `hl-line-face'." :group 'hl-line)
-(setq hl-line-face 'hl-line)
-(global-hl-line-mode t)
 
 
 ;; add current date
@@ -999,7 +1004,7 @@ See the variable `align-rules-list' for more details."))
  (add-hook 'org-mode-hook 'turn-on-spell-check)
 
 ;; use automatic file headers
-(load "~/.emacs.d/emacs-auto-insert.el")
+(setup-include "~/.emacs.d/setup-auto-insert.el")
 
 ;; mutt
 ;; mail support.
@@ -1013,61 +1018,63 @@ See the variable `align-rules-list' for more details."))
       apropos-do-all t
       mouse-yank-at-point t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(setup "uniquify"
+       (setq uniquify-buffer-name-style 'reverse)
+       (setq uniquify-separator "/")
+       (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+       (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
 
-(winner-mode 1)
+(setup "winner"
+       (winner-mode 1))
 
 ;; number windows, i.e. M-1 .. M-0 to jump to window
-(require 'window-numbering)
-(window-numbering-mode 1)
+(setup "window-numbering"
+       (window-numbering-mode 1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Checking out helm
-(require 'helm-config)
-(require 'helm-C-x-b)
-(helm-mode t)
-(global-set-key (kbd "M-t") 'helm-cmd-t)
-(global-set-key [remap switch-to-buffer] 'helm-C-x-b)
-(global-set-key (kbd "C-x c g") 'helm-do-grep)
-(global-set-key (kbd "C-x c o") 'helm-occur)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(setq helm-ff-lynx-style-map nil
-      helm-input-idle-delay 0.1
-      helm-idle-delay 0.1
-      )
+(setup "helm-config"
+       (helm-mode t)
+       (global-set-key (kbd "M-t") 'helm-cmd-t)
+       (global-set-key (kbd "C-x c g") 'helm-do-grep)
+       (global-set-key (kbd "C-x c o") 'helm-occur)
+       (global-set-key (kbd "M-x") 'helm-M-x)
+       (global-set-key (kbd "C-x C-f") 'helm-find-files)
+       (setq helm-ff-lynx-style-map nil
+             helm-input-idle-delay 0.1
+             helm-idle-delay 0.1 ))
+
+(setup-lazy '(helm-C-x-b) "helm-C-x-b"
+            (global-set-key [remap switch-to-buffer] 'helm-C-x-b))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; go to last change
 ;; http://www.emacswiki.org/emacs/GotoChg
-(require 'goto-chg)
-(global-set-key [f8] 'goto-last-change)
+(setup "goto-chg"
+       (global-set-key [f8] 'goto-last-change))
 
 ;; rainbow-delimiters.el
 ;; http://www.emacswiki.org/emacs/RainbowDelimiters
-(require 'rainbow-delimiters)
-(add-hook 'ess-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode) ; for programming related modes
+(setup "rainbow-delimiters"
+       (add-hook 'ess-mode-hook 'rainbow-delimiters-mode)
+       (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)) ; for programming related modes
 
-;; yascroll
-(global-yascroll-bar-mode 1)
 
 ;; better search/replace
-(require 'visual-regexp)
-(require 'visual-regexp-steroids)
-(global-set-key (kbd "C-c r") 'vr/query-replace)
-(defun vr/query-replace-from-beginning ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (call-interactively 'vr/query-replace)))
-(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
+(setup "visual-regexp")
+(setup-after "visual-regexp"
+             (setup "visual-regexp-steroids")
+             (global-set-key (kbd "C-c r") 'vr/query-replace)
+             (defun vr/query-replace-from-beginning ()
+               (interactive)
+               (save-excursion
+                 (goto-char (point-min))
+                 (call-interactively 'vr/query-replace)))
+             (global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning))
 
 ;; search info
-(require 'anzu)
-(global-anzu-mode t)
+(setup "anzu"
+       (global-anzu-mode t))
 
 ;; copy end of line, like C-k
 (defun copy-line ()
@@ -1146,7 +1153,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 ;; fonts
 (defvar small-font "Terminus 8")
 (defvar normal-font "Consolas 10")
-(defvar big-font "Ricty 14")
+(defvar big-font "Consolas 14")
 (defvar font-list (list
                    small-font
                    normal-font
@@ -1200,30 +1207,65 @@ If visual-line-mode is on, then also jump to beginning of real line."
         (make-directory dir)))))
 
 ;; Guide Key
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
-(guide-key-mode 1)
-(setq guide-key/recursive-key-sequence-flag t)
-(setq guide-key/popup-window-position 'bottom)
+(setup "guide-key"
+       (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
+       (guide-key-mode 1)
+       (setq guide-key/recursive-key-sequence-flag t)
+       (setq guide-key/popup-window-position 'bottom))
 
 ;; ace-jump (hint-style navigation)
-(require 'ace-jump-mode)
-(global-set-key (kbd "C-c j") 'ace-jump-mode)
+(setup "ace-jump-mode"
+       (global-set-key (kbd "C-c j") 'ace-jump-mode)
+       (global-set-key (kbd "C-c C-g") 'ace-jump-line-mode))
 
-;; expand-region
-(require 'expand-region)
-(global-set-key (kbd "<C-prior>") 'er/expand-region)
-(global-set-key (kbd "<C-next>") 'er/contract-region)
-
-;; Make shell more convenient, and suspend-frame less
-
-(global-set-key (kbd "C-x M-z") 'suspend-frame)
 ;; make zsh aliases work
-(setq shell-command-switch "-ic")
+(setq shell-command-switch "-lc")
 
 ;; Webjump let's you quickly search google, wikipedia, emacs wiki
 (global-set-key (kbd "C-x g") 'webjump)
 (global-set-key (kbd "C-x M-g") 'browse-url-at-point)
+
+;; dired
+(setup "dired"
+       ;; move files between split panes
+       (setq dired-dwim-target t))
+
+(setup-after "dired"
+             (setup "wdired")
+             (setup "dired-details")
+             (setup "dired-details+")
+             ;; reload dired after making changes
+             (--each '(dired-do-rename
+                       dired-do-copy
+                       dired-create-directory
+                       wdired-abort-changes)
+               (eval `(defadvice ,it (after revert-buffer activate)
+                        (revert-buffer))))
+             (global-set-key (kbd "C-c C-j") 'dired-jump)
+             (define-key dired-mode-map (kbd "C-c C-c") 'wdired-change-to-wdired-mode)
+             (define-key dired-mode-map (kbd "<insert>") 'dired-mark)
+             ;; C-a goes to filename
+             (defun dired-back-to-start-of-files ()
+               (interactive)
+               (backward-char (- (current-column) 2)))
+             (define-key dired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
+             (define-key wdired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
+             ;; M-up goes to first file
+             (defun dired-back-to-top ()
+               (interactive)
+               (beginning-of-buffer)
+               (dired-next-line 4))
+             (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+             (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+             (define-key dired-mode-map (vector 'remap 'smart-up) 'dired-back-to-top)
+             ;; M-down goes to last file
+             (defun dired-jump-to-bottom ()
+               (interactive)
+               (end-of-buffer)
+               (dired-next-line -1))
+             (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+             (define-key dired-mode-map (vector 'remap 'smart-down) 'dired-jump-to-bottom)
+             (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom))
 
 ;; M-n and M-p to move from current symbol
 (smartscan-mode 1)
@@ -1237,23 +1279,28 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (put 'upcase-region 'disabled nil)
 
 ;; gist
-;; (require 'cipher/aes)
-;; (setq yagist-encrypt-risky-config t)
+(setup-after "yagist"
+             (setup "cipher/aes"
+                    (setq yagist-encrypt-risky-config t)))
 
 ;; makefile has its issues
 (add-hook 'makefile-mode-hook 'usetabs)
 
 ;; diminish
 (require 'diminish)
-(diminish 'highlight-parentheses-mode)
-(diminish 'fic-mode)
+(diminish 'anzu-mode)
 (diminish 'auto-complete-mode "↝")
+(diminish 'auto-revert-mode)
+(diminish 'eldoc-mode)
+(diminish 'fic-mode)
+(diminish 'guide-key-mode)
+(diminish 'haskell-doc-mode)
+(diminish 'haskell-indentation-mode)
+(diminish 'highlight-parentheses-mode)
+(diminish 'hs-minor-mode)
+(diminish 'smartparens-mode)
 (diminish 'undo-tree-mode "↺")
 (diminish 'visual-line-mode)
 (diminish 'volatile-highlights-mode)
 (diminish 'whole-line-or-region-mode)
 (diminish 'yas-minor-mode)
-(diminish 'smartparens-mode)
-(diminish 'anzu-mode)
-(diminish 'guide-key-mode)
-(diminish 'hs-minor-mode)
