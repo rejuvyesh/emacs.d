@@ -39,6 +39,19 @@
 (require 'setup)
 (setup-initialize)
 
+;; safety first
+(setq make-backup-files nil)
+(defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosave-dir/"))
+(setq auto-save-list-file-prefix "~/.emacs-saves/cache/auto-save-list/.saves-")
+(setq auto-save-list-file-prefix autosave-dir)
+(setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
+(setq confirm-kill-emacs 'y-or-n-p)
+
+;; save location inside buffer
+(setup "saveplace"
+       (setq save-place-file "~/.emacs.d/cache/saveplace")
+       (setq-default save-place t))
+
 ; try to keep windows within a max margin
 (setup "automargin"
        (setq automargin-target-width 120)
@@ -49,10 +62,37 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; optical stuff
+;; (require 'heartbeat-cursor)
+;; (blink-cursor-mode -1)
+;; (heartbeat-cursor-mode)
+(setq-default cursor-type 'box)
+(setq inhibit-splash-screen t)
+
+;; shows current selected region
+(setq-default transient-mark-mode t)
+(global-font-lock-mode t)
+(setq jit-lock-stealth-time 5)
+(setq frame-title-format "%b")
+(set-fringe-mode '(1 . 10))
+
 ;; smart-mode
 (setup "smart-mode-line"
        (setq sml/theme 'dark)
        (sml/setup))
+
+;; scrolling
+(setq scroll-preserve-screen-position t)
+(setq mouse-wheel-progressive-speed nil)
+(setq scroll-error-top-bottom t)
+;; smooth scrolling with margin
+(setup "smooth-scrolling"
+       (setq smooth-scroll-margin 5)
+       (setq scroll-margin 0)
+       (setq scroll-conservatively 10000)
+       ;; necessary or scrolling is really slow
+       (setq-default bidi-display-reordering nil)
+       (setq auto-window-vscroll nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Remove background color from terminal emacs,
@@ -69,7 +109,7 @@
 
 ;; using modified molokai theme
 (load-theme 'molokai t)
-;; (icomplete-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; multiple cursors
@@ -84,7 +124,9 @@
        (global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
        (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
        (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
-
+(setup-after "multiple-cursors-core"
+             (define-key mc/keymap (kbd "<return>") nil)
+             (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode))
 (setup "phi-search"
        (global-set-key (kbd "C-c C-s") 'phi-search)
        (global-set-key (kbd "C-c C-r") 'phi-search-backward))
@@ -100,6 +142,9 @@
 ;; undo highlighting
 (setup "volatile-highlights"
        (volatile-highlights-mode t))
+
+;; show #colors in matching color
+(setup "rainbow-mode")
 
 (ido-mode 1)
 (setq ido-default-buffer-method 'selected-window)
@@ -325,20 +370,9 @@ See the variable `align-rules-list' for more details."))
 (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
 (add-hook 'auto-complete-mode-hook 'ac-common-setup)
 
-;; scrolling
-(setq scroll-preserve-screen-position t)
-(setq mouse-wheel-progressive-speed nil)
-;; smooth scrolling with margin
-(require 'smooth-scrolling)
-(setq smooth-scroll-margin 5)
-(setq scroll-margin 0)
-(setq scroll-conservatively 10000)
-;; necessary or scrolling is really slow
-(setq-default bidi-display-reordering nil)
-(setq auto-window-vscroll nil)
 
-;; I like M-g for goto-line
-(global-set-key "\M-g" 'goto-line)
+
+
 
 
 ;; snippets
@@ -552,33 +586,11 @@ See the variable `align-rules-list' for more details."))
 (add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
-;; safety
-(setq make-backup-files nil)
-(defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosave-dir/"))
-(setq auto-save-list-file-prefix "~/.emacs-saves/cache/auto-save-list/.saves-")
-(setq auto-save-list-file-prefix autosave-dir)
-(setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
-(setq confirm-kill-emacs 'y-or-n-p)
-
-;; save location inside buffer
-(require 'saveplace)
-(setq save-place-file "~/.emacs.d/cache/saveplace")
-(setq-default save-place t)
-
-;; optical stuff
-;; (require 'heartbeat-cursor)
-;; (blink-cursor-mode -1)
-;; (heartbeat-cursor-mode)
-(setq-default cursor-type 'box)
-(setq inhibit-splash-screen t)
-
-;; shows current selected region
-(setq-default transient-mark-mode t)
-(setq frame-title-format "%b")
-(set-fringe-mode '(1 . 10))
 
 ;; text stuff
-(setq default-major-mode 'org-mode)
+
+(setup-expecting "org-mode"
+                 (setq default-major-mode 'org-mode))
 (prefer-coding-system 'utf-8)
 (setq undo-limit 1000000)
 (setq sentence-end-double-space nil)
@@ -591,25 +603,25 @@ See the variable `align-rules-list' for more details."))
 ;; don't hard-wrap text, but use nice virtual wrapping
 (setq-default fill-column 80)
 (global-visual-line-mode 1)
-(require 'adaptive-wrap)
-(setq visual-line-fringe-indicators '(nil right-curly-arrow))
+(setup "adaptive-wrap"
+       (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
 
 ;; parentheses are connected and their content highlighted
 (setq blink-matching-paren-distance nil)
 (setq show-paren-style 'parenthesis)
 (setq show-paren-delay 0)
-(require 'highlight-parentheses)
-(defun turn-on-highlight-parentheses () (highlight-parentheses-mode 1))
-(add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'lisp-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'java-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'python-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'c-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'haskell-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'text-mode-hook 'turn-on-highlight-parentheses)
+(setup "highlight-parentheses"
+       (defun turn-on-highlight-parentheses () (highlight-parentheses-mode 1))
+       (add-hook 'emacs-lisp-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'lisp-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'java-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'python-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'c-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'haskell-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
+       (add-hook 'text-mode-hook 'turn-on-highlight-parentheses))
 
-;; key bindings
+;; general key bindings
 (global-set-key (kbd "\C-c c")    'comment-region)
 (global-set-key (kbd "\C-c u")    'uncomment-region)
 (global-set-key (kbd "C-c SPC")   'comment-dwim)
@@ -617,13 +629,16 @@ See the variable `align-rules-list' for more details."))
 (global-set-key (kbd "\C-c n")    'next-error)
 (global-set-key (kbd "\C-c p")    'previous-error)
 (global-set-key (kbd "\C-c i")    'indent-region)
+(global-set-key (kbd "\M-g")      'goto-line)
+(global-set-key (kbd "C-S-M-x")   'eval-buffer)
+
+(global-set-key (kbd "C-z") 'undo-tree-undo)
+(global-set-key (kbd "M-z") 'undo-tree-redo)
 
 (global-set-key (kbd "\C-f")   'forward-word)
 (global-set-key (kbd "\C-b")   'backward-word)
 (global-set-key (kbd "\M-f")   'forward-sentence)
 (global-set-key (kbd "\M-b")   'backward-sentence)
-(global-set-key (kbd "\C-p")   'undo-tree-undo)
-(global-set-key (kbd "\M-p")   'undo-tree-redo)
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>")  'end-of-buffer)
 
@@ -822,8 +837,6 @@ See the variable `align-rules-list' for more details."))
 (require 'pretty-lambdada)
 (global-pretty-lambda-mode)
 
-;; show #colors in matching color
-(require 'rainbow-mode)
 
 ;; support for bookmarks
 ;;(require 'breadcrumb)
@@ -1222,7 +1235,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; Make shell more convenient, and suspend-frame less
-(global-set-key (kbd "C-z") 'ansi-term)
+
 (global-set-key (kbd "C-x M-z") 'suspend-frame)
 ;; make zsh aliases work
 (setq shell-command-switch "-ic")
