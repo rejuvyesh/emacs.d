@@ -653,10 +653,6 @@ See the variable `align-rules-list' for more details."))
         ))
 (whole-line-or-region-mode 1)
 
-;; better rectangle functionality
-(require 'phi-rectangle)
-(phi-rectangle-mode)
-
 ;; edit symbol in multiple places simultaneously
 (require 'iedit)
 (global-set-key "\C-ce" 'iedit-mode)
