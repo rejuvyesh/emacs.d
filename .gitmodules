@@ -4,6 +4,3 @@
 [submodule "site-lisp/emacs-pry"]
 	path = site-lisp/emacs-pry
 	url = https://github.com/jacott/emacs-pry.git
-[submodule "site-lisp/epubmode-code"]
-	path = site-lisp/epubmode-code
-	url = http://git.code.sf.net/p/epubmode/code
