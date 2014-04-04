@@ -1,4 +1,4 @@
-(require 'autoinsert)
+(setup "autoinsert")
 ;;(auto-insert-mode)
 (add-hook 'find-file-hooks 'auto-insert)
 (setq auto-insert-directory "~/.emacs.d/templates/")
