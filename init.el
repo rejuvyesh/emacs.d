@@ -921,24 +921,6 @@ See the variable `align-rules-list' for more details."))
                   (global-unset-key (first key))))
 
 
-;; semantic (code parser)
-(require 'semantic)
-(setq semanticdb-default-save-directory "~/.emacs.d/cache/semanticdb")
-(semantic-mode 1)
-(global-semantic-idle-summary-mode 1)
-(global-semantic-idle-completions-mode 1)
-
-;; ecb (code browser)
-(require 'ecb-autoloads)
-;; fix for emacs 24
-(unless (boundp 'stack-trace-on-error)
-  (defvar stack-trace-on-error nil))
-
-
-;; keys
-(global-set-key "\C-c\C-t" 'ecb-toggle-layout)
-(global-set-key "\C-c;" 'ecb-minor-mode)
-
 
 ;; I never use set-fill-column and I hate hitting it by accident.
 (global-set-key "\C-x\ f" 'find-file)
