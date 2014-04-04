@@ -23,4 +23,9 @@ task :site_lisp => [:init] do
   compile_dir "#{BaseDir}/site-lisp"
 end
 
+desc "push to github"
+task :push do
+  sh "git push origin master"
+end
+
 task :default => :site_lisp
