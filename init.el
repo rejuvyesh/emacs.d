@@ -21,33 +21,10 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-;; https://github.com/dimitri/el-get
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-    (goto-char (point-max))
-    (eval-print-last-sexp))))
-(el-get 'sync)
-
-;; Make sure a package is installed
-(defun package-require (package)
-    "Install a PACKAGE unless it is already installed
-or a feature with the same name is already active.
-Usage: (package-require 'package)"
-                                        ; try to activate the package with at least version 0.
-    (package-activate package '(0))
-                                        ; try to just require the package. Maybe the user has it in his local config
-    (condition-case nil
-        (require package)
-                                        ; if we cannot require it, it does not exist, yet. So install it.
-      (error (package-install package))))
 (package-initialize)
-(unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
-(package-refresh-contents))
+
+;; (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
+;; (package-refresh-contents))
 
 ;; ;; define custom lisp directory and load all subdirectories too
 ;; (let ((default-directory "~/.emacs.d/site-lisp/"))
@@ -59,10 +36,13 @@ Usage: (package-require 'package)"
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+(require 'setup)
+(setup-initialize)
+
 ; try to keep windows within a max margin
-(require 'automargin)
-(setq automargin-target-width 120)
-(automargin-mode)
+(setup "automargin"
+       (setq automargin-target-width 120)
+       (automargin-mode))
 
 ;; remove the toolbar which no-one uses :)
 (tool-bar-mode -1)
@@ -70,8 +50,9 @@ Usage: (package-require 'package)"
 (scroll-bar-mode -1)
 
 ;; smart-mode
-(setq sml/theme 'dark)
-(sml/setup)
+(setup "smart-mode-line"
+       (setq sml/theme 'dark)
+       (sml/setup))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Remove background color from terminal emacs,
@@ -92,36 +73,37 @@ Usage: (package-require 'package)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; multiple cursors
-(require 'multiple-cursors)
-(global-set-key (kbd "C-c d")         'mc/edit-lines)
-(global-set-key (kbd "<C-down>")      'mc/mark-next-like-this)
-(global-set-key (kbd "<C-up>")        'mc/mark-previous-like-this)
-(global-set-key (kbd "<M-C-down>")    'mc/skip-to-next-like-this)
-(global-set-key (kbd "<M-C-up>")      'mc/skip-to-previous-like-this)
-(global-set-key (kbd "C-c C-d")       'mc/mark-all-dwim)
-(global-set-key (kbd "C-c >")         'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
-(global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click)
+(setup "multiple-cursors"
+       (global-set-key (kbd "C-c d")         'mc/edit-lines)
+       (global-set-key (kbd "<C-down>")      'mc/mark-next-like-this)
+       (global-set-key (kbd "<C-up>")        'mc/mark-previous-like-this)
+       (global-set-key (kbd "<M-C-down>")    'mc/skip-to-next-like-this)
+       (global-set-key (kbd "<M-C-up>")      'mc/skip-to-previous-like-this)
+       (global-set-key (kbd "C-c C-d")       'mc/mark-all-dwim)
+       (global-set-key (kbd "C-c >")         'mc/mark-more-like-this-extended)
+       (global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
+       (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+       (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
 
-(require 'phi-search)
-(require 'phi-search-mc)
-(global-set-key (kbd "C-c C-s") 'phi-search)
-(global-set-key (kbd "C-c C-r") 'phi-search-backward)
-(define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
-(define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
-(define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)
+(setup "phi-search"
+       (global-set-key (kbd "C-c C-s") 'phi-search)
+       (global-set-key (kbd "C-c C-r") 'phi-search-backward))
+(setup-after "phi-search"
+             (setup "phi-search-mc"
+                    (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
+                    (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
+                    (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)))
 
 ;; undo tree
 (global-undo-tree-mode)
 
 ;; undo highlighting
-(require 'volatile-highlights)
-(volatile-highlights-mode t)
+(setup "volatile-highlights"
+       (volatile-highlights-mode t))
 
 (ido-mode 1)
-  (setq ido-default-buffer-method 'selected-window)
-  (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+(setq ido-default-buffer-method 'selected-window)
+(add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
   (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
   (require 'ido-ubiquitous)
   (setq ido-enable-flex-matching t) ; fuzzy matching
@@ -152,6 +134,8 @@ Usage: (package-require 'package)"
 ;; indentation
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
+(defun use-tabs () (setq indent-tabs-mode t))
+
 ;; automatically turn on indenting
 (electric-indent-mode 1)
 ;; also when yanked
@@ -164,10 +148,10 @@ Usage: (package-require 'package)"
 
 
 ;; Flycheck for code linting
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(require 'flycheck-color-mode-line)
-(eval-after-load "flycheck"
-    '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+(setup "flycheck"
+       (add-hook 'after-init-hook #'global-flycheck-mode))
+(setup-lazy '(flycheck-color-mode-line) "flycheck"
+                              (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 ;; load ESS for R
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
@@ -186,59 +170,61 @@ Usage: (package-require 'package)"
                 ac-sources))
     )
 ;; align
-(require 'align)
+(setup "align"
 ;; definitions for ruby code
 ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
-(setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
-(defconst align-ruby-modes '(enh-ruby-mode)
-  "align-perl-modes is a variable defined in `align.el'.")
-(defconst ruby-align-rules-list
-  '((ruby-comma-delimiter
-     (regexp . ",\\(\\s-*\\)[^/ \t\n]")
-     (modes . '(enh-ruby-mode))
-     (repeat . t))
-    (ruby-string-after-func
-     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
-     (modes . '(enh-ruby-mode))
-     (repeat . t))
-    (ruby-symbol-after-func
-     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
-     (modes . '(enh-ruby-mode))))
-  "Alignment rules specific to the ruby mode.
-See the variable `align-rules-list' for more details.")
-(add-to-list 'align-perl-modes 'enh-ruby-mode)
-(add-to-list 'align-dq-string-modes 'enh-ruby-mode)
-(add-to-list 'align-sq-string-modes 'enh-ruby-mode)
-(add-to-list 'align-open-comment-modes 'enh-ruby-mode)
-(dolist (it ruby-align-rules-list)
-  (add-to-list 'align-rules-list it))
-;; haskell alignments
-(add-to-list 'align-rules-list
-             '(haskell-types
-               (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
-               (modes quote (haskell-mode literate-haskell-mode))))
-(add-to-list 'align-rules-list
-             '(haskell-assignment
-               (regexp . "\\(\\s-+\\)=\\s-+")
-               (modes quote (haskell-mode literate-haskell-mode))))
-(add-to-list 'align-rules-list
-             '(haskell-arrows
-               (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
-               (modes quote (haskell-mode literate-haskell-mode))))
-(add-to-list 'align-rules-list
-             '(haskell-left-arrows
-               (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-               (modes quote (haskell-mode literate-haskell-mode))))
-;; align current region
-(global-set-key (kbd "C-c =") 'align-current)
-;; repeat regex (teh fuck ain't that the default?!)
-(defun align-repeat (start end regexp)
-  "Repeat alignment with respect to the given regular expression."
-  (interactive "r\nsAlign regexp: ")
-  (align-regexp start end
-                (concat "\\(\\s-*\\)" regexp) 1 1 t))
-(global-set-key (kbd "C-c C-=") 'align-repeat)
-
+       (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)"))
+(setup-expecting "align"
+                 (setup-after "enh-ruby-mode"
+                                  (defconst align-ruby-modes '(enh-ruby-mode)
+                                    "align-perl-modes is a variable defined in `align.el'.")
+                                  (defconst ruby-align-rules-list
+                                    '((ruby-comma-delimiter
+                                       (regexp . ",\\(\\s-*\\)[^/ \t\n]")
+                                       (modes . '(enh-ruby-mode))
+                                       (repeat . t))
+                                      (ruby-string-after-func
+                                       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
+                                       (modes . '(enh-ruby-mode))
+                                       (repeat . t))
+                                      (ruby-symbol-after-func
+                                       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
+                                       (modes . '(enh-ruby-mode))))
+                   "Alignment rules specific to the ruby mode.
+See the variable `align-rules-list' for more details."))
+                 (add-to-list 'align-perl-modes 'enh-ruby-mode)
+                 (add-to-list 'align-dq-string-modes 'enh-ruby-mode)
+                 (add-to-list 'align-sq-string-modes 'enh-ruby-mode)
+                 (add-to-list 'align-open-comment-modes 'enh-ruby-mode)
+                 (dolist (it ruby-align-rules-list)
+                   (add-to-list 'align-rules-list it))
+                 (setup-after "haskell-mode"
+                 ;; haskell alignments
+                                  (add-to-list 'align-rules-list
+                                               '(haskell-types
+                                                 (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+                                                 (modes quote (haskell-mode literate-haskell-mode))))
+                                  (add-to-list 'align-rules-list
+                                               '(haskell-assignment
+                                                 (regexp . "\\(\\s-+\\)=\\s-+")
+                                                 (modes quote (haskell-mode literate-haskell-mode))))
+                                  (add-to-list 'align-rules-list
+                                               '(haskell-arrows
+                                                 (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+                                                 (modes quote (haskell-mode literate-haskell-mode))))
+                                  (add-to-list 'align-rules-list
+                                               '(haskell-left-arrows
+                                                 (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+                                                 (modes quote (haskell-mode literate-haskell-mode)))))
+                 ;; align current region
+                 (global-set-key (kbd "C-c =") 'align-current)
+                 ;; repeat regex (teh fuck ain't that the default?!)
+                 (defun align-repeat (start end regexp)
+                   "Repeat alignment with respect to the given regular expression."
+                   (interactive "r\nsAlign regexp: ")
+                   (align-regexp start end
+                                 (concat "\\(\\s-*\\)" regexp) 1 1 t))
+                 (global-set-key (kbd "C-c C-=") 'align-repeat))
 
 ;; python ;;
 (elpy-enable)
@@ -247,88 +233,82 @@ See the variable `align-rules-list' for more details.")
 
 ;; ruby ;;
 ;; enhanced ruby mode
-(require 'enh-ruby-mode)
-(setq enh-ruby-program "~/.rbenv/shims/ruby")
-(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
-;; replace normal ruby mode
-(defalias 'ruby-mode 'enh-ruby-mode)
-;; better colors for warnings
-(defface erm-syn-warnline
-  '((t (:underline "orange")))
-  "Face used for marking warning lines."
-  :group 'enh-ruby)
-(defface erm-syn-errline
-  '((t (:underline "pink")))
-  "Face used for marking error lines."
-  :group 'enh-ruby)
+(setup "enh-ruby-mode"
+       (setq enh-ruby-program "~/.rbenv/shims/ruby")
+       (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+       ;; replace normal ruby mode
+       (defalias 'ruby-mode 'enh-ruby-mode)
+       ;; better colors for warnings
+       (defface erm-syn-warnline
+         '((t (:underline "orange")))
+         "Face used for marking warning lines."
+         :group 'enh-ruby)
+       (defface erm-syn-errline
+         '((t (:underline "pink")))
+         "Face used for marking error lines."
+         :group 'enh-ruby)
 
-(define-key enh-ruby-mode-map (kbd "C-c C-n") 'enh-ruby-find-error)
-(define-key enh-ruby-mode-map (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
-;; misc stuff
-(require 'yari) ; ri documentation tool
-(require 'ruby-block) ; show what block an end belongs to
-(require 'inf-ruby) ; run ruby in emacs buffer
-(require 'robe) ; better code navigation and inf-ruby extensions
-(ruby-block-mode t)
-(setq ruby-block-highlight-toggle t)
-(setq ruby-indent-level tab-width)
-(setq enh-ruby-bounce-deep-indent t)
-(setq enh-ruby-deep-indent-paren nil)
-;; Rake files are Ruby, too
-(add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode))
-;; erb
-(require 'rhtml-mode)
-(add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))
-;; pry
-(require 'pry)
-(define-key enh-ruby-mode-map (kbd "<S-f9>") 'pry-intercept)
-(define-key enh-ruby-mode-map (kbd "<f9>")   'pry-intercept-rerun)
-(add-hook 'robe-mode-hook 'robe-ac-setup)
-;; documentation
-(define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)
+       (define-key enh-ruby-mode-map (kbd "C-c C-n") 'enh-ruby-find-error)
+       (define-key enh-ruby-mode-map (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
+       ;; Rake files are Ruby, too
+       (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode)))
+(setup-after "enh-ruby-mode"
+             ;; misc stuff
+             (setup "yari"
+                    (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)) ; ri documentation tool
+             (setup "ruby-block" ; show what block an end belongs to
+                    (ruby-block-mode t)
+                    (setq ruby-block-highlight-toggle t)
+                    (setq ruby-indent-level tab-width)
+                    (setq enh-ruby-bounce-deep-indent t)
+                    (setq enh-ruby-deep-indent-paren nil))
 
+             ;; erb
+             (setup "rhtml-mode"
+                    (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))))
 
 ;; Sometimes you have to
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(setup "php-mode"
+       (add-to-list 'auto-mode-alist '("\\.php$" . php-mode)))
 
 ;; javascript
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(setup "js2-mode"
+       (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
 
 ;; lua
-(require 'lua-mode)
-(setq lua-indent-level 2)
+(setup "lua-mode"
+       (setq lua-indent-level 2))
 
 ;; (s)css
 (setq scss-compile-at-save nil)
 (setq css-indent-level 2)
 
 ;; eldoc, ie function signatures in the minibuffer
-(require 'eldoc)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(setup "eldoc"
+       (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
 
 ;; go
-(add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
-(require 'go-mode)
-(require 'go-autocomplete)
-(require 'go-eldoc)
-(add-hook 'go-mode-hook 'go-eldoc-setup)
-(add-hook 'before-save-hook #'gofmt-before-save)
-(setq gofmt-command "goimports")
-(define-key go-mode-map (kbd "M-t") 'godef-jump)
-(define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
+(setup "go-mode"
+       (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+       (setq gofmt-command "goimports")
+       (add-hook 'before-save-hook #'gofmt-before-save)
+       (define-key go-mode-map (kbd "M-t") 'godef-jump)
+       (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
+       (setup "go-eldoc"
+              (add-hook 'go-mode-hook 'go-eldoc-setup)))
 
 ;; crontab
 (add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
 
 ;; expand-region
-(require 'expand-region)
-(global-set-key (kbd "<C-prior>") 'er/expand-region)
-(global-set-key (kbd "<C-next>") 'er/contract-region)
+(setup-lazy '(er/expand-region er/contract-region) "expand-region"
+            (global-set-key (kbd "<C-prior>") 'er/expand-region)
+            (global-set-key (kbd "<C-next>") 'er/contract-region))
 
 ;; C coding style
 (setq c-default-style "linux"
@@ -360,80 +340,78 @@ See the variable `align-rules-list' for more details.")
 ;; I like M-g for goto-line
 (global-set-key "\M-g" 'goto-line)
 
-;;M-down and M-up do nothing! :(  Let's make them do something, like M-left  and M-right do.
-
-(global-set-key [M-down] '(lambda () (interactive) (progn (forward-line 10) (recenter) ) ))
-(global-set-key [M-up]   '(lambda () (interactive) (progn (forward-line -10) (recenter) ) ))
 
 ;; snippets
-(setq yas-snippet-dirs "~/.emacs.d/snippets")
-
-(require 'yasnippet)
+(setup "yasnippet"
+       (setq yas-snippet-dirs "~/.emacs.d/snippets")
 ;; (define-key yas-minor-mode-map [backtab] 'yas-next-field)
 ;; (define-key yas-minor-mode-map [(shift tab)] 'yas-next-field)
 ;; (define-key yas-minor-mode-map [(control tab)] 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-t") 'yas-next-field-or-maybe-expand)
-(define-key yas-minor-mode-map (kbd "M-t") 'yas-prev-field)
-(yas-global-mode 1)
+       (define-key yas-minor-mode-map (kbd "C-t") 'yas-next-field-or-maybe-expand)
+       (define-key yas-minor-mode-map (kbd "M-t") 'yas-prev-field)
+       (yas-global-mode 1))
 
-; auto-yasnippet
-(require 'auto-yasnippet)
-(global-set-key (kbd "C-c ~") 'aya-create)
-(global-set-key (kbd "C-c C-~") 'aya-expand)
+;; auto-yasnippet
+(setup-after "yasnippet"
+             (setup "auto-yasnippet")
+             (global-set-key (kbd "C-c ~") 'aya-create)
+             (global-set-key (kbd "C-c C-~") 'aya-expand))
 
 ;; folding
-(require 'hideshow)
-(require 'hideshowvis)
-(require 'fold-dwim)
-(define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
-(define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
-(define-key global-map (kbd "C-c F") 'fold-dwim-show-all)
-(add-hook 'enh-ruby-hook   'hs-minor-mode)
+(setup "hideshow")
+(setup-lazy '(hs-minor-mode) "hideshowvis"
+            (add-hook 'enh-ruby-hook   'hs-minor-mode))
+(setup-lazy '(hs-minor-mode) "fold-dwim"
+            (define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
+            (define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
+            (define-key global-map (kbd "C-c F") 'fold-dwim-show-all))
 
 ;; fast navigation
-(require 'imenu)
-(require 'idomenu)
-(require 'imenu-anywhere)
-(define-key global-map (kbd "C-c [") 'idomenu)
-(define-key global-map (kbd "C-c C-[") 'idomenu)
-(define-key global-map (kbd "C-c ]") 'imenu-anywhere)
-(define-key global-map (kbd "C-c C-]") 'imenu-anywhere)
+(setup "imenu"
+       ;; recentering
+       (setq recenter-positions '(2 middle))
+       (add-hook 'imenu-after-jump-hook 'recenter-top-bottom))
+(setup "idomenu"
+       (define-key global-map (kbd "C-c [") 'idomenu)
+       (define-key global-map (kbd "C-c C-[") 'idomenu))
+(setup "imenu-anywhere"
+       (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
+       (define-key global-map (kbd "C-c C-]") 'imenu-anywhere))
 
-;; recentering
-(setq recenter-positions '(2 middle))
-(add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
 
 ;; text completion
-(require 'smartparens-config)
-(smartparens-global-mode t)
-(show-smartparens-global-mode +1)
-(setq sp-highlight-pair-overlay nil)
-(show-smartparens-global-mode t)
-;;; markdown-mode
-(sp-with-modes '(markdown-mode gfm-mode rst-mode)
-               (sp-local-pair "*" "*" :bind "C-*")
-               (sp-local-tag "2" "**" "**")
-               (sp-local-tag "s" "```scheme" "```")
-               (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
-;;; html-mode
-(sp-with-modes '(html-mode sgml-mode)
-  (sp-local-pair "<" ">"))
-;; sp keys
-(define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
-(define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
-(define-key sp-keymap (kbd "M-f") 'sp-forward-symbol)
-(define-key sp-keymap (kbd "M-b") 'sp-backward-symbol)
-(define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
-(define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
-(define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
-(define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
-(define-key sp-keymap (kbd "C-<left>") 'sp-add-to-next-sexp)
-(define-key sp-keymap (kbd "C-<right>") 'sp-add-to-previous-sexp)
-(define-key sp-keymap (kbd "M-<delete>") 'sp-unwrap-sexp)
-(define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
-
-;; wrap text
-;;(wrap-region-mode t)
+(setup "smartparens-config"
+       (smartparens-global-mode t)
+       (show-smartparens-global-mode +1)
+       (setq sp-highlight-pair-overlay nil)
+       (show-smartparens-global-mode t)
+       ;; markdown-mode
+       (setup-expecting "markdown-mode" "org-mode"
+                        (sp-with-modes '(markdown-mode)
+                          (sp-local-pair "*" "*" :actions '(wrap autoskip))
+                          (sp-local-tag "2" "**" "**")
+                          (sp-local-tag "m" "$" "$") ; math
+                          (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
+                        (sp-with-modes '(org-mode)
+                          (sp-local-pair "$" "$" :actions '(wrap autoskip))
+                          (sp-local-pair "$$" "$$" :actions '(wrap autoskip))))
+       ;; html-mode
+       (setup-expecting "html-mode" "sgml-mode"
+                        (sp-with-modes '(html-mode sgml-mode)
+                          (sp-local-pair "<" ">")))
+       ;; sp keys
+       (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
+       (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
+       (define-key sp-keymap (kbd "M-f") 'sp-forward-symbol)
+       (define-key sp-keymap (kbd "M-b") 'sp-backward-symbol)
+       (define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
+       (define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
+       (define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
+       (define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
+       (define-key sp-keymap (kbd "C-<left>") 'sp-add-to-next-sexp)
+       (define-key sp-keymap (kbd "C-<right>") 'sp-add-to-previous-sexp)
+       (define-key sp-keymap (kbd "M-<delete>") 'sp-unwrap-sexp)
+       (define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp))
 
 ;; auto correction
 (setq abbrev-file-name
@@ -444,71 +422,100 @@ See the variable `align-rules-list' for more details.")
 (setq default-abbrev-mode t)
 
 ;; auto completion
-(require 'fuzzy)
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-auto-start 1)
-(setq ac-use-menu-map t
-      ac-auto-show-menu t
-      ac-quick-help-delay 0.5
-      ac-use-fuzzy t
-      ac-ignore-case nil)
-(setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
-;; extra modes auto-complete must support
-(global-auto-complete-mode t)
-(define-key ac-completing-map (kbd "RET") 'ac-complete)
-(define-key ac-complete-mode-map "\M-n" 'ac-next)
-(define-key ac-complete-mode-map "\M-p" 'ac-previous)
-(dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
-                                    sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                                    html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                                    lisp-mode textile-mode markdown-mode tuareg-mode
-                                    js2-mode css-mode less-css-mode matlab-mode enh-ruby-mode))
-  (add-to-list 'ac-modes mode))
+(setup "fuzzy")
+(setup-after "fuzzy"
+             (setup "auto-complete-config"
+                    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+                    (setq ac-auto-start 1)
+                    (setq ac-use-menu-map t
+                          ac-auto-show-menu t
+                          ac-quick-help-delay 0.5
+                          ac-use-fuzzy t
+                          ac-ignore-case nil)
+                    (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
+                    ;; extra modes auto-complete must support
+                    (global-auto-complete-mode t)
+                    (define-key ac-completing-map (kbd "RET") 'ac-complete)
+                    (define-key ac-complete-mode-map "\M-n" 'ac-next)
+                    (define-key ac-complete-mode-map "\M-p" 'ac-previous)
+                    (dolist (mode '(magit-log-edit-mode log-edit-mode org-mode text-mode haml-mode
+                                                        sass-mode yaml-mode haskell-mode 
+                                                        html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                                                        lisp-mode textile-mode markdown-mode tuareg-mode
+                                                        js2-mode css-mode less-css-mode matlab-mode enh-ruby-mode))
+                      (add-to-list 'ac-modes mode))
 
-(setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
+                    (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
+                    (setup-expecting "go-mode"
+                                     (setup "go-autocomplete"))))
+
 
 ;; disabling Yasnippet completion
-(defun epy-snips-from-table (table)
-  (with-no-warnings
-    (let ((hashtab (ac-yasnippet-table-hash table))
-          (parent (ac-yasnippet-table-parent table))
-          candidates)
-      (maphash (lambda (key value)
-                 (push key candidates))
-               hashtab)
-      (identity candidates)
-      )))
-(defun epy-get-all-snips ()
-  (let (candidates)
-    (maphash
-     (lambda (kk vv) (push (epy-snips-from-table vv) candidates)) yas--tables)
-    (apply 'append candidates))
-  )
-(setq ac-ignores (concatenate 'list ac-ignores (epy-get-all-snips)))
+(setup-after "auto-complete" "yasnippet"
+             (defun epy-snips-from-table (table)
+               (with-no-warnings
+                 (let ((hashtab (ac-yasnippet-table-hash table))
+                       (parent (ac-yasnippet-table-parent table))
+                       candidates)
+                   (maphash (lambda (key value)
+                              (push key candidates))
+                            hashtab)
+                   (identity candidates)
+                   )))
+             (defun epy-get-all-snips ()
+               (let (candidates)
+                 (maphash
+                  (lambda (kk vv) (push (epy-snips-from-table vv) candidates)) yas--tables)
+                 (apply 'append candidates))
+               )
+             (setq ac-ignores (concatenate 'list ac-ignores (epy-get-all-snips))))
 
 ;; recent files
-(require 'recentf)
-(setq recentf-max-saved-items 100)
-(setq recentf-save-file "~/.emacs.d/cache/recentf")
-(setq recentf-exclude (append recentf-exclude
-                              '("\.emacs\.d/cache"
-                                "\.emacs\.d/elpa")))
-(setq recentf-keep '(file-remote-p file-readable-p))
-(recentf-mode 1)
+(setup "recentf"
+       (setq recentf-max-saved-items 1000)
+       (setq recentf-save-file "~/.emacs.d/cache/recentf")
+       (setq recentf-exclude (append recentf-exclude
+                                     '("\.emacs\.d/cache"
+                                       "\.emacs\.d/elpa")))
+       (setq recentf-keep '(file-remote-p file-readable-p))
+       (recentf-mode 1))
 
 ;; file completion
-(defun recentf-ido-find-file ()
-  "Find a recent file using Ido."
+
+(setup-after "recentf"
+             (defun recentf-ido-find-file ()
+               "Find a recent file using Ido."
+               (interactive)
+               (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+                 (when file
+                   (find-file file))))
+             (global-set-key "\C-x\C-r" 'recentf-ido-find-file))
+
+;; use regexp search and selected region (if any) by default
+(defun region-as-string ()
+  (buffer-substring (region-beginning)
+                    (region-end)))
+
+(defun isearch-forward-use-region ()
   (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
-(global-set-key "\C-x\C-r" 'recentf-ido-find-file)
+  (when (region-active-p)
+    (add-to-history 'regexp-search-ring (region-as-string))
+    (deactivate-mark))
+  (call-interactively 'isearch-forward-regexp))
+
+(defun isearch-backward-use-region ()
+  (interactive)
+  (when (region-active-p)
+    (add-to-history 'regexp-search-ring (region-as-string))
+    (deactivate-mark))
+  (call-interactively 'isearch-backward-regexp))
 
 ;; use regexp search by default
-(global-set-key "\C-s" 'isearch-forward-regexp)
-(global-set-key "\C-r" 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'isearch-forward-use-region)
+(global-set-key (kbd "C-r") 'isearch-backward-use-region)
+(global-set-key (kbd "C-S-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-S-r") 'isearch-backward-regexp)
+
 ;; make backspace sane
 (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
 
@@ -519,6 +526,31 @@ See the variable `align-rules-list' for more details.")
 (define-key isearch-mode-map (kbd "C-c C-SPC") 'isearch-toggle-lax-whitespace)
 (define-key isearch-mode-map (kbd "C-c C-o") 'isearch-occur)
 
+;; search wort at point, like vim
+(defun isearch-word-at-point ()
+  (interactive)
+  (call-interactively 'isearch-forward-regexp))
+
+(defun isearch-yank-word-hook ()
+  (when (equal this-command 'isearch-word-at-point)
+    (let ((string (concat "\\<"
+                          (buffer-substring-no-properties
+                           (progn (skip-syntax-backward "w_") (point))
+                           (progn (skip-syntax-forward "w_") (point)))
+                          "\\>")))
+      (if (and isearch-case-fold-search
+               (eq 'not-yanks search-upper-case))
+          (setq string (downcase string)))
+      (setq isearch-string string
+            isearch-message
+            (concat isearch-message
+                    (mapconcat 'isearch-text-char-description
+                               string ""))
+            isearch-yank-flag t)
+      (isearch-search-and-update))))
+
+(add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
+(global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
 ;; safety
 (setq make-backup-files nil)
@@ -534,9 +566,9 @@ See the variable `align-rules-list' for more details.")
 (setq-default save-place t)
 
 ;; optical stuff
-(require 'heartbeat-cursor)
-(blink-cursor-mode -1)
-(heartbeat-cursor-mode)
+;; (require 'heartbeat-cursor)
+;; (blink-cursor-mode -1)
+;; (heartbeat-cursor-mode)
 (setq-default cursor-type 'box)
 (setq inhibit-splash-screen t)
 
@@ -559,8 +591,7 @@ See the variable `align-rules-list' for more details.")
 ;; don't hard-wrap text, but use nice virtual wrapping
 (setq-default fill-column 80)
 (global-visual-line-mode 1)
-(require 'adaptive-wrap-prefix)
-(global-adaptive-wrap-prefix-mode 1)
+(require 'adaptive-wrap)
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
 
 ;; parentheses are connected and their content highlighted
@@ -632,7 +663,10 @@ See the variable `align-rules-list' for more details.")
 
 ; mark stuff like FIXME
 (require 'fic-mode)
-(global-fic-mode 1)
+(add-hook 'prog-mode-hook 'fic-mode)
+;; misbehaving modes
+(add-hook 'enh-ruby-mode-hook 'fic-mode)
+(add-hook 'js2-mode-hook 'fic-mode)
 
 ;; csv
 (autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
@@ -1163,6 +1197,14 @@ If visual-line-mode is on, then also jump to beginning of real line."
 
 (global-set-key (kbd "C-c I") 'find-user-init-file)
 
+;; automatically create directories if necessary
+(defadvice find-file (before make-directory-maybe (filename &optional wildcards) activate)
+  "Create parent directory if not exists while visiting file."
+  (unless (file-exists-p filename)
+    (let ((dir (file-name-directory filename)))
+      (unless (file-exists-p dir)
+        (make-directory dir)))))
+
 ;; Guide Key
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
@@ -1201,11 +1243,11 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (put 'upcase-region 'disabled nil)
 
 ;; gist
-(require 'cipher/aes)
-(setq yagist-encrypt-risky-config t)
+;; (require 'cipher/aes)
+;; (setq yagist-encrypt-risky-config t)
 
 ;; makefile has its issues
-(add-hook 'makefile-mode-hook 'indent-tabs-mode)
+(add-hook 'makefile-mode-hook 'usetabs)
 
 ;; diminish
 (require 'diminish)
