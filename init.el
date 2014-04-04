@@ -52,6 +52,17 @@
        (setq save-place-file "~/.emacs.d/cache/saveplace")
        (setq-default save-place t))
 
+;; save minibuffer history
+(savehist-mode 1)
+(setq history-length         1500)
+(setq search-ring-max        1000)
+(setq regexp-search-ring-max 1000)
+(setq savehist-file "~/.emacs.d/cache/history")
+(setq savehist-additional-variables '(search-ring
+                                      regexp-search-ring
+                                      kill-ring
+                                      compile-command))
+
 ; try to keep windows within a max margin
 (setup "automargin"
        (setq automargin-target-width 120)
@@ -135,6 +146,11 @@
                     (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
                     (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
                     (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)))
+
+;; edit symbol in multiple places simultaneously
+(setup-lazy '(iedit-mode) "iedit"
+            (global-set-key (kbd "C-c ;") 'iedit-mode)
+            (global-set-key (kbd "C-c C-;") 'iedit-mode-toggle-on-function))
 
 ;; undo tree
 (global-undo-tree-mode)
@@ -622,133 +638,129 @@ See the variable `align-rules-list' for more details."))
        (add-hook 'text-mode-hook 'turn-on-highlight-parentheses))
 
 ;; general key bindings
-(global-set-key (kbd "\C-c c")    'comment-region)
-(global-set-key (kbd "\C-c u")    'uncomment-region)
+(global-set-key (kbd "C-c c")    'comment-region)
+(global-set-key (kbd "C-c u")    'uncomment-region)
 (global-set-key (kbd "C-c SPC")   'comment-dwim)
 (global-set-key (kbd "C-c C-SPC") 'comment-dwim)
-(global-set-key (kbd "\C-c n")    'next-error)
-(global-set-key (kbd "\C-c p")    'previous-error)
-(global-set-key (kbd "\C-c i")    'indent-region)
-(global-set-key (kbd "\M-g")      'goto-line)
+(global-set-key (kbd "C-c n")    'next-error)
+(global-set-key (kbd "C-c p")    'previous-error)
+(global-set-key (kbd "C-c i")    'indent-region)
+(global-set-key (kbd "M-g")      'goto-line)
 (global-set-key (kbd "C-S-M-x")   'eval-buffer)
 
 (global-set-key (kbd "C-z") 'undo-tree-undo)
 (global-set-key (kbd "M-z") 'undo-tree-redo)
 
-(global-set-key (kbd "\C-f")   'forward-word)
-(global-set-key (kbd "\C-b")   'backward-word)
-(global-set-key (kbd "\M-f")   'forward-sentence)
-(global-set-key (kbd "\M-b")   'backward-sentence)
+(global-set-key (kbd "C-f")   'forward-word)
+(global-set-key (kbd "C-b")   'backward-word)
+(global-set-key (kbd "M-f")   'forward-sentence)
+(global-set-key (kbd "M-b")   'backward-sentence)
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>")  'end-of-buffer)
 
 ;; if no region is active, act on current line
-(require 'whole-line-or-region)
-(setq whole-line-or-region-extensions-alist
-      '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
-        (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
-        (kill-region whole-line-or-region-kill-region nil)
-        (kill-ring-save whole-line-or-region-kill-ring-save nil)
-        (yank whole-line-or-region-yank nil)
-        ))
-(whole-line-or-region-mode 1)
+(setup "whole-line-or-region"
+       (setq whole-line-or-region-extensions-alist
+             '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
+               (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+               (kill-region whole-line-or-region-kill-region nil)
+               (kill-ring-save whole-line-or-region-kill-ring-save nil)
+               (yank whole-line-or-region-yank nil)
+               ))
+       (whole-line-or-region-mode 1))
 
-;; edit symbol in multiple places simultaneously
-(require 'iedit)
-(global-set-key "\C-ce" 'iedit-mode)
-
-;; save minibuffer history
-(savehist-mode 1)
-(setq history-length 1500)
-(setq savehist-file "~/.emacs.d/cache/history")
-(setq savehist-additional-variables '(search-ring
-                                       regexp-search-ring
-                                       kill-ring
-                                       compile-command))
+;; tramp
+(setup "tramp"
+       (setq tramp-default-method "ssh")
+       (setq tramp-persistency-file-name "~/.emacs.d/cache/tramp"))
 
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
+;; also revert dired
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
 
 ;; move files to trash instead
 (setq delete-by-moving-to-trash t)
 
 ; mark stuff like FIXME
-(require 'fic-mode)
-(add-hook 'prog-mode-hook 'fic-mode)
-;; misbehaving modes
-(add-hook 'enh-ruby-mode-hook 'fic-mode)
-(add-hook 'js2-mode-hook 'fic-mode)
+(setup "fic-mode"
+       (add-hook 'prog-mode-hook 'fic-mode)
+       ;; misbehaving modes
+       (add-hook 'enh-ruby-mode-hook 'fic-mode)
+       (add-hook 'js2-mode-hook 'fic-mode))
 
 ;; csv
-(autoload 'csv-mode "csv-mode" "Major mode for editing comma-separated value files." t)
-(add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
-(autoload 'csv-nav-mode "csv-nav-mode" "Major mode for navigating comma-separated value files." t)
-(setq csv-separators '("," ";" "|" " "))
+(setup "csv-mode"
+       (add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+       (setup "csv-nav-mode")
+       (setq csv-separators '("," ";" "|" " ")))
 
 ;; markdown
 ;; (require 'markdown-mode)
-(setq markdown-command "pandoc --smart -f markdown -t html")
-(add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
-;; add pandoc hook
-(add-hook 'markdown-mode-hook 'turn-on-pandoc)
-(add-hook 'markdown-mode-hook
-          (lambda()
-            (add-to-list 'ac-sources 'ac-source-math-latex)))
+(setup "markdown-mode"
+       (setq markdown-command "pandoc --smart -f markdown -t html")
+       (add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
+       (add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
+       (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+       (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+       (add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
+       (add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
+       ;; add pandoc hook
+       (add-hook 'markdown-mode-hook 'turn-on-pandoc)
+       (add-hook 'markdown-mode-hook
+                 (lambda()
+                   (add-to-list 'ac-sources 'ac-source-math-latex))))
 
 ;; yaml
-(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(defun no-electric-indent-yaml ()
-  (electric-indent-mode -1)
-  (define-key yaml-mode-map [(return)] 'newline-and-indent))
-(add-hook 'yaml-mode-hook 'no-electric-indent-yaml)
+(setup "yaml-mode"
+       (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+       (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+       (defun no-electric-indent-yaml ()
+         (electric-indent-mode -1)
+         (define-key yaml-mode-map [(return)] 'newline-and-indent))
+       (add-hook 'yaml-mode-hook 'no-electric-indent-yaml))
+
+;; shell stuff
+(setq sh-basic-offset tab-width)
 
 ;; json
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-;; octave mode
-;; (autoload 'octave-mode "octave-mod" nil t)
-;; (setq auto-mode-alist
-;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
-(load-library "matlab-load")
 
-(add-hook 'matlab-mode
-          (lambda ()
-            (auto-complete-mode 1)
-            ))
-(setq auto-mode-alist
-      (cons
-       '("\\.m$" . matlab-mode)
-            auto-mode-alist))
+(setup "matlab-load"
+       (add-hook 'matlab-mode
+                 (lambda ()
+                   (auto-complete-mode 1)
+                   ))
+       (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode)))
 
 ;; haskell mode
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method)
-(add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
-(define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
-(define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info)
+(setup "haskell-mode")
+(setup-after "haskell-mode"
+       (setup "haskell-doc"
+              (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode))
+       (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+       (setup "haskell-indentation"
+              (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
+       (setup "inf-haskell"
+              (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
+       (define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
+       (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info))
 
 ;; org-mode
 (setq org-special-ctrl-a/e t)
 (setq load-path (cons "~/.emacs.d/site-lisp/org-mode/lisp" load-path))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 ;; loaded so that we can diminish it later
-(require 'org-indent)
-;; proper indentation / folding
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-(setq org-indent-indentation-per-level 2)
-(setq org-startup-folded 'content)
-(setq org-blank-before-new-entry '(
-  (heading . nil)
-  (plain-list-item . auto)))
+(setup "org-indent"
+       ;; proper indentation / folding
+       (setq org-startup-indented t)
+       (setq org-hide-leading-stars t)
+       (setq org-indent-indentation-per-level 2)
+       (setq org-startup-folded 'content)
+       (setq org-blank-before-new-entry '((heading . nil)
+                                          (plain-list-item . auto))))
 ;; tag column
 (setq org-tags-column -70)
 ;; dependencies
@@ -783,13 +795,13 @@ See the variable `align-rules-list' for more details."))
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
-   (C . t)
-   (R . t)
-   (matlab . t)
-   (sh . t)
-   (ruby . t)
-   (python . t)
-   (haskell . t)))
+   (C          . t)
+   (R          . t)
+   (matlab     . t)
+   (sh         . t)
+   (ruby       . t)
+   (python     . t)
+   (haskell    . t)))
 (add-to-list 'org-src-lang-modes '("c" . c))
 (add-to-list 'org-src-lang-modes '("r" . ess-mode))
 (add-to-list 'org-src-lang-modes '("h" . haskell))
@@ -805,8 +817,8 @@ See the variable `align-rules-list' for more details."))
 (org-defkey org-mode-map "\C-c\C-d" (lambda () (interactive) (org-todo "DONE")))
 ;; shortcut for C-u C-c C-l
 (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
-(define-key global-map "\C-cf" 'org-insert-file-link)
-(define-key global-map "\C-cl" 'org-store-link)
+(org-defkey org-mode-map "\C-cf" 'org-insert-file-link)
+(org-defkey org-mode-map "\C-cl" 'org-store-link)
 ;; go to last position before C-c C-o
 (define-key global-map "\C-co" 'org-mark-ring-goto)
 ;; some templates
@@ -822,25 +834,18 @@ See the variable `align-rules-list' for more details."))
             (add-to-list 'ac-sources 'ac-source-math-latex)))
 
 ;; scratchpad buffers
-(require 'scratch)
-;; don't want to remember which key I used
-(global-set-key (kbd "C-c b") 'scratch)
-;; don't start in lisp
-(setq initial-major-mode 'org-mode)
-(setq initial-scratch-message nil)
+(setup "scratch"
+       ;; don't want to remember which key I used
+       (global-set-key (kbd "C-c b") 'scratch)
+       ;; don't start in lisp
+       (setq initial-major-mode 'org-mode)
+       (setq initial-scratch-message nil))
 
 ;; oh pretty!
-(require 'pretty-lambdada)
-(global-pretty-lambda-mode)
+(setup "pretty-lambdada"
+       (global-pretty-lambda-mode))
 
 
-;; support for bookmarks
-;;(require 'breadcrumb)
-;;(global-set-key (kbd "C-c m") 'bc-set)
-;;(global-set-key (kbd "M-SPC") 'bc-previous)
-;;(global-set-key (kbd "M-S-SPC") 'bc-next)
-;;(setq bc-bookmark-limit 1000)
-;;(setq bc-bookmark-file (expand-file-name "~/.emacs.d/cache/breadcrumb"))
 ;; normal bookmarks
 (setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
 
@@ -850,8 +855,6 @@ See the variable `align-rules-list' for more details."))
                    (,(kbd "C-z") suspend-frame)
                    ([(insert)] overwrite-mode)
                    ([(insertchar)] overwrite-mode)
-                   (,(kbd "C-v") scroll-up-command)
-                   (,(kbd "M-v") scroll-down-command)
                    (,(kbd "C-]") abort-recursive-edit)
                    (,(kbd "C-@") set-mark-command)
                    (,(kbd "<C-down-mouse-1>") mouse-buffer-menu)
