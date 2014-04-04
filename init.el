@@ -307,8 +307,20 @@ See the variable `align-rules-list' for more details.")
 (setq scss-compile-at-save nil)
 (setq css-indent-level 2)
 
+;; eldoc, ie function signatures in the minibuffer
+(require 'eldoc)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
 ;; go
 (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+(require 'go-mode)
+(require 'go-autocomplete)
+(require 'go-eldoc)
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(add-hook 'before-save-hook #'gofmt-before-save)
+(setq gofmt-command "goimports")
+(define-key go-mode-map (kbd "M-t") 'godef-jump)
+(define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
 
 ;; crontab
 (add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
