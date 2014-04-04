@@ -1,6 +1,3 @@
-[submodule "el-get/Enhanced-Ruby-Mode"]
-	path = el-get/Enhanced-Ruby-Mode
-	url = http://github.com/zenspider/enhanced-ruby-mode.git
 [submodule "el-get/emacs-clang-complete-async"]
 	path = el-get/emacs-clang-complete-async
 	url = https://github.com/Golevka/emacs-clang-complete-async.git
