@@ -3,3 +3,4 @@ cache/
 url/
 var/
 private.el
+eshell
