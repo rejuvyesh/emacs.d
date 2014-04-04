@@ -10,6 +10,7 @@
                           ("\\.h$" . ["h" rejuvyesh/auto-update-header-file])
                           ("\\.hs$" . ["hs" rejuvyesh/auto-update-header-file])
                           ("\\.rb$" . ["rb" rejuvyesh/auto-update-header-file])
+                          ("\\.go$" . ["go" rejuvyesh/auto-update-header-file])
                           ))
 
 

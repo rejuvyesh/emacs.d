@@ -11,6 +11,8 @@
         indent-for-tab-command
         indent-region
         kill-visual-line
+        org-beginning-of-line
+        org-kill-line
         org-self-insert-command
         phi-rectangle-kill-region
         phi-rectangle-next-line
