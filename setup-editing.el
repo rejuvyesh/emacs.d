@@ -87,7 +87,7 @@
                 "!@#$%^&*()-=[]{};'\\:\"|,./<>?`~_+"
                 )))
 ;; unset unwanted default keys
-(loop for key in `(
+(cl-loop for key in `(
                    (,(kbd "C-x C-z") suspend-frame)
                    (,(kbd "C-z") suspend-frame)
                    ([(insert)] overwrite-mode)
@@ -304,8 +304,6 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (setup "ido"
   (ido-mode 1)
   
-  (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
-  (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
   (setq ido-default-buffer-method 'selected-window)
   (setq ido-enable-flex-matching t) ; fuzzy matching
   (setq ido-use-virtual-buffers t)

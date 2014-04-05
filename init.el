@@ -27,9 +27,13 @@
 (load custom-file)
 
 ;; init setup
-(require 'cl)
+(require 'cl-lib)
 (require 'setup)
 (setup-initialize)
+
+;; some generic aliases that make elisp less painful
+(defalias 'first  'cl-first)
+(defalias 'second 'cl-second)
 
 ;; theme etc
 (setup-include "~/.emacs.d/setup-look.el")
