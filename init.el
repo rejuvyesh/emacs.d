@@ -1229,43 +1229,43 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (setup "dired"
        ;; move files between split panes
        (setq dired-dwim-target t))
-
-(setup-after "dired"
-             (setup "wdired")
-             (setup "dired-details")
-             (setup "dired-details+")
-             ;; reload dired after making changes
-             (--each '(dired-do-rename
-                       dired-do-copy
-                       dired-create-directory
-                       wdired-abort-changes)
-               (eval `(defadvice ,it (after revert-buffer activate)
-                        (revert-buffer))))
-             (global-set-key (kbd "C-c C-j") 'dired-jump)
-             (define-key dired-mode-map (kbd "C-c C-c") 'wdired-change-to-wdired-mode)
-             (define-key dired-mode-map (kbd "<insert>") 'dired-mark)
-             ;; C-a goes to filename
-             (defun dired-back-to-start-of-files ()
-               (interactive)
-               (backward-char (- (current-column) 2)))
-             (define-key dired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
-             (define-key wdired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
-             ;; M-up goes to first file
-             (defun dired-back-to-top ()
-               (interactive)
-               (beginning-of-buffer)
-               (dired-next-line 4))
-             (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
-             (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
-             (define-key dired-mode-map (vector 'remap 'smart-up) 'dired-back-to-top)
-             ;; M-down goes to last file
-             (defun dired-jump-to-bottom ()
-               (interactive)
-               (end-of-buffer)
-               (dired-next-line -1))
-             (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
-             (define-key dired-mode-map (vector 'remap 'smart-down) 'dired-jump-to-bottom)
-             (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom))
+(setup-after "dired" 
+  (setup "wdired")
+  (setup "dired-details")
+  (setup "dired-details+")
+  
+  ;; reload dired after making changes
+  (--each '(dired-do-rename
+            dired-do-copy
+            dired-create-directory
+            wdired-abort-changes)
+    (eval `(defadvice ,it (after revert-buffer activate)
+             (revert-buffer))))
+  (global-set-key (kbd "C-c C-j") 'dired-jump)
+  (define-key dired-mode-map (kbd "C-c C-c") 'wdired-change-to-wdired-mode)
+  (define-key dired-mode-map (kbd "<insert>") 'dired-mark)
+  ;; C-a goes to filename
+  (defun dired-back-to-start-of-files ()
+    (interactive)
+    (backward-char (- (current-column) 2)))
+  (define-key dired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
+  (define-key wdired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
+  ;; M-up goes to first file
+  (defun dired-back-to-top ()
+    (interactive)
+    (beginning-of-buffer)
+    (dired-next-line 4))
+  (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+  (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+  (define-key dired-mode-map (vector 'remap 'smart-up) 'dired-back-to-top)
+  ;; M-down goes to last file
+  (defun dired-jump-to-bottom ()
+    (interactive)
+    (end-of-buffer)
+    (dired-next-line -1))
+  (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+  (define-key dired-mode-map (vector 'remap 'smart-down) 'dired-jump-to-bottom)
+  (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom))
 
 ;; M-n and M-p to move from current symbol
 (smartscan-mode 1)
