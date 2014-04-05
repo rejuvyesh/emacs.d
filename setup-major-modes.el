@@ -325,3 +325,7 @@
 ;; shell stuff
 (setq sh-basic-offset tab-width)
 
+;; nix mode
+(setup-lazy '(nix-node) "nix-node"
+  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+  (add-to-list 'auto-mode-alist '("\\.nix.in\\'" . nix-mode)))
