@@ -31,27 +31,30 @@
     (define-key ac-complete-mode-map "\M-n" 'ac-next)
     (define-key ac-complete-mode-map "\M-p" 'ac-previous)))
 (setup-after "auto-complete-config"
-  (dolist (mode '(org-mode
-                  text-mode
+  (dolist (mode '(css-mode
+                  enh-ruby-mode
                   haml-mode
-                  sass-mode
-                  yaml-mode
                   haskell-mode 
                   html-mode
-                  sh-mode
-                  lisp-mode
-                  textile-mode
-                  markdown-mode
                   js2-mode
-                  css-mode
+                  lisp-mode
+                  log-edit-mode
+                  markdown-mode
                   matlab-mode
-                  enh-ruby-mode))
+                  org-mode
+                  sass-mode
+                  sh-mode
+                  text-mode
+                  textile-mode
+                  yaml-mode
+                  magit-log-edit-mode))
     ;; Learn emacs list to string so that you can add (setup-expecting mode) before add to list
     ;; (setup-expecting (symbol-name (pop mode))
     ;; (add-to-list 'ac-modes (pop mode))))
     (add-to-list 'ac-modes mode))
-  ;; magit-log-edit-mode
-  ;; log-edit-mode
+  (setq ac-sources '(ac-source-abbrev
+                     ac-source-dictionary
+                     ac-source-words-in-same-mode-buffers))
   (setup-expecting "go-mode"
     (setup "go-autocomplete")))
 
