@@ -352,6 +352,6 @@
            (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
            (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
            (haskell-mode     . "ghc -Wall -fwarn-missing-import-lists %f") )))
-(global-set-key (kbd "C-c M-c") '("smart-compile" smart-compile compile))
+(global-set-key (kbd "C-S-c") '("smart-compile" smart-compile compile))
 
 (provide 'setup-major-modes)
