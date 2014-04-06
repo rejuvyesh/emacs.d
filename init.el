@@ -7,7 +7,7 @@
 
 ;; site-lisp stores manually maintained packages
 (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
-    (let* ((my-lisp-dir "~/.emacs.d/site-lisp/")
+    (let* ((my-lisp-dir "~/.emacs.d/local/")
            (default-directory my-lisp-dir))
       (progn
         (setq load-path (cons my-lisp-dir load-path))
@@ -16,42 +16,41 @@
 
 ;; package-repositories
 (require 'package)
-(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
-
-;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
 
 ;; init setup
 (require 'cl-lib)
 (require 'setup)
 (setup-initialize)
 
+;; Keep emacs Custom-settings in separate file
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;;(load custom-file)
+(setup-include "custom")
+
 ;; some generic aliases that make elisp less painful
 (defalias 'first  'cl-first)
 (defalias 'second 'cl-second)
 
 ;; theme etc
-(setup-include "~/.emacs.d/setup-look.el")
+(setup "setup-look")
 
 ;; editing etc
-(setup-include "~/.emacs.d/setup-editing.el")
+(setup "setup-editing")
 
 ;; isearch etc
-(setup-include "~/.emacs.d/setup-isearch.el")
+(setup "setup-isearch")
 
 ;; auto-completion etc
-(setup-include "~/.emacs.d/setup-autocomplete.el")
+(setup "setup-autocomplete")
 
 ;; use automatic file headers
-(setup-include "~/.emacs.d/setup-auto-insert.el")
+(setup "setup-auto-insert")
 
 ;; modes etc
-(setup-include "~/.emacs.d/setup-major-modes.el")
+(setup "setup-major-modes")
 
 ;; use y/n instead of yes/no
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -68,19 +67,19 @@
 
 ;; diminish
 (setup "diminish"
-  (diminish 'anzu-mode)
-  (diminish 'auto-complete-mode "↝")
-  (diminish 'auto-revert-mode)
-  (diminish 'eldoc-mode)
-  (diminish 'fic-mode)
-  (diminish 'guide-key-mode)
-  (diminish 'haskell-doc-mode)
-  (diminish 'haskell-indentation-mode)
-  (diminish 'highlight-parentheses-mode)
-  (diminish 'hs-minor-mode)
-  (diminish 'smartparens-mode)
-  (diminish 'undo-tree-mode "↺")
-  (diminish 'visual-line-mode)
-  (diminish 'volatile-highlights-mode)
-  (diminish 'whole-line-or-region-mode)
-  (diminish 'yas-minor-mode))
+  (setup-after "anzu-mode"(diminish 'anzu-mode))
+  (setup-after "auto-complete"(diminish 'auto-complete-mode "↝"))
+  (setup-after "auto-revert-mode" (diminish 'auto-revert-mode))
+  (setup-after "eldoc" (diminish 'eldoc-mode))
+  (setup-after "fic-mode" (diminish 'fic-mode))
+  (setup-after "guide-key" (diminish 'guide-key-mode))
+  (setup-after "haskell-doc" (diminish 'haskell-doc-mode))
+  (setup-after "haskell-indentation" (diminish 'haskell-indentation-mode))
+  (setup-after "highlight-parentheses" (diminish 'highlight-parentheses-mode))
+  (setup-after "hs-minor-mode" (diminish 'hs-minor-mode))
+  (setup-after "smartparens-autoloads" (diminish 'smartparens-mode))
+  (setup-after "undo-tree" (diminish 'undo-tree-mode "↺"))
+  (setup-after "visual-line-mode" (diminish 'visual-line-mode))
+  (setup-after "volatile-highlights" (diminish 'volatile-highlights-mode))
+  (setup-after "whole-line-or-region" (diminish 'whole-line-or-region-mode))
+  (setup-after "yasnippet" (diminish 'yas-minor-mode)))
