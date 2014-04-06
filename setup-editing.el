@@ -37,7 +37,7 @@
 
 ;; text stuff
 (setup-expecting "org-mode"
-  (setq default-major-mode 'org-mode))
+  (setq major-mode 'org-mode))
 (prefer-coding-system 'utf-8)
 (setq undo-limit 1000000)
 (setq sentence-end-double-space nil)
@@ -182,7 +182,7 @@
     (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)))
 
 ;; edit symbol in multiple places simultaneously
-(setup-lazy '(iedit-mode) "iedit"
+(setup "iedit"
   (global-set-key (kbd "C-c ;") 'iedit-mode)
   (global-set-key (kbd "C-c C-;") 'iedit-mode-toggle-on-function))
 
@@ -365,6 +365,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; indentation
 (setq-default tab-width 2)
+(setq sh-basic-offset tab-width)
+
 ;; don't use tabs normally, except for a few special modes
 (setq-default indent-tabs-mode nil)
 (defun use-tabs () (setq indent-tabs-mode t))
@@ -564,7 +566,7 @@ See the variable `align-rules-list' for more details."))
   (global-set-key (kbd "C-c C-g") 'ace-jump-line-mode))
 
 ;; expand-region
-(setup-lazy '(er/expand-region er/contract-region) "expand-region"
+(setup-lazy '(er/expand-region) "expand-region"
   (global-set-key (kbd "<C-prior>") 'er/expand-region)
   (global-set-key (kbd "<C-next>") 'er/contract-region))
 
@@ -772,5 +774,11 @@ See the variable `align-rules-list' for more details."))
     (insert (format-time-string format))))
 
 (global-set-key (kbd "C-c d") 'insert-date)
+
+;; ＿人人人人人人人人＿
+;; ＞  sudden-death  ＜
+;; ￣ＹＹＹＹＹＹＹＹ￣
+
+(setup-lazy '(sudden-death) "sudden-death")
 
 (provide 'setup-editing)
