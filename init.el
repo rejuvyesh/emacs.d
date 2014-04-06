@@ -52,6 +52,16 @@
 ;; modes etc
 (setup "setup-major-modes")
 
+;; others
+
+(add-hook 'after-save-hook
+          (lambda()
+            (let ((file (buffer-file-name)))
+              (if (and file (string-match "init\\.el$" file))
+                  (byte-compile-file file)))))
+
+(setq gc-cons-threshold 20000000)
+
 ;; use y/n instead of yes/no
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -67,7 +77,7 @@
 
 ;; diminish
 (setup "diminish"
-  (setup-after "anzu-mode"(diminish 'anzu-mode))
+  (setup-after "anzu" (diminish 'anzu-mode))
   (setup-after "auto-complete"(diminish 'auto-complete-mode "↝"))
   (setup-after "auto-revert-mode" (diminish 'auto-revert-mode))
   (setup-after "eldoc" (diminish 'eldoc-mode))
