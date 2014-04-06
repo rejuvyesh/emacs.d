@@ -59,3 +59,4 @@
 (add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
+(provide 'setup-isearch)

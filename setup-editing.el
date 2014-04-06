@@ -767,3 +767,5 @@ See the variable `align-rules-list' for more details."))
     (insert (format-time-string format))))
 
 (global-set-key (kbd "C-c d") 'insert-date)
+
+(provide 'setup-editing)

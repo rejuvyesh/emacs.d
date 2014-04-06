@@ -106,3 +106,5 @@
 
 ;; ag mode
 (setq ag-highlight-search t)
+
+(provide 'setup-look)

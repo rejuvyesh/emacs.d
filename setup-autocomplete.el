@@ -86,4 +86,5 @@
     (quietly-read-abbrev-file))
 (setq default-abbrev-mode t)
 
+(provide 'setup-autocomplete)
 ;;; setup-autocomplete.el ends here

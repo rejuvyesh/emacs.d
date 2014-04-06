@@ -85,5 +85,6 @@
   (rejuvyesh/auto-replace-date-time)
   )
 
+(provide 'setup-auto-insert)
 ;;; emacs-rc-auto-insert.el ends here
 
