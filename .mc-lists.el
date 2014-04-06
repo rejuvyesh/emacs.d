@@ -31,6 +31,7 @@
         yaml-electric-dash-and-dot
         yank-and-indent
         yas-expand
+        yas-next-field-or-maybe-expand
         ))
 
 (setq mc/cmds-to-run-once
