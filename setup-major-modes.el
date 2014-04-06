@@ -38,8 +38,17 @@
   (add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)))
 
 ;; auctex
-(setup "auctex"
+(setup "latex"
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
+  (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query nil)
+  (setq TeX-newline-function 'reindent-then-newline-and-indent)
+  (setq-default TeX-PDF-mode t)
   (setq-default TeX-engine 'xetex)      ; use xelatex by default
   (setq TeX-view-program-selection '((output-pdf "zathura")))
   (add-to-list 'ac-modes 'LaTeX-mode))   ; make auto-complete aware of `latex-mode`
