@@ -15,8 +15,14 @@
 
 ;; C coding style
 (setq c-default-style "linux"
-      c-basic-offset tab-width)
+      c-basic-offset tab-width
+      c-block-comment-prefix "* ")
 (global-set-key (kbd "M-RET") 'c-indent-new-comment-line)
+(setup-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
+  (setq c-eldoc-buffer-regenerate-time 15))
+(setup-after "cc-mode"
+  (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
+  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
 
 (setup-after "auto-complete-config"
   (add-hook 'c-mode-hook
@@ -33,9 +39,9 @@
 
 ;; load ESS for R
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-(setup "ess-site"
-  (setq inferior-julia-program-name "~/dev/julia/julia/usr/bin/julia-basic")
-  (add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)))
+(add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)
+(setup-lazy '(R R-mode julia-mode) "ess-site"
+  (setq inferior-julia-program-name "~/dev/julia/julia/usr/bin/julia-basic")))
 
 ;; auctex
 (setup "latex"
@@ -243,7 +249,10 @@
 (setq css-indent-level 2)
 
 ;; eldoc, ie function signatures in the minibuffer
-(setup "eldoc"
+(setup-lazy '(turn-on-eldoc-mode) "eldoc"
+  (setq eldoc-idle-delay 0.1
+        eldoc-echo-area-use-multiline-p nil))
+(setup-after "lisp-mode"
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
 
 ;; go
@@ -284,7 +293,7 @@
   (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode)))
 
 ;; dired
-(setup "dired"
+(setup-lazy '(dired-jump) "dired"
   ;; move files between split panes
   (setq dired-dwim-target t))
 (setup-after "dired" 
@@ -331,7 +340,18 @@
 (add-hook 'mail-mode-hook 'turn-on-auto-fill)
 (add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
 
-;; shell stuff
-(setq sh-basic-offset tab-width)
+
+;; smart-compile
+(setup-lazy '(smart-compile) "smart-compile"
+  (setq smart-compile-alist
+        '( (emacs-lisp-mode  . (emacs-lisp-byte-compile))
+           (html-mode        . (browse-url-of-buffer))
+           (nxhtml-mode      . (browse-url-of-buffer))
+           (html-helper-mode . (browse-url-of-buffer))
+           (octave-mode      . (run-octave))
+           (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
+           (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
+           (haskell-mode     . "ghc -Wall -fwarn-missing-import-lists %f") )))
+(global-set-key (kbd "C-c M-c") '("smart-compile" smart-compile compile))
 
 (provide 'setup-major-modes)
