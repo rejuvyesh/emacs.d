@@ -8,6 +8,7 @@
         ghc-save-buffer
         handle-switch-frame
         haskell-indentation-delete-backward-char
+        hungry-delete-backward
         indent-for-tab-command
         indent-region
         kill-visual-line
@@ -21,8 +22,10 @@
         smart-beginning-of-line
         smart-end-of-line
         sp--self-insert-command
+        sp-backward-symbol
         sp-forward-sexp
         sp-remove-active-pair-overlay
+        upcase-region
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
         yaml-electric-dash-and-dot
