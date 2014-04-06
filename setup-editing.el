@@ -319,7 +319,10 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; helm
 (setup "helm-config"
-  (helm-mode t)
+  (helm-mode t))
+(setup-after "helm"
+  (define-key helm-map (kbd "C-w") 'subword-backward-kill)
+  (define-key helm-map (kbd "M-w") 'helm-yank-text-at-point)
   (global-set-key (kbd "M-t") 'helm-cmd-t)
   (global-set-key (kbd "C-x c g") 'helm-do-grep)
   (global-set-key (kbd "C-x c o") 'helm-occur)
@@ -327,7 +330,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (setq helm-ff-lynx-style-map nil
         helm-input-idle-delay 0.1
-        helm-idle-delay 0.1 ))
+        helm-idle-delay 0.1
+        helm-follow-mode-persistent t ))
 
 (setup-lazy '(helm-C-x-b) "helm-C-x-b"
   (global-set-key [remap switch-to-buffer] 'helm-C-x-b))
@@ -617,19 +621,22 @@ See the variable `align-rules-list' for more details."))
 ;; smartparens
 (setup "smartparens-config"
   (smartparens-global-mode t)
-  (show-smartparens-global-mode +1)
+  (show-smartparens-global-mode t)
   (setq sp-highlight-pair-overlay nil)
   (show-smartparens-global-mode t)
   (setq blink-matching-paren-distance nil)
   (setq show-paren-style 'parenthesis)
   (setq show-paren-delay 0)
+  )
+
+(setup-after "smartparens"
   ;; markdown-mode
   (setup-expecting "markdown-mode" 
     (sp-with-modes '(markdown-mode)
       (sp-local-pair "*" "*" :actions '(wrap autoskip))
       (sp-local-tag "2" "**" "**")
       (sp-local-tag "m" "$" "$") ; math
-      (sp-local-pair "$$" "$$" :actions '(wrap autoskip))
+      (sp-local-pair "$$" "$$")
       (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags)))
   (setup-expecting "org-mode" 
     (sp-with-modes '(org-mode)
@@ -638,9 +645,7 @@ See the variable `align-rules-list' for more details."))
   ;; html-mode
   (setup-expecting "html-mode" "sgml-mode"
     (sp-with-modes '(html-mode sgml-mode)
-      (sp-local-pair "<" ">"))))
-
-(setup-after "smartparens-config"
+      (sp-local-pair "<" ">"))
   ;; sp keys
   (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
   (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
@@ -698,7 +703,7 @@ See the variable `align-rules-list' for more details."))
   (define-key sp-keymap (kbd "C-c C-a") 'sp-kill-to-beginning-of-sexp)
   (define-key sp-keymap (kbd "C-c C-e") 'sp-kill-to-end-of-sexp)
   (define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
-  (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp))
+  (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)))
 
                                         ; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
 (setq shift-select-mode nil)
