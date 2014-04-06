@@ -1,8 +1,8 @@
 ;; auto completion
 
 ;; snippets
-(setup-in-idle "yasnippet")
-(setup-lazy '(yas-expand) "yasnippet"
+(setup "yasnippet"
+;;(setup-lazy '(yas-expand yas-next-field-or-maybe-expand) "yasnippet"
   (setq yas-snippet-dirs "~/.emacs.d/snippets")
   (yas-global-mode 1)
   (yas-reload-all)
@@ -25,8 +25,7 @@
   (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete
   (define-key yas-keymap (kbd "C-j") 'my-yas/goto-start-of-active-field)
   (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
-  (define-key yas-minor-mode-map (kbd "C-t") 'yas-next-field-or-maybe-expand)
-  (define-key yas-minor-mode-map (kbd "M-t") 'yas-prev-field)
+  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
   )
 
 ;; auto-yasnippet
@@ -50,8 +49,9 @@
     ;; extra modes auto-complete must support
     (global-auto-complete-mode t)
     (define-key ac-completing-map (kbd "RET") 'ac-complete)
-    (define-key ac-complete-mode-map "\M-n" 'ac-next)
-    (define-key ac-complete-mode-map "\M-p" 'ac-previous)))
+    (define-key ac-completing-map (kbd "M-n") 'ac-next)
+    (define-key ac-completing-map (kbd "M-p") 'ac-previous)
+    ))
 (setup-after "auto-complete-config"
   (dolist (mode '(css-mode
                   enh-ruby-mode
