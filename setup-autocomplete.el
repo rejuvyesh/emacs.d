@@ -1,11 +1,33 @@
 ;; auto completion
 
 ;; snippets
-(setup "yasnippet"
+(setup-in-idle "yasnippet")
+(setup-lazy '(yas-expand) "yasnippet"
   (setq yas-snippet-dirs "~/.emacs.d/snippets")
+  (yas-global-mode 1)
+  (yas-reload-all)
+  (defun my-yas/goto-end-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-end (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-end-of-line 1)
+        (goto-char position))))
+
+  (defun my-yas/goto-start-of-active-field ()
+    (interactive)
+    (let* ((snippet (car (yas--snippets-at-point)))
+           (position (yas--field-start (yas--snippet-active-field snippet))))
+      (if (= (point) position)
+          (move-beginning-of-line 1)
+        (goto-char position))))
+  (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete
+  (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete
+  (define-key yas-keymap (kbd "C-j") 'my-yas/goto-start-of-active-field)
+  (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
   (define-key yas-minor-mode-map (kbd "C-t") 'yas-next-field-or-maybe-expand)
   (define-key yas-minor-mode-map (kbd "M-t") 'yas-prev-field)
-  (yas-global-mode 1))
+  )
 
 ;; auto-yasnippet
 (setup-after "yasnippet"
@@ -58,6 +80,8 @@
   (setup-expecting "go-mode"
     (setup "go-autocomplete")))
 
+
+
 ;; disabling Yasnippet completion
 (setup-after "auto-complete" "yasnippet"
   (defun yasnippet-snips-from-table (table)
@@ -84,7 +108,7 @@
 (setq save-abbrevs t)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
-(setq default-abbrev-mode t)
+(setq abbrev-mode t)
 
 (provide 'setup-autocomplete)
 ;;; setup-autocomplete.el ends here
