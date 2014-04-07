@@ -1,8 +1,8 @@
 ;; auto completion
 
 ;; snippets
-(setup "yasnippet"
-;;(setup-lazy '(yas-expand yas-next-field-or-maybe-expand) "yasnippet"
+(setup-in-idle "yasnippet")
+(setup-lazy '(yas-expand yas-next-field-or-maybe-expand) "yasnippet"
   (setq yas-snippet-dirs "~/.emacs.d/snippets")
   (yas-global-mode 1)
   (yas-reload-all)
