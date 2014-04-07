@@ -10,6 +10,7 @@
 
 ;; init setup
 (require 'setup)
+(setq setup-environ-warning-alist '((emacs-version)))
 (setup-initialize)
 
 ;; Keep emacs Custom-settings in separate file
