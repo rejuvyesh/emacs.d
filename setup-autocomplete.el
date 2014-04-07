@@ -80,28 +80,6 @@
   (setup-expecting "go-mode"
     (setup "go-autocomplete")))
 
-
-
-;; disabling Yasnippet completion
-(setup-after "auto-complete" "yasnippet"
-  (defun yasnippet-snips-from-table (table)
-    (with-no-warnings
-      (let ((hashtab (ac-yasnippet-table-hash table))
-            (parent (ac-yasnippet-table-parent table))
-            candidates)
-        (maphash (lambda (key value)
-                   (push key candidates))
-                 hashtab)
-        (identity candidates)
-        )))
-  (defun yasnippet-get-all-snips ()
-    (let (candidates)
-      (maphash
-       (lambda (kk vv) (push (yasnippet-snips-from-table vv) candidates)) yas--tables)
-      (apply 'append candidates))
-    )
-  (setq ac-ignores (concatenate 'list ac-ignores (yasnippet-get-all-snips))))
-
 ;; auto correction
 (setq abbrev-file-name
       "~/.emacs.d/abbrev_defs")
