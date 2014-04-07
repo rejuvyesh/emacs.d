@@ -289,7 +289,8 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;; org-mode has similar behavior built-in, so use it instead
-(setq org-special-ctrl-a/e t)
+(setup-after "org-mode"
+  (setq org-special-ctrl-a/e t))
 
 (defun insert-file-name (filename &optional args)
   "Insert name of file FILENAME into buffer after point.
@@ -575,7 +576,7 @@ See the variable `align-rules-list' for more details."))
 (setq shell-command-switch "-lc")
 
 ;; scratchpad buffers
-(setup "scratch"
+(setup-lazy '(scratch) "scratch"
   ;; don't want to remember which key I used
   (global-set-key (kbd "C-c b") 'scratch)
   ;; don't start in lisp
