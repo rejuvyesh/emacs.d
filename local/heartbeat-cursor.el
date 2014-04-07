@@ -2,7 +2,7 @@
 
 ;; makes the cursor blink
 
-(require 'cl)
+(eval-when-compile 'cl-lib)
 (require 'color)
 
 (defvar heartbeat-fps 16)
@@ -10,7 +10,7 @@
 
 (defun heartbeat-range (from to cnt)
   (let ((step (/ (- to from) (float cnt))))
-    (loop for i below cnt collect (+ from (* step i)))))
+    (cl-loop for i below cnt collect (+ from (* step i)))))
 
 (defun heartbeat-cursor-colors ()
   (let ((cnt (* heartbeat-period heartbeat-fps)))
