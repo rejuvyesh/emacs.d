@@ -107,4 +107,23 @@
 ;; ag mode
 (setq ag-highlight-search t)
 
+;; diminish
+(setup "diminish"
+  (setup-after "anzu"                  (diminish 'anzu-mode))
+  (setup-after "auto-complete"         (diminish 'auto-complete-mode "↝"))
+  (setup-after "auto-revert-mode"      (diminish 'auto-revert-mode))
+  (setup-after "eldoc"                 (diminish 'eldoc-mode))
+  (setup-after "fic-mode"              (diminish 'fic-mode))
+  (setup-after "guide-key"             (diminish 'guide-key-mode))
+  (setup-after "haskell-doc"           (diminish 'haskell-doc-mode))
+  (setup-after "haskell-indentation"   (diminish 'haskell-indentation-mode))
+  (setup-after "highlight-parentheses" (diminish 'highlight-parentheses-mode))
+  (setup-after "hs-minor-mode"         (diminish 'hs-minor-mode))
+  (setup-after "smartparens-autoloads" (diminish 'smartparens-mode))
+  (setup-after "undo-tree"             (diminish 'undo-tree-mode "↺"))
+  (setup-after "visual-line-mode"      (diminish 'visual-line-mode))
+  (setup-after "volatile-highlights"   (diminish 'volatile-highlights-mode))
+  (setup-after "whole-line-or-region"  (diminish 'whole-line-or-region-mode))
+  (setup-after "yasnippet"             (diminish 'yas-minor-mode)))
+
 (provide 'setup-look)
