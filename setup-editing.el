@@ -198,16 +198,17 @@
 (add-hook 'text-mode-hook 'turn-on-highlight-parentheses)
 
 ;; better search/replace
-(setup "visual-regexp")
+(setup-lazy '(vr/query-replace vr/query-replace-from-beginning) "visual-regexp")
 (setup-after "visual-regexp"
-  (setup "visual-regexp-steroids")
-  (global-set-key (kbd "C-c r") 'vr/query-replace)
-  (defun vr/query-replace-from-beginning ()
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (call-interactively 'vr/query-replace)))
-  (global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning))
+  (setup "visual-regexp-steroids"))
+  
+(defun vr/query-replace-from-beginning ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (call-interactively 'vr/query-replace)))
+(global-set-key (kbd "C-c r") 'vr/query-replace)
+(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
 
 ;; search info
 (setup "anzu"
