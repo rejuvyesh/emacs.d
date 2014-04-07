@@ -479,8 +479,10 @@ Deletes whitespace at join."
 ;; align
 ;; definitions for ruby code
 ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
-(setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
-(setup-after "enh-ruby-mode"
+(setup "align"
+  (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)"))
+(setup-after "align"
+  (setup-after "enh-ruby-mode"
   (defconst align-ruby-modes '(enh-ruby-mode)
     "align-perl-modes is a variable defined in `align.el'.")
   (defconst ruby-align-rules-list
@@ -520,7 +522,7 @@ See the variable `align-rules-list' for more details."))
   (add-to-list 'align-rules-list
                '(haskell-left-arrows
                  (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode)))))
+                 (modes quote (haskell-mode literate-haskell-mode))))))
 ;; align current region
 (global-set-key (kbd "C-c =") 'align-current)
   ;; repeat regex (teh fuck ain't that the default?!)
@@ -529,7 +531,7 @@ See the variable `align-rules-list' for more details."))
   (interactive "r\nsAlign regexp: ")
   (align-regexp start end
                 (concat "\\(\\s-*\\)" regexp) 1 1 t))
-(global-set-key (kbd "C-c C-=") 'align-repeat))
+(global-set-key (kbd "C-c C-=") 'align-repeat)
 
 ;; if no region is active, act on current line
 (setup "whole-line-or-region"
