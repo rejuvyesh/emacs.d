@@ -477,61 +477,59 @@ Deletes whitespace at join."
 (add-hook 'org-mode-hook 'turn-on-spell-check)
 
 ;; align
-(setup "align"
-  ;; definitions for ruby code
-  ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
-  (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)"))
-(setup-expecting "align"
-  (setup-after "enh-ruby-mode"
-    (defconst align-ruby-modes '(enh-ruby-mode)
-      "align-perl-modes is a variable defined in `align.el'.")
-    (defconst ruby-align-rules-list
-      '((ruby-comma-delimiter
-         (regexp . ",\\(\\s-*\\)[^/ \t\n]")
-         (modes . '(enh-ruby-mode))
-         (repeat . t))
-        (ruby-string-after-func
-         (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
-         (modes . '(enh-ruby-mode))
-         (repeat . t))
-        (ruby-symbol-after-func
-         (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
-         (modes . '(enh-ruby-mode))))
-      "Alignment rules specific to the ruby mode.
+;; definitions for ruby code
+;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
+(setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
+(setup-after "enh-ruby-mode"
+  (defconst align-ruby-modes '(enh-ruby-mode)
+    "align-perl-modes is a variable defined in `align.el'.")
+  (defconst ruby-align-rules-list
+    '((ruby-comma-delimiter
+       (regexp . ",\\(\\s-*\\)[^/ \t\n]")
+       (modes . '(enh-ruby-mode))
+       (repeat . t))
+      (ruby-string-after-func
+       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
+       (modes . '(enh-ruby-mode))
+       (repeat . t))
+      (ruby-symbol-after-func
+       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
+       (modes . '(enh-ruby-mode))))
+    "Alignment rules specific to the ruby mode.
 See the variable `align-rules-list' for more details."))
-  (add-to-list 'align-perl-modes 'enh-ruby-mode)
-  (add-to-list 'align-dq-string-modes 'enh-ruby-mode)
-  (add-to-list 'align-sq-string-modes 'enh-ruby-mode)
-  (add-to-list 'align-open-comment-modes 'enh-ruby-mode)
-  (dolist (it ruby-align-rules-list)
-    (add-to-list 'align-rules-list it))
-  (setup-after "haskell-mode"
-    ;; haskell alignments
-    (add-to-list 'align-rules-list
-                 '(haskell-types
-                   (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
-                   (modes quote (haskell-mode literate-haskell-mode))))
-    (add-to-list 'align-rules-list
-                 '(haskell-assignment
-                   (regexp . "\\(\\s-+\\)=\\s-+")
-                   (modes quote (haskell-mode literate-haskell-mode))))
-    (add-to-list 'align-rules-list
-                 '(haskell-arrows
-                   (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
-                   (modes quote (haskell-mode literate-haskell-mode))))
-    (add-to-list 'align-rules-list
-                 '(haskell-left-arrows
-                   (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                   (modes quote (haskell-mode literate-haskell-mode)))))
-  ;; align current region
-  (global-set-key (kbd "C-c =") 'align-current)
+(add-to-list 'align-perl-modes 'enh-ruby-mode)
+(add-to-list 'align-dq-string-modes 'enh-ruby-mode)
+(add-to-list 'align-sq-string-modes 'enh-ruby-mode)
+(add-to-list 'align-open-comment-modes 'enh-ruby-mode)
+(dolist (it ruby-align-rules-list)
+  (add-to-list 'align-rules-list it))
+(setup-after "haskell-mode"
+  ;; haskell alignments
+  (add-to-list 'align-rules-list
+               '(haskell-types
+                 (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+                 (modes quote (haskell-mode literate-haskell-mode))))
+  (add-to-list 'align-rules-list
+               '(haskell-assignment
+                 (regexp . "\\(\\s-+\\)=\\s-+")
+                 (modes quote (haskell-mode literate-haskell-mode))))
+  (add-to-list 'align-rules-list
+               '(haskell-arrows
+                 (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+                 (modes quote (haskell-mode literate-haskell-mode))))
+  (add-to-list 'align-rules-list
+               '(haskell-left-arrows
+                 (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+                 (modes quote (haskell-mode literate-haskell-mode)))))
+;; align current region
+(global-set-key (kbd "C-c =") 'align-current)
   ;; repeat regex (teh fuck ain't that the default?!)
-  (defun align-repeat (start end regexp)
-    "Repeat alignment with respect to the given regular expression."
-    (interactive "r\nsAlign regexp: ")
-    (align-regexp start end
-                  (concat "\\(\\s-*\\)" regexp) 1 1 t))
-  (global-set-key (kbd "C-c C-=") 'align-repeat))
+(defun align-repeat (start end regexp)
+  "Repeat alignment with respect to the given regular expression."
+  (interactive "r\nsAlign regexp: ")
+  (align-regexp start end
+                (concat "\\(\\s-*\\)" regexp) 1 1 t))
+(global-set-key (kbd "C-c C-=") 'align-repeat))
 
 ;; if no region is active, act on current line
 (setup "whole-line-or-region"
