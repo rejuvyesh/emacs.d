@@ -93,7 +93,7 @@
 (global-set-key (kbd "C-c p") 'previous-error)
 (global-set-key (kbd "M-t")   'find-tag)
 
-
+;; eval shortcut
 (global-set-key (kbd "C-S-M-x")   'eval-buffer)
 
 ;; undo
