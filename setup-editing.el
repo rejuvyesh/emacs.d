@@ -623,6 +623,14 @@ See the variable `align-rules-list' for more details."))
   (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
   (define-key global-map (kbd "C-c C-]") 'imenu-anywhere))
 
+;; Guide Key
+(setup "guide-key"
+  (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
+  (guide-key-mode 1)
+  (setq guide-key/recursive-key-sequence-flag t)
+  (setq guide-key/popup-window-position 'bottom))
+
+
 ;; smartparens
 (setup "smartparens-config"
   (smartparens-global-mode t)
