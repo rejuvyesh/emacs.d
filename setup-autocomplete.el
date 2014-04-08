@@ -38,6 +38,23 @@
 (setup "fuzzy")
 (setup-after "fuzzy"
   (setup "auto-complete-config"
+    (setq ac-sources '(ac-source-abbrev
+                       ac-source-dictionary
+                       ac-source-words-in-same-mode-buffers))
+    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+    (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
+    (setq ac-auto-start 1)
+    (setq ac-use-menu-map t
+          ac-auto-show-menu t
+          ac-quick-help-delay 0.5
+          ac-use-fuzzy t
+          ac-ignore-case nil)
+    (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
+    ;; extra modes auto-complete must support
+    (global-auto-complete-mode t)
+    (define-key ac-completing-map (kbd "RET") 'ac-complete)
+    (define-key ac-completing-map (kbd "M-n") 'ac-next)
+    (define-key ac-completing-map (kbd "M-p") 'ac-previous)
     (dolist (mode '(css-mode
                     enh-ruby-mode
                     haml-mode
@@ -58,25 +75,7 @@
       ;; Learn emacs list to string so that you can add (setup-expecting mode) before add to list
       ;; (setup-expecting (symbol-name (pop mode))
       ;; (add-to-list 'ac-modes (pop mode))))
-      (add-to-list 'ac-modes mode))
-    (setq ac-sources '(ac-source-abbrev
-                       ac-source-dictionary
-                       ac-source-words-in-same-mode-buffers))
-    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-    (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
-    (setq ac-auto-start 1)
-    (setq ac-use-menu-map t
-          ac-auto-show-menu t
-          ac-quick-help-delay 0.5
-          ac-use-fuzzy t
-          ac-ignore-case nil)
-    (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
-    ;; extra modes auto-complete must support
-    (global-auto-complete-mode t)
-    (define-key ac-completing-map (kbd "RET") 'ac-complete)
-    (define-key ac-completing-map (kbd "M-n") 'ac-next)
-    (define-key ac-completing-map (kbd "M-p") 'ac-previous)
-    ))
+      (add-to-list 'ac-modes mode))))
 (setup-after "auto-complete-config"
   (setup-after "go-mode"
     (setup "go-autocomplete")))
@@ -87,7 +86,7 @@
 (setq save-abbrevs t)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
-(setq abbrev-mode t)
+(setq-default abbrev-mode t)
 
 (provide 'setup-autocomplete)
 ;;; setup-autocomplete.el ends here
