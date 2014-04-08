@@ -38,7 +38,32 @@
 (setup "fuzzy")
 (setup-after "fuzzy"
   (setup "auto-complete-config"
+    (dolist (mode '(css-mode
+                    enh-ruby-mode
+                    haml-mode
+                    haskell-mode 
+                    html-mode
+                    js2-mode
+                    lisp-mode
+                    log-edit-mode
+                    markdown-mode
+                    matlab-mode
+                    org-mode
+                    sass-mode
+                    sh-mode
+                    text-mode
+                    textile-mode
+                    yaml-mode
+                    magit-log-edit-mode))
+      ;; Learn emacs list to string so that you can add (setup-expecting mode) before add to list
+      ;; (setup-expecting (symbol-name (pop mode))
+      ;; (add-to-list 'ac-modes (pop mode))))
+      (add-to-list 'ac-modes mode))
+    (setq ac-sources '(ac-source-abbrev
+                       ac-source-dictionary
+                       ac-source-words-in-same-mode-buffers))
     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+    (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
     (setq ac-auto-start 1)
     (setq ac-use-menu-map t
           ac-auto-show-menu t
@@ -53,31 +78,7 @@
     (define-key ac-completing-map (kbd "M-p") 'ac-previous)
     ))
 (setup-after "auto-complete-config"
-  (dolist (mode '(css-mode
-                  enh-ruby-mode
-                  haml-mode
-                  haskell-mode 
-                  html-mode
-                  js2-mode
-                  lisp-mode
-                  log-edit-mode
-                  markdown-mode
-                  matlab-mode
-                  org-mode
-                  sass-mode
-                  sh-mode
-                  text-mode
-                  textile-mode
-                  yaml-mode
-                  magit-log-edit-mode))
-    ;; Learn emacs list to string so that you can add (setup-expecting mode) before add to list
-    ;; (setup-expecting (symbol-name (pop mode))
-    ;; (add-to-list 'ac-modes (pop mode))))
-    (add-to-list 'ac-modes mode))
-  (setq ac-sources '(ac-source-abbrev
-                     ac-source-dictionary
-                     ac-source-words-in-same-mode-buffers))
-  (setup-expecting "go-mode"
+  (setup-after "go-mode"
     (setup "go-autocomplete")))
 
 ;; auto correction
