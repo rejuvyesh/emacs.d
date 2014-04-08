@@ -45,11 +45,10 @@
   (setq inferior-julia-program-name "~/dev/julia/julia/usr/bin/julia-basic")))
 
 ;; auctex
-(setup "latex"
+(setup-lazy '(latex-mode LaTeX-mode tex-mode TeX-mode) "latex"
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
@@ -68,30 +67,30 @@
     ))
 
 ;; markdown
-(setup "markdown-mode"
+(setup-lazy '(markdown-mode) "markdown-mode"
   (setq markdown-command "pandoc --smart -f markdown -t html")
-  (add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
   (add-hook 'markdown-mode-hook
             (lambda()
               (add-to-list 'ac-sources 'ac-source-math-latex))))
+(add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
 
 ;; yaml
-(setup "yaml-mode"
-  (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)))
+(setup-lazy '(yaml-mode) "yaml-mode")
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; org-mode
 (setq load-path (cons "~/.emacs.d/site-lisp/org-mode/lisp" load-path))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 ;; loaded so that we can diminish it later
-(setup "org-indent"
+(setup-lazy '(org-mode) "org-indent"
   ;; proper indentation / folding
   (setq org-startup-indented t)
   (setq org-hide-leading-stars t)
@@ -174,13 +173,14 @@
 (setq auto-revert-verbose nil)
 
 ;; python 
-(setup "elpy"
+
+(setup-lazy '(python-mode) "elpy"
   (elpy-enable)
   (elpy-use-ipython)
   (elpy-clean-modeline))
 
 ;; haskell mode
-(setup "haskell-mode")
+(setup-lazy '(haskell-mode) "haskell-mode")
 (setup-after "haskell-mode"
   (setup "haskell-doc"
     (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode))
@@ -193,8 +193,10 @@
   (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info))
 
 ;; ruby ;;
+;; replace normal ruby mode
+(defalias 'ruby-mode 'enh-ruby-mode)
 ;; enhanced ruby mode
-(setup "enh-ruby-mode"
+(setup-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
   (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
   ;; replace normal ruby mode
@@ -208,14 +210,18 @@
     '((t (:underline "pink")))
     "Face used for marking error lines."
     :group 'enh-ruby)
+  (setq ruby-indent-level tab-width)
+  (setq enh-ruby-bounce-deep-indent t)
+  (setq enh-ruby-deep-indent-paren nil))
 
-  ;; Rake files are Ruby, too
-  (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
-  (add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
-  (add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
-  (add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
-  (add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
-  (add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode)))
+;; Rake files are Ruby, too
+(add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode))
+
 (setup-after "enh-ruby-mode"
   ;; misc stuff
   ;; ri documentation tool
@@ -223,29 +229,28 @@
     (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)) 
   (setup "ruby-block" ; show what block an end belongs to
     (ruby-block-mode t)
-    (setq ruby-block-highlight-toggle t)
-    (setq ruby-indent-level tab-width)
-    (setq enh-ruby-bounce-deep-indent t)
-    (setq enh-ruby-deep-indent-paren nil))
+    (setq ruby-block-highlight-toggle t))
   ;; erb
-  (setup "rhtml-mode"
-    (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode))))
+  (setup-lazy '(rhtml-mode)"rhtml-mode")
+  (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode)))
 
 ;; Sometimes you have to
-(setup "php-mode"
-  (add-to-list 'auto-mode-alist '("\\.php$" . php-mode)))
+(setup-lazy '(php-mode) "php-mode")
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 
 ;; javascript
-(setup "js2-mode"
-  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+(setup-lazy '(js2-mode) "js2-mode")
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;; lua
-(setup "lua-mode"
+(setup-lazy '(lua-mode) "lua-mode"
   (setq lua-indent-level 2))
 
 ;; (s)css
-(setq scss-compile-at-save nil)
-(setq css-indent-level 2)
+(setup-lazy '(scss-mode) "scss-mode"
+  (setq scss-compile-at-save nil))
+(setup-lazy '(css-mode) "css-mode"
+  (setq css-indent-level 2))
 
 ;; eldoc, ie function signatures in the minibuffer
 (setup-lazy '(turn-on-eldoc-mode) "eldoc"
@@ -279,11 +284,11 @@
 (add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
 
 ;; mark stuff like FIXME
-(setup "fic-mode"
-  (add-hook 'prog-mode-hook 'fic-mode)
-  ;; misbehaving modes
-  (add-hook 'enh-ruby-mode-hook 'fic-mode)
-  (add-hook 'js2-mode-hook 'fic-mode))
+(setup-lazy '(fic-mode) "fic-mode")
+(add-hook 'prog-mode-hook 'fic-mode)
+;; misbehaving modes
+(add-hook 'enh-ruby-mode-hook 'fic-mode)
+(add-hook 'js2-mode-hook 'fic-mode)
 
 ;; csv
 (setup-lazy '(csv-mode) "csv-mode"
