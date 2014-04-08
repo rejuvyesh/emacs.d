@@ -249,7 +249,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
         (goto-char vispos)
       (when (= oldpos (point))
         (beginning-of-line)))))
-(global-set-key "\C-a" 'smart-beginning-of-line)
+(global-set-key (kbd "C-a") 'smart-beginning-of-line)
 
 (defun smart-end-of-line ()
   "Move point to end of visual line or, if already there, to end of logical line."
@@ -259,7 +259,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
     (end-of-visual-line)
     (when (= oldpos (point))
       (end-of-line))))
-(global-set-key "\C-e" 'smart-end-of-line)
+(global-set-key (kbd "\C-e") 'smart-end-of-line)
 
 ;; move lines like in org-mode
 (defun move-line (n)
@@ -569,7 +569,7 @@ See the variable `align-rules-list' for more details."))
   (global-set-key (kbd "C-c C-g") 'ace-jump-line-mode))
 
 ;; expand-region
-(setup-lazy '(er/expand-region) "expand-region")
+(setup-lazy '(er/expand-region er/contract-region) "expand-region")
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
@@ -632,7 +632,7 @@ See the variable `align-rules-list' for more details."))
   (setq guide-key/popup-window-position 'bottom))
 
 
-;; smartparens
+;; smartarens
 (setup "smartparens-config"
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
