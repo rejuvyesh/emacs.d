@@ -59,12 +59,27 @@
   (setq TeX-view-program-selection '((output-pdf "zathura")))
   (add-to-list 'ac-modes 'LaTeX-mode))   ; make auto-complete aware of `latex-mode`
 
-(setup-lazy '(org-mode markdown-mode latex-mode) "ac-math"
+;;(setup-lazy '(org-mode markdown-mode latex-mode) "ac-math"
+(setup "ac-math"
+  (defvar ac-source-math-latex-everywhere
+    '((candidates . ac-math-symbols-latex)
+      (prefix . "\\\\\\(.*\\)")
+      (action . ac-math-action-latex)
+      (symbol . "l"))))
+(setup-after "ac-math"
   (defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
     (setq ac-sources
           (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-                  ac-sources))
-    ))
+                  ac-sources)))
+  (add-hook 'latex-mode-hook 'ac-latex-mode-setup)
+  (add-hook 'org-mode-hook
+            (lambda()
+              (add-to-list 'ac-sources 'ac-source-math-unicode)
+              (add-to-list 'ac-sources 'ac-source-math-latex-everywhere)))
+  (add-hook 'markdown-mode-hook
+            (lambda()
+              (add-to-list 'ac-sources 'ac-source-math-latex-everywhere)))
+  )
 
 ;; markdown
 (setup-lazy '(markdown-mode) "markdown-mode"
@@ -72,9 +87,8 @@
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
-  (add-hook 'markdown-mode-hook
-            (lambda()
-              (add-to-list 'ac-sources 'ac-source-math-latex))))
+  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+  )
 (add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -162,10 +176,7 @@
              '("r"
                "#+BEGIN_SRC ruby\n?\n#+END_SRC"
                "<src lang=\"ruby\">\n\n</src>"))
-(add-hook 'org-mode-hook
-          (lambda()
-            (add-to-list 'ac-sources 'ac-source-math-unicode)
-            (add-to-list 'ac-sources 'ac-source-math-latex)))
+
 
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
