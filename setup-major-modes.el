@@ -256,25 +256,27 @@
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
 
 ;; emacs-lisp
-(defun byte-compile-current-buffer ()
-  "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
-  (interactive)
-  (when (and (eq major-mode 'emacs-lisp-mode)
-             (file-exists-p (byte-compile-dest-file buffer-file-name)))
-    (byte-compile-file buffer-file-name)))
-(add-hook 'after-save-hook 'byte-compile-current-buffer)
+(setup "bytecomp"
+  (defun byte-compile-current-buffer ()
+    "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
+    (interactive)
+    (when (and (eq major-mode 'emacs-lisp-mode)
+               (file-exists-p (byte-compile-dest-file buffer-file-name)))
+      (byte-compile-file buffer-file-name)))
+  (add-hook 'after-save-hook 'byte-compile-current-buffer))
 
 ;; go
-(setup "go-mode"
-  (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+(setup-lazy '(go-mode) "go-mode"
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook #'gofmt-before-save)
   (define-key go-mode-map (kbd "M-t") 'godef-jump)
   (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
   (setup "go-eldoc"
     (add-hook 'go-mode-hook 'go-eldoc-setup)))
+(add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
 
 ;; crontab
+(setup-lazy '(crontab-mode) "crontab-mode")
 (add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
 
 ;; mark stuff like FIXME
@@ -285,21 +287,22 @@
   (add-hook 'js2-mode-hook 'fic-mode))
 
 ;; csv
-(setup "csv-mode"
-  (add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+(setup-lazy '(csv-mode) "csv-mode"
   (setup "csv-nav")
   (setq csv-separators '("," ";" "|" " ")))
+(add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
 
 ;; json
+(setup-lazy '(json-mode) "json-mode")
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 ;; matlab
-(setup "matlab-load"
+(setup-lazy '(matlab-mode) "matlab-load"
   (add-hook 'matlab-mode
             (lambda ()
               (auto-complete-mode 1)
-              ))
-  (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode)))
+              )))
+(add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
 
 ;; dired
 (setup-lazy '(dired-jump) "dired"
