@@ -19,10 +19,6 @@
 ;;(load custom-file)
 (setup-include "custom")
 
-;; some generic aliases that make elisp less painful
-(defalias 'first  'cl-first)
-(defalias 'second 'cl-second)
-
 ;; theme etc
 (setup "setup-look")
 
@@ -35,11 +31,11 @@
 ;; auto-completion etc
 (setup "setup-autocomplete")
 
-;; use automatic file headers
-(setup "setup-auto-insert")
-
 ;; modes etc
 (setup "setup-major-modes")
+
+;; use automatic file headers
+(setup "setup-auto-insert")
 
 ;; others
 (setup "setup-misc")

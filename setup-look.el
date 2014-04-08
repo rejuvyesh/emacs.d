@@ -1,16 +1,16 @@
+;; looks 
+
+;; prettier defaults
 (setq inhibit-splash-screen t)
-
-(set-scroll-bar-mode 'right)
-;; remove the toolbar which no-one uses :)
-(tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
-
+(tool-bar-mode -1)
 ;; shows current selected region
 (setq-default transient-mark-mode t)
 (global-font-lock-mode t)
 (setq jit-lock-stealth-time 5)
 (setq frame-title-format "%b")
+(set-scroll-bar-mode 'right)
+(scroll-bar-mode -1)
 (set-fringe-mode '(1 . 10))
 
 ;; color themes
@@ -28,10 +28,16 @@
 ;; using modified molokai theme
 (load-theme 'molokai t)
 
+;; highlight current line
+(defface hl-line '((t (:background nil)))
+  "Face to use for `hl-line-face'." :group 'hl-line)
+(setq hl-line-face 'hl-line)
+(global-hl-line-mode t)
+
 ;; fonts
-(defvar small-font "Terminus 8")
+(defvar small-font  "Terminus 8")
 (defvar normal-font "Consolas 10")
-(defvar big-font "Consolas 14")
+(defvar big-font    "Consolas 14")
 (defvar font-list (list
                    small-font
                    normal-font
@@ -74,19 +80,14 @@
   ;; necessary or scrolling is really slow
   (setq-default bidi-display-reordering nil)
   (setq auto-window-vscroll nil))
-;; yascroll
-(global-yascroll-bar-mode 1)
+
+;; ;; yascroll
+;; (global-yascroll-bar-mode 1)
 
 ;; try to keep windows within a max margin
 (setup "automargin"
   (setq automargin-target-width 120)
   (automargin-mode))
-
-;; highlight current line
-(defface hl-line '((t (:background "aquagreen")))
-  "Face to use for `hl-line-face'." :group 'hl-line)
-(setq hl-line-face 'hl-line)
-(global-hl-line-mode t)
 
 ;; smart-mode
 (setup "smart-mode-line"
@@ -103,11 +104,15 @@
 (setup "volatile-highlights"
   (volatile-highlights-mode t))
 
-;; show #colors in matching color
-(setup "rainbow-mode")
+;; show keystrokes in progress
+(setq echo-keystrokes 0.1)
 
-;; ag mode
-(setq ag-highlight-search t)
+;; avoid splitting horizontally
+(setq split-height-threshold nil)
+(setq split-width-threshold 90)
+
+;; show #colors in matching color
+(setup-lazy '(rainbow-mode) "rainbow-mode")
 
 ;; diminish
 (setup "diminish"

@@ -1,5 +1,10 @@
 ;; major modes
 
+;; default modes
+(setup-after "org-mode"
+  (setq-default major-mode 'org-mode)
+  (setq initial-major-mode 'org-mode))
+
 ;; load raw text in a basic mode (for performance reasons)
 (add-to-list 'auto-mode-alist '("\\.log$" . fundamental-mode))
 
@@ -29,14 +34,7 @@
   (add-hook 'c-mode-hook
             (lambda ()
               (add-to-list 'ac-sources 'ac-source-c-headers)
-              (add-to-list 'ac-sources 'ac-source-c-header-symbols t)))
-  (defun ac-cc-mode-setup ()
-    (setq ac-clang-complete-executable "~/.emacs.d/el-get/emacs-clang-complete-async/clang-complete")
-    (setq ac-sources '(ac-source-clang-async))
-    (ac-clang-launch-completion-process)
-    )
-  (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-  (add-hook 'auto-complete-mode-hook 'ac-common-setup))
+              (add-to-list 'ac-sources 'ac-source-c-header-symbols t))))
 
 ;; load ESS for R
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
@@ -102,8 +100,10 @@
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; org-mode
-(setq load-path (cons "~/.emacs.d/site-lisp/org-mode/lisp" load-path))
+(setq load-path (cons "~/.emacs.d/local/org-mode/lisp" load-path))
+(setup "org-mode")
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
 ;; loaded so that we can diminish it later
 (setup-lazy '(org-mode) "org-indent"
   ;; proper indentation / folding
@@ -196,7 +196,6 @@
 (setup-after "haskell-mode"
   (setup "haskell-doc"
     (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode))
-  (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
   (setup "haskell-indentation"
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
   (setup "inf-haskell"
@@ -211,8 +210,7 @@
 (setup-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
   (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
-  ;; replace normal ruby mode
-  (defalias 'ruby-mode 'enh-ruby-mode)
+
   ;; better colors for warnings
   (defface erm-syn-warnline
     '((t (:underline "orange")))
@@ -271,36 +269,17 @@
 (setup-after "lisp-mode"
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
 
-;; emacs-lisp
-(setup "bytecomp"
-  (defun byte-compile-current-buffer ()
-    "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
-    (interactive)
-    (when (and (eq major-mode 'emacs-lisp-mode)
-               (file-exists-p (byte-compile-dest-file buffer-file-name)))
-      (byte-compile-file buffer-file-name)))
-  (add-hook 'after-save-hook 'byte-compile-current-buffer))
 
 ;; go
 (setup-lazy '(go-mode) "go-mode"
-  (setq gofmt-command "goimports")
   (add-hook 'before-save-hook #'gofmt-before-save)
+  (setq gofmt-command "goimports")
   (define-key go-mode-map (kbd "M-t") 'godef-jump)
-  (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
+  (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window))
+(setup-after "go-mode"
   (setup "go-eldoc"
     (add-hook 'go-mode-hook 'go-eldoc-setup)))
 (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
-
-;; crontab
-(setup-lazy '(crontab-mode) "crontab-mode")
-(add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
-
-;; mark stuff like FIXME
-(setup-lazy '(fic-mode) "fic-mode")
-(add-hook 'prog-mode-hook 'fic-mode)
-;; misbehaving modes
-(add-hook 'enh-ruby-mode-hook 'fic-mode)
-(add-hook 'js2-mode-hook 'fic-mode)
 
 ;; csv
 (setup-lazy '(csv-mode) "csv-mode"
@@ -319,6 +298,28 @@
               (auto-complete-mode 1)
               )))
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+
+;; emacs-lisp
+(setup "bytecomp"
+  (defun byte-compile-current-buffer ()
+    "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
+    (interactive)
+    (when (and (eq major-mode 'emacs-lisp-mode)
+               (file-exists-p (byte-compile-dest-file buffer-file-name)))
+      (byte-compile-file buffer-file-name)))
+  (add-hook 'after-save-hook 'byte-compile-current-buffer))
+
+;; crontab
+(setup-lazy '(crontab-mode) "crontab-mode")
+(add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
+
+;; mark stuff like FIXME
+(setup-lazy '(fic-mode) "fic-mode")
+(add-hook 'prog-mode-hook 'fic-mode)
+;; misbehaving modes
+(add-hook 'enh-ruby-mode-hook 'fic-mode)
+(add-hook 'js2-mode-hook 'fic-mode)
+
 
 ;; dired
 (setup-lazy '(dired-jump) "dired"
@@ -368,6 +369,9 @@
 (add-hook 'mail-mode-hook 'turn-on-auto-fill)
 (add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
 
+;; ag search
+(setup-lazy '(ag) "ag"
+  (setq ag-highlight-search t))
 
 ;; smart-compile
 (setup-lazy '(smart-compile) "smart-compile"

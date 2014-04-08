@@ -10,19 +10,19 @@
 ;; move files to trash instead
 (setq delete-by-moving-to-trash t)
 
-;; save minibuffer history
-(savehist-mode 1)
-(setq history-length 1000)
-(setq search-ring-max 1000)
-(setq regexp-search-ring-max 1000)
-(setq savehist-file "~/.emacs.d/cache/history")
-(setq savehist-additional-variables '(search-ring
-                                      regexp-search-ring
-                                      kill-ring
-                                      compile-command))
 
 ;; save location inside buffer
 (setup "saveplace"
+  ;; save minibuffer history
+  (savehist-mode 1)
+  (setq history-length         1000)
+  (setq search-ring-max        1000)
+  (setq regexp-search-ring-max 1000)
+  (setq savehist-file "~/.emacs.d/cache/history")
+  (setq savehist-additional-variables '(search-ring
+                                        regexp-search-ring
+                                        kill-ring
+                                        compile-command))
   (setq save-place-file "~/.emacs.d/cache/saveplace")
   (setq-default save-place t))
 
@@ -35,21 +35,26 @@
   (yank-pop -1))
 (global-set-key (kbd "M-Y") 'yank-pop-reverse)
 
+;; don't hard-wrap text, but use nice virtual wrapping
+(setup "adaptive-wrap"
+  (setq-default fill-column 80)
+  (global-visual-line-mode 1)
+  (global-adaptive-wrap-prefix-mode 1)
+  (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
+
 ;; goto and hint-style navigation
 (setup-lazy '(ace-jump-mode ace-jump-char-mode ace-jump-line-mode) "ace-jump-mode")
 (setup-lazy '(ace-jump-buffer) "ace-jump-buffer")
 (setup-lazy '(ace-link) "ace-link")
 (setup-lazy '(ace-window) "ace-window")
 
-(define-prefix-command 'goto-map)
-(global-set-key (kbd "M-g") 'goto-map)
 (global-set-key (kbd "M-g M-g") 'goto-line)
-(global-set-key (kbd "M-g l") 'goto-line)
-(global-set-key (kbd "M-g b") 'ace-jump-buffer)
-(global-set-key (kbd "M-g c") 'ace-jump-char-mode)
-(global-set-key (kbd "M-g g") 'ace-jump-mode)
-(global-set-key (kbd "M-g s") 'ace-jump-line-mode)
-(global-set-key (kbd "M-g w") 'ace-window)
+(global-set-key (kbd "M-g l")   'goto-line)
+(global-set-key (kbd "M-g b")   'ace-jump-buffer)
+(global-set-key (kbd "M-g c")   'ace-jump-char-mode)
+(global-set-key (kbd "M-g g")   'ace-jump-mode)
+(global-set-key (kbd "M-g s")   'ace-jump-line-mode)
+(global-set-key (kbd "M-g w")   'ace-window)
 
 (setup-after "ace-window"
   ;; help pages don't have other input, so skip the M-g prefix
@@ -61,45 +66,46 @@
 ;; text stuff
 (setup-expecting "org-mode"
   (setq major-mode 'org-mode))
-(prefer-coding-system 'utf-8)
 (setq undo-limit 1000000)
 (setq sentence-end-double-space nil)
 (column-number-mode t)
 (setq-default indicate-empty-lines t)
 
-;; don't hard-wrap text, but use nice virtual wrapping
-(setup "adaptive-wrap"
-  (setq-default fill-column 80)
-  (global-visual-line-mode 1)
-  (global-adaptive-wrap-prefix-mode 1)
-  (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
+(setq locale-coding-system  'utf-8) 
+(set-terminal-coding-system 'utf-8)
+(prefer-coding-system       'utf-8)
 
 ;; enable useful commands
 (put 'narrow-to-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
+(put 'downcase-region  'disabled nil)
+(put 'upcase-region    'disabled nil)
 
 ;; general key bindings
-(global-set-key (kbd "C-c c")    'comment-region)
-(global-set-key (kbd "C-c u")    'uncomment-region)
+
+;; commenting
+(global-set-key (kbd "C-c c")     'comment-region)
+(global-set-key (kbd "C-c u")     'uncomment-region)
 (global-set-key (kbd "C-c SPC")   'comment-dwim)
 (global-set-key (kbd "C-c C-SPC") 'comment-dwim)
-(global-set-key (kbd "C-c n")    'next-error)
-(global-set-key (kbd "C-c p")    'previous-error)
-(global-set-key (kbd "C-c i")    'indent-region)
-(global-set-key (kbd "M-g")      'goto-line)
+
+;; error
+(global-set-key (kbd "C-c n") 'next-error)
+(global-set-key (kbd "C-c p") 'previous-error)
+(global-set-key (kbd "M-t")   'find-tag)
+
+
 (global-set-key (kbd "C-S-M-x")   'eval-buffer)
 
+;; undo
 (global-set-key (kbd "C-z") 'undo-tree-undo)
 (global-set-key (kbd "M-z") 'undo-tree-redo)
 
-(global-set-key (kbd "C-f")   'forward-word)
-(global-set-key (kbd "C-b")   'backward-word)
-(global-set-key (kbd "M-f")   'forward-sentence)
-(global-set-key (kbd "M-b")   'backward-sentence)
+(global-set-key (kbd "C-f")    'forward-word)
+(global-set-key (kbd "C-b")    'backward-word)
+(global-set-key (kbd "M-f")    'forward-sentence)
+(global-set-key (kbd "M-b")    'backward-sentence)
 (global-set-key (kbd "<home>") 'beginning-of-buffer)
 (global-set-key (kbd "<end>")  'end-of-buffer)
-
 
 ;; allowed key components
 (setup "free-keys"
@@ -193,6 +199,7 @@
   (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
   (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
 
+;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
 (setup-after "multiple-cursors-core"
   (define-key mc/keymap (kbd "<return>") nil)
   (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode))
@@ -217,11 +224,11 @@
   (global-undo-tree-mode))
 
 ;; nested parentheses are highlighted when inside of them
-(require 'highlight-parentheses)
-(defun turn-on-highlight-parentheses () (highlight-parentheses-mode 1))
-(add-hook 'prog-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
-(add-hook 'text-mode-hook 'turn-on-highlight-parentheses)
+(setup "highlight-parentheses"
+  (defun turn-on-highlight-parentheses () (highlight-parentheses-mode 1))
+  (add-hook 'prog-mode-hook 'turn-on-highlight-parentheses)
+  (add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
+  (add-hook 'text-mode-hook 'turn-on-highlight-parentheses))
 
 ;; better search/replace
 (setup-lazy '(vr/query-replace vr/query-replace-from-beginning) "visual-regexp")
@@ -285,7 +292,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
     (end-of-visual-line)
     (when (= oldpos (point))
       (end-of-line))))
-(global-set-key (kbd "\C-e") 'smart-end-of-line)
+(global-set-key (kbd "C-e") 'smart-end-of-line)
 
 ;; move lines like in org-mode
 (defun move-line (n)
@@ -338,12 +345,11 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (setq ido-save-directory-list-file "~/.emacs.d/cache/ido.last")
   (setq ido-case-fold t) ; case insensitive
   (setq ido-enable-last-directory-history t)
+  (setq ido-default-buffer-method 'selected-window) ; ignore buffers in different frames
   (setq ido-max-work-directory-list 30))
 (setup-after "ido"
   (setup "ido-ubiquitous"
-    (setq ido-everywhere t))
-  (setup-expecting "org-mode"
-    (setq org-completion-use-ido t)))
+    (setq ido-everywhere t)))
 
 ;; helm
 (setup "helm-config"
@@ -365,7 +371,6 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (setup-lazy '(helm-C-x-b) "helm-C-x-b"
   (global-set-key [remap switch-to-buffer] 'helm-C-x-b))
 
-
 ;; recent files
 (setup "recentf"
   (setq recentf-max-saved-items 1000)
@@ -373,8 +378,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (setq recentf-exclude (append recentf-exclude
                                 '("\.emacs\.d/cache"
                                   "\.emacs\.d/elpa")))
-  (setq recentf-keep '(file-remote-p file-readable-p))
-  (recentf-mode 1))
+  (setq recentf-keep '(file-remote-p file-readable-p)))
+  (recentf-mode 1)
 ;; file completion
 (setup-after "recentf" "ido"
   (defun recentf-ido-find-file ()
@@ -395,6 +400,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 ;; indentation
 (setq-default tab-width 2)
 (setq sh-basic-offset tab-width)
+(global-set-key (kbd "C-c i") 'indent-region)
 
 ;; don't use tabs normally, except for a few special modes
 (setq-default indent-tabs-mode nil)
@@ -402,6 +408,9 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 ;; makefile has its issues
 (add-hook 'makefile-mode-hook 'usetabs)
 (add-hook 'python-mode-hook 'usetabs)
+;; insert literal tab
+(global-set-key (kbd "<C-tab>") (lambda () (interactive)
+                                  (insert "\t")))
 
 ;; automatically indent on return, except in a few modes that have similar stuff by default
 (electric-indent-mode 1)
@@ -460,107 +469,122 @@ Deletes whitespace at join."
   (global-set-key (kbd "C-d") 'literal-delete-char)
   (global-set-key (kbd "M-d") 'literal-delete-backward-char))
 
-(autoload 'wcheck-mode "wcheck-mode"
-  "Toggle wcheck-mode." t)
-(setq ispell-really-hunspell t)
-(setq wcheck-timer-idle .2)
-(define-key global-map "\C-cs" 'wcheck-actions)
-(setq-default
- wcheck-language "English"
- wcheck-language-data '(("English"
-                         (program . "/usr/bin/enchant")
-                         (args . ("-l" "-d" "en_US"))
-                         (action-program . "/usr/bin/enchant")
-                         (action-args "-a" "-d" "en_US")
-                         (action-parser . enchant-suggestions-menu))
-                        ))
+(setup "wcheck-mode"
+  (setq ispell-really-hunspell t)
+  (setq wcheck-timer-idle .2)
+  (define-key global-map "\C-cs" 'wcheck-actions)
+  (setq-default
+   wcheck-language "English"
+   wcheck-language-data '(("English"
+                           (program . "/usr/bin/enchant")
+                           (args . ("-l" "-d" "en_US"))
+                           (action-program . "/usr/bin/enchant")
+                           (action-args "-a" "-d" "en_US")
+                           (action-parser . enchant-suggestions-menu))
+                          ))
 
-;; add to dictionary functionality
-(defun enchant-suggestions-menu (marked-text)
-  (cons (cons "[Add]" 'enchant-add-to-dictionary)
-        (wcheck-parser-ispell-suggestions)))
+  ;; add to dictionary functionality
+  (defun enchant-suggestions-menu (marked-text)
+    (cons (cons "[Add]" 'enchant-add-to-dictionary)
+          (wcheck-parser-ispell-suggestions)))
 
-(defvar enchant-dictionaries-dir "~/.config/enchant")
+  (defvar enchant-dictionaries-dir "~/.config/enchant")
 
-(defun enchant-add-to-dictionary (marked-text)
-  (let* ((word (aref marked-text 0))
-         (language (aref marked-text 4))
-         (file (let ((code (nth 1 (member "-d" (wcheck-query-language-data
-                                                language 'action-args)))))
-                 (when (stringp code)
-                   (concat (file-name-as-directory enchant-dictionaries-dir)
-                           code ".dic")))))
+  (defun enchant-add-to-dictionary (marked-text)
+    (let* ((word (aref marked-text 0))
+           (language (aref marked-text 4))
+           (file (let ((code (nth 1 (member "-d" (wcheck-query-language-data
+                                                  language 'action-args)))))
+                   (when (stringp code)
+                     (concat (file-name-as-directory enchant-dictionaries-dir)
+                             code ".dic")))))
 
-    (when (and file (file-writable-p file))
-      (with-temp-buffer
-        (insert word) (newline)
-        (append-to-file (point-min) (point-max) file)
-        (message "Added word \"%s\" to the %s dictionary"
-                 word language)))))
+      (when (and file (file-writable-p file))
+        (with-temp-buffer
+          (insert word) (newline)
+          (append-to-file (point-min) (point-max) file)
+          (message "Added word \"%s\" to the %s dictionary"
+                   word language)))))
 
-;; enable spell-check in certain modes
-(defun turn-on-spell-check ()
-  (wcheck-mode 1))
-(add-hook 'text-mode-hook 'turn-on-spell-check)
-(add-hook 'markdown-mode-hook 'turn-on-spell-check)
-(add-hook 'org-mode-hook 'turn-on-spell-check)
+  ;; enable spell-check in certain modes
+  (defun turn-on-spell-check ()
+    (wcheck-mode 1))
+  (add-hook 'text-mode-hook 'turn-on-spell-check)
+  (add-hook 'markdown-mode-hook 'turn-on-spell-check)
+  (add-hook 'org-mode-hook 'turn-on-spell-check)
+  )
+
+;; disable version control in emacs
+(setup "vc"
+  (setq vc-handled-backends ()))
 
 ;; align
-;; definitions for ruby code
-;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
 (setup "align"
-  (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)"))
-(setup-after "align"
+  ;; definitions for ruby code
+  ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
+  (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
   (setup-after "enh-ruby-mode"
-  (defconst align-ruby-modes '(enh-ruby-mode)
-    "align-perl-modes is a variable defined in `align.el'.")
-  (defconst ruby-align-rules-list
-    '((ruby-comma-delimiter
-       (regexp . ",\\(\\s-*\\)[^/ \t\n]")
-       (modes . '(enh-ruby-mode))
-       (repeat . t))
-      (ruby-string-after-func
-       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
-       (modes . '(enh-ruby-mode))
-       (repeat . t))
-      (ruby-symbol-after-func
-       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
-       (modes . '(enh-ruby-mode))))
-    "Alignment rules specific to the ruby mode.
+    (defconst align-ruby-modes '(enh-ruby-mode)
+      "align-perl-modes is a variable defined in `align.el'.")
+    (defconst ruby-align-rules-list
+      '((ruby-comma-delimiter
+         (regexp . ",\\(\\s-*\\)[^/ \t\n]")
+         (modes . '(enh-ruby-mode))
+         (repeat . t))
+        (ruby-string-after-func
+         (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
+         (modes . '(enh-ruby-mode))
+         (repeat . t))
+        (ruby-symbol-after-func
+         (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
+         (modes . '(enh-ruby-mode))))
+      "Alignment rules specific to the ruby mode.
 See the variable `align-rules-list' for more details."))
-(add-to-list 'align-perl-modes 'enh-ruby-mode)
-(add-to-list 'align-dq-string-modes 'enh-ruby-mode)
-(add-to-list 'align-sq-string-modes 'enh-ruby-mode)
-(add-to-list 'align-open-comment-modes 'enh-ruby-mode)
-(dolist (it ruby-align-rules-list)
-  (add-to-list 'align-rules-list it))
-(setup-after "haskell-mode"
-  ;; haskell alignments
-  (add-to-list 'align-rules-list
-               '(haskell-types
-                 (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-assignment
-                 (regexp . "\\(\\s-+\\)=\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-arrows
-                 (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-left-arrows
-                 (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))))
-;; align current region
-(global-set-key (kbd "C-c =") 'align-current)
+  (add-to-list 'align-perl-modes 'enh-ruby-mode)
+  (add-to-list 'align-dq-string-modes 'enh-ruby-mode)
+  (add-to-list 'align-sq-string-modes 'enh-ruby-mode)
+  (add-to-list 'align-open-comment-modes 'enh-ruby-mode)
+  (dolist (it ruby-align-rules-list)
+    (add-to-list 'align-rules-list it))
+  (setup-after "haskell-mode"
+    ;; haskell alignments
+    (add-to-list 'align-rules-list
+                 '(haskell-types
+                   (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode))))
+    (add-to-list 'align-rules-list
+                 '(haskell-assignment
+                   (regexp . "\\(\\s-+\\)=\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode))))
+    (add-to-list 'align-rules-list
+                 '(haskell-arrows
+                   (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode))))
+    (add-to-list 'align-rules-list
+                 '(haskell-left-arrows
+                   (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode)))))
+  ;; align current region
+  (defun align-region-or-current ()
+    "Align current selected region or implied region if nothing is selected."
+    (interactive)
+    (if (and mark-active
+             (/= (point) (mark)))
+        (align (point) (mark))
+      (align-current)))
+  ;; align current region
+  (global-set-key (kbd "C-c =") 'align-region-or-current)
   ;; repeat regex (teh fuck ain't that the default?!)
-(defun align-repeat (start end regexp)
-  "Repeat alignment with respect to the given regular expression."
-  (interactive "r\nsAlign regexp: ")
-  (align-regexp start end
-                (concat "\\(\\s-*\\)" regexp) 1 1 t))
-(global-set-key (kbd "C-c C-=") 'align-repeat)
+  (defun align-repeat (start end regexp)
+    "Repeat alignment with respect to the given regular expression."
+    (interactive "r\nsAlign regexp: ")
+    (align-regexp start end
+                  (concat "\\(\\s-*\\)" regexp) 1 1 t))
+  (global-set-key (kbd "C-c C-=") 'align-repeat))
+
+;; a slightly saner diff command
+(setup-lazy '(ediff-mode) "ediff"
+  (setq ediff-diff-options "-w"))
 
 ;; if no region is active, act on current line
 (setup "whole-line-or-region"
@@ -574,9 +598,11 @@ See the variable `align-rules-list' for more details."))
   (whole-line-or-region-mode 1))
 
 ;; tramp
-(setup "tramp"
+(setup-after "tramp"
   (setq tramp-default-method "ssh")
-  (setq tramp-persistency-file-name "~/.emacs.d/cache/tramp"))
+  (setq tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+  ;; cookies
+  (setq url-cookie-file "~/.emacs.d/cache/url/cookies"))
 
 ;; normal bookmarks
 (setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
@@ -595,15 +621,20 @@ See the variable `align-rules-list' for more details."))
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; make zsh aliases work
-(setq shell-command-switch "-lc")
+(setup "shell-command"
+  (setq shell-command-switch "-lc")
+  (shell-command-completion-mode))
 
 ;; scratchpad buffers
 (setup-lazy '(scratch) "scratch"
   ;; don't want to remember which key I used
   (global-set-key (kbd "C-c b") 'scratch))
 
-;; don't start in lisp
-(setq initial-major-mode 'org-mode)
+;; highlight some whitespace
+(setup-lazy '(whitespace-mode global-whitespace-mode) "whitespace"
+  (setq whitespace-style (quote (face tabs tab-mark))))
+
+;; don't spam *Scratch*
 (setq initial-scratch-message nil)
 
 ;; oh pretty!
@@ -649,13 +680,16 @@ See the variable `align-rules-list' for more details."))
     (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
     (define-key global-map (kbd "C-c C-]") 'imenu-anywhere)))
 
+;; recentering
+(setq recenter-positions '(2 middle))
+(add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
+
 ;; Guide Key
 (setup "guide-key"
   (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
   (guide-key-mode 1)
   (setq guide-key/recursive-key-sequence-flag t)
   (setq guide-key/popup-window-position 'bottom))
-
 
 ;; smartarens
 (setup "smartparens-config"
@@ -666,25 +700,6 @@ See the variable `align-rules-list' for more details."))
   (setq blink-matching-paren-distance nil)
   (setq show-paren-style 'parenthesis)
   (setq show-paren-delay 0)
-  )
-
-(setup-after "smartparens"
-  ;; markdown-mode
-  (setup-expecting "markdown-mode" 
-    (sp-with-modes '(markdown-mode)
-      (sp-local-pair "*" "*" :actions '(wrap autoskip))
-      (sp-local-tag "2" "**" "**")
-      (sp-local-tag "m" "$" "$") ; math
-      (sp-local-pair "$$" "$$")
-      (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags)))
-  (setup-expecting "org-mode" 
-    (sp-with-modes '(org-mode)
-      (sp-local-pair "$" "$" :actions '(wrap autoskip))
-      (sp-local-pair "$$" "$$" :actions '(wrap autoskip))))
-  ;; html-mode
-  (setup-expecting "html-mode" "sgml-mode"
-    (sp-with-modes '(html-mode sgml-mode)
-      (sp-local-pair "<" ">"))
   ;; sp keys
   (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
   (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
@@ -704,6 +719,25 @@ See the variable `align-rules-list' for more details."))
   (define-key sp-keymap (kbd "S-<right>") 'sp-select-next-thing)
   (define-key sp-keymap (kbd "C-c |") 'sp-split-sexp)
   (define-key sp-keymap (kbd "C-c C-|") 'sp-join-sexp)
+  )
+
+(setup-after "smartparens"
+  ;; markdown-mode
+  (setup-expecting "markdown-mode" 
+    (sp-with-modes '(markdown-mode)
+      (sp-local-pair "*" "*" :actions '(wrap autoskip))
+      (sp-local-tag "2" "**" "**")
+      (sp-local-tag "m" "$" "$") ; math
+      (sp-local-pair "$$" "$$")
+      (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags)))
+  (setup-expecting "org-mode" 
+    (sp-with-modes '(org-mode)
+      (sp-local-pair "$" "$" :actions '(wrap autoskip))
+      (sp-local-pair "$$" "$$" :actions '(wrap autoskip))))
+  ;; html-mode
+  (setup-expecting "html-mode" "sgml-mode"
+    (sp-with-modes '(html-mode sgml-mode)
+      (sp-local-pair "<" ">"))
 
   ;; move to beginning of text on line
   (defun sp-kill-to-end-of-sexp ()
@@ -744,7 +778,7 @@ See the variable `align-rules-list' for more details."))
   (define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
   (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)))
 
-                                        ; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
+;; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
 (setq shift-select-mode nil)
 
 ;; transparently open compressed files
