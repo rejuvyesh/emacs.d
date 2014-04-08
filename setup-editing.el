@@ -29,11 +29,34 @@
 ;; more useful kill-ring
 (setq kill-ring-max 2000)
 (setup "kill-ring-search"
-  (global-set-key "\M-\C-y" 'kill-ring-search))
+  (global-set-key (kbd "M-C-y") 'kill-ring-search))
 (defun yank-pop-reverse ()
   (interactive)
   (yank-pop -1))
-(global-set-key "\M-Y" 'yank-pop-reverse)
+(global-set-key (kbd "M-Y") 'yank-pop-reverse)
+
+;; goto and hint-style navigation
+(setup-lazy '(ace-jump-mode ace-jump-char-mode ace-jump-line-mode) "ace-jump-mode")
+(setup-lazy '(ace-jump-buffer) "ace-jump-buffer")
+(setup-lazy '(ace-link) "ace-link")
+(setup-lazy '(ace-window) "ace-window")
+
+(define-prefix-command 'goto-map)
+(global-set-key (kbd "M-g") 'goto-map)
+(global-set-key (kbd "M-g M-g") 'goto-line)
+(global-set-key (kbd "M-g l") 'goto-line)
+(global-set-key (kbd "M-g b") 'ace-jump-buffer)
+(global-set-key (kbd "M-g c") 'ace-jump-char-mode)
+(global-set-key (kbd "M-g g") 'ace-jump-mode)
+(global-set-key (kbd "M-g s") 'ace-jump-line-mode)
+(global-set-key (kbd "M-g w") 'ace-window)
+
+(setup-after "ace-window"
+  ;; help pages don't have other input, so skip the M-g prefix
+  (setup "info"
+    (define-key Info-mode-map "l" 'ace-link-info))
+  (setup "help-mode"
+    (define-key help-mode-map "l" 'ace-link-help)))
 
 ;; text stuff
 (setup-expecting "org-mode"
@@ -169,12 +192,15 @@
   (global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
   (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
   (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
+
 (setup-after "multiple-cursors-core"
   (define-key mc/keymap (kbd "<return>") nil)
   (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode))
-(setup "phi-search"
-  (global-set-key (kbd "C-c C-s") 'phi-search)
-  (global-set-key (kbd "C-c C-r") 'phi-search-backward))
+
+(setup-lazy '(phi-search phi-search-backward) "phi-search")
+(global-set-key (kbd "C-c C-s") 'phi-search)
+(global-set-key (kbd "C-c C-r") 'phi-search-backward)
+
 (setup-after "phi-search"
   (setup "phi-search-mc"
     (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
@@ -226,7 +252,7 @@
     (if (eq last-command 'copy-to-kill)
         (append-next-kill))
     (kill-ring-save (mark) (point))))
-(global-set-key "\M-k" 'copy-line)
+(global-set-key (kbd "M-k") 'copy-line)
 
 ;; move to beginning of text on line
 (defun smart-beginning-of-line ()
@@ -563,11 +589,6 @@ See the variable `align-rules-list' for more details."))
 (setup "window-numbering"
   (window-numbering-mode 1))
 
-;; ace-jump (hint-style navigation)
-(setup "ace-jump-mode"
-  (global-set-key (kbd "C-c j") 'ace-jump-mode)
-  (global-set-key (kbd "C-c C-g") 'ace-jump-line-mode))
-
 ;; expand-region
 (setup-lazy '(er/expand-region er/contract-region) "expand-region")
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
@@ -590,8 +611,7 @@ See the variable `align-rules-list' for more details."))
   (global-pretty-lambda-mode))
 
 ;; rotate / toggle text
-(setup "rotate-text"
-  (global-set-key (kbd "C-c C-t") 'rotate-text)
+(setup-lazy '(rotate-text) "rotate-text"
   (add-to-list 'rotate-text-words '("true" "false"))
   (add-to-list 'rotate-text-words '("yes" "no"))
   (add-to-list 'rotate-text-words '("t" "nil"))
@@ -599,30 +619,35 @@ See the variable `align-rules-list' for more details."))
   (add-to-list 'rotate-text-words '("map" "each"))
   (add-to-list 'rotate-text-words '("select" "reject"))
   (add-to-list 'rotate-text-symbols '("?" "!")))
+(global-set-key (kbd "C-c C-t") 'rotate-text)
 
 ;; handle camelcase better
 (global-subword-mode 1)
 
 ;; folding
-(setup "hideshow")
+(setup "hideshow"
+  (add-hook 'enh-ruby-hook   'hs-minor-mode))
+(setup-after "hideshow"
 (setup-lazy '(hs-minor-mode) "hideshowvis"
   (add-hook 'enh-ruby-hook   'hs-minor-mode))
 (setup-lazy '(hs-minor-mode) "fold-dwim"
   (define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
   (define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
-  (define-key global-map (kbd "C-c F") 'fold-dwim-show-all))
+  (define-key global-map (kbd "C-c F") 'fold-dwim-show-all)))
 
 ;; fast navigation
 (setup "imenu"
+  (set-default 'imenu-auto-rescan t)
   ;; recentering
   (setq recenter-positions '(2 middle))
   (add-hook 'imenu-after-jump-hook 'recenter-top-bottom))
-(setup "idomenu"
-  (define-key global-map (kbd "C-c [") 'idomenu)
-  (define-key global-map (kbd "C-c C-[") 'idomenu))
-(setup "imenu-anywhere"
-  (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
-  (define-key global-map (kbd "C-c C-]") 'imenu-anywhere))
+(setup-after "imenu"
+  (setup "idomenu"
+    (define-key global-map (kbd "C-c [") 'idomenu)
+    (define-key global-map (kbd "C-c C-[") 'idomenu))
+  (setup "imenu-anywhere"
+    (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
+    (define-key global-map (kbd "C-c C-]") 'imenu-anywhere)))
 
 ;; Guide Key
 (setup "guide-key"
