@@ -71,6 +71,7 @@
   (setq markdown-command "pandoc --smart -f markdown -t html")
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
+  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
   (add-hook 'markdown-mode-hook
             (lambda()
               (add-to-list 'ac-sources 'ac-source-math-latex))))
@@ -310,7 +311,7 @@
 
 ;; dired
 (setup-lazy '(dired-jump) "dired"
-  ;; move files between split panes
+  ;; move files between split pans
   (setq dired-dwim-target t))
 (setup-after "dired" 
   (setup "wdired")
