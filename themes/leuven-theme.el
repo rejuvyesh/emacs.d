@@ -4,7 +4,8 @@
 
 ;; Author: Fabrice Niessen <(concat "fniessen" at-sign "pirilampo.org")>
 ;; URL: https://github.com/fniessen/emacs-leuven-theme
-;; Version: 20140113.1205
+;; Version: 20140113.328
+;; X-Original-Version: 20140113.1205
 ;; Keywords: color theme
 
 ;; This file is part of GNU Emacs.
@@ -24,51 +25,41 @@
 
 ;;; Commentary:
 
-;; This Org-enhancing color theme "leuven" ROCKS!
-;; ... and not just for Org mode.
-;;
-;; To use it, put the following in your Emacs configuration file:
-;;
-;;   (load-theme 'leuven t)
-;;
-;; Requirements: Emacs 24.
+;; Modified version of Leuven.
 
 ;;; Code:
 
 (deftheme leuven
-  "Face colors with a light background.
-Basic, Font Lock, Isearch, Gnus, Message, Diff, Ediff, Flyspell,
-Semantic, and Ansi-Color faces are included -- and much more...")
+  "Non-stupid light background.")
 
 (let ((class '((class color) (min-colors 89)))
-
       ;; Leuven generic colors
       (cancel '(:slant italic :strike-through t :foreground "gray55"))
       (clock-line '(:box (:line-width 1 :color "#335EA8") :foreground "black" :background "#EEC900"))
       (code-block '(:foreground "#000088" :background "#FFFFE0"))
       (code-inline '(:foreground "#007300" :background "#EBF5EB"))
-      (column '(:height 1.0 :weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
+      (column '(:weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
       (diff-added '(:foreground "#008000" :background "#DDFFDD"))
       (diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
       (diff-none '(:foreground "gray33"))
       (diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
       (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
-      (highlight-line '(:background "#FEFCAE")) ; #F5F5F5 or #CCDEED
-      (link '(:underline t :foreground "#006DAF"))
+      (highlight-line '(:bold t :background nil)) ; #F5F5F5 or #CCDEED
+      (link '(:underline t :foreground "#006FE0"))
       (mail-header-name '(:weight bold :foreground "black"))
       (marked-line '(:weight bold :foreground "white" :background "red"))
       (match '(:background "#FBE448"))
-      (ol1 '(:height 1.3 :weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
-      (ol2 '(:height 1.0 :weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
-      (ol3 '(:height 1.0 :weight bold :foreground "#005522" :background "#EFFFEF"))
-      (ol4 '(:height 1.0 :weight bold :slant normal :foreground "#EA6300"))
-      (ol5 '(:height 1.0 :weight bold :slant normal :foreground "#E3258D"))
-      (ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
-      (ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
-      (ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
+      (ol1 '(:weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
+      (ol2 '(:weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
+      (ol3 '(:weight bold :foreground "#005522" :background "#EFFFEF"))
+      (ol4 '(:weight bold :slant normal :foreground "#EA6300"))
+      (ol5 '(:weight bold :slant normal :foreground "#E3258D"))
+      (ol6 '(:weight bold :slant italic :foreground "#0077CC"))
+      (ol7 '(:weight bold :slant italic :foreground "#2EAE2C"))
+      (ol8 '(:weight bold :slant italic :foreground "#FD8008"))
       (region '(:background "#ADD6FF")) ; #CCCCCC
       (shadow '(:foreground "#7F7F7F"))
-      (string '(:foreground "#036A07")) ; #D0372D or #23238E or #20590C
+      (string '(:foreground "#024c05" :background "#eff8e9")) ; #D0372D or #23238E or #20590C
       (subject '(:weight bold :foreground "#CF5D60"))
       (symlink '(:foreground "deep sky blue"))
       (volatile-highlight '(:background "#FBE448"))
@@ -76,7 +67,8 @@ Semantic, and Ansi-Color faces are included -- and much more...")
 
   (custom-theme-set-faces
    'leuven
-   `(default ((,class (:foreground "#333333" :background "#FFFFFF"))))
+
+   `(default ((,class (:foreground "#000000" :background "#e6e6e6"))))
    `(bold ((,class (:weight bold :foreground "black"))))
    `(bold-italic ((,class (:weight bold :slant italic :foreground "black"))))
    `(italic ((,class (:slant italic :foreground "#1A1A1A"))))
@@ -95,7 +87,8 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(whitespace-hspace ((,class (:foreground "#D2D2D2"))))
    `(whitespace-indentation ((,class (:foreground "firebrick" :background "yellow"))))
    `(whitespace-line ((,class (:foreground "#CC0000" :background "#FFFF88"))))
-   `(whitespace-tab ((,class (:foreground "lightgray" :background "beige"))))
+   `(whitespace-space ((,class (:foreground "#a0a0a0"))))
+   `(whitespace-tab ((,class (:foreground "#a0a0a0"))))
    `(whitespace-trailing ((,class (:weight bold :foreground "yellow" :background "red1"))))
 
    ;; Mode line faces
@@ -116,9 +109,9 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    ;; Font lock faces
    `(font-lock-builtin-face ((,class (:foreground "#006FE0"))))
    `(font-lock-comment-delimiter-face ((,class (:foreground "#8D8D84")))) ; #696969
-   `(font-lock-comment-face ((,class (:slant italic :foreground "#8D8D84")))) ; #696969
+   `(font-lock-comment-face ((,class (:slant italic :foreground "#696969" :background "#f7f7f7")))) ; #696969
    `(font-lock-constant-face ((,class (:foreground "#D0372D"))))
-   `(font-lock-doc-face ((,class (:foreground "#008000"))))
+   `(font-lock-doc-face ((,class (:foreground "#696969" :background "#f7f7f7"))))
    `(font-lock-doc-string-face ((,class (:foreground "#008000"))))
    `(font-lock-function-name-face ((,class (:weight normal :foreground "#006699"))))
    `(font-lock-keyword-face ((,class (:bold nil :foreground "#0000FF")))) ; #3654DC
@@ -131,83 +124,21 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(font-lock-warning-face ((,class (:weight bold :foreground "red"))))
 
    ;; Button and link faces
-   `(link ((,class (:underline t :foreground "#8AC6F2"))))
+   `(link ((,class (:underline t :foreground "#006FE0"))))
    `(link-visited ((,class (:underline t :foreground "#E5786D"))))
    `(button ((,class (:underline t :foreground "#006DAF"))))
    `(header-line ((,class (:weight bold :underline "black" :overline "black" :foreground "black" :background "#FFFF88"))))
 
-   ;; Gnus faces
-   `(gnus-cite-attribution-face ((,class (:foreground "#5050B0"))))
-   `(gnus-cite-face-1 ((,class (:foreground "#5050B0"))))
-   `(gnus-cite-face-10 ((,class (:foreground "#990000"))))
-   `(gnus-cite-face-2 ((,class (:foreground "#660066"))))
-   `(gnus-cite-face-3 ((,class (:foreground "#007777"))))
-   `(gnus-cite-face-4 ((,class (:foreground "#990000"))))
-   `(gnus-cite-face-5 ((,class (:foreground "#000099"))))
-   `(gnus-cite-face-6 ((,class (:foreground "#BB6600"))))
-   `(gnus-cite-face-7 ((,class (:foreground "#5050B0"))))
-   `(gnus-cite-face-8 ((,class (:foreground "#660066"))))
-   `(gnus-cite-face-9 ((,class (:foreground "#007777"))))
-   `(gnus-emphasis-bold ((,class (:weight bold))))
-   `(gnus-emphasis-highlight-words ((,class (:foreground "yellow" :background "black"))))
-   `(gnus-group-mail-1 ((,class (:weight bold :foreground "#FF50B0"))))
-   `(gnus-group-mail-1-empty ((,class (:foreground "#5050B0"))))
-   `(gnus-group-mail-2 ((,class (:weight bold :foreground "#FF0066"))))
-   `(gnus-group-mail-2-empty ((,class (:foreground "#660066"))))
-   `(gnus-group-mail-3 ((,class (:weight bold :foreground "black"))))
-   `(gnus-group-mail-3-empty ((,class (:foreground "#808080"))))
-   `(gnus-group-mail-low ((,class ,cancel)))
-   `(gnus-group-mail-low-empty ((,class ,cancel)))
-   `(gnus-group-news-1 ((,class (:weight bold :foreground "#FF50B0"))))
-   `(gnus-group-news-1-empty ((,class (:foreground "#5050B0"))))
-   `(gnus-group-news-2 ((,class (:weight bold :foreground "#FF0066"))))
-   `(gnus-group-news-2-empty ((,class (:foreground "#660066"))))
-   `(gnus-group-news-3 ((,class (:weight bold :foreground "black"))))
-   `(gnus-group-news-3-empty ((,class (:foreground "#808080"))))
-   `(gnus-group-news-4 ((,class (:weight bold :foreground "#FF0000"))))
-   `(gnus-group-news-4-empty ((,class (:foreground "#990000"))))
-   `(gnus-group-news-5 ((,class (:weight bold :foreground "#FF0099"))))
-   `(gnus-group-news-5-empty ((,class (:foreground "#000099"))))
-   `(gnus-group-news-6 ((,class (:weight bold :foreground "gray50"))))
-   `(gnus-group-news-6-empty ((,class (:foreground "#808080"))))
-   `(gnus-header-content ((,class (:family "Sans Serif" :foreground "#3399CC"))))
-   `(gnus-header-from ((,class (:family "Sans Serif" :foreground "blue"))))
-   `(gnus-header-name ((,class ,mail-header-name)))
-   `(gnus-header-newsgroups ((,class (:family "Sans Serif" :foreground "#3399CC"))))
-   `(gnus-header-subject ((,class ,subject)))
-   `(gnus-picon ((,class (:foreground "yellow" :background "white"))))
-   `(gnus-picon-xbm ((,class (:foreground "yellow" :background "white"))))
-   `(gnus-server-closed ((,class (:slant italic :foreground "blue" :background "white"))))
-   `(gnus-server-denied ((,class (:weight bold :foreground "red" :background "white"))))
-   `(gnus-server-opened ((,class (:foreground "white" :background "#83B869"))))
-   `(gnus-signature ((,class (:slant italic :foreground "#7F7F7F"))))
-   `(gnus-splash ((,class (:foreground "#FF8C00"))))
-   `(gnus-summary-cancelled ((,class ,cancel)))
-   `(gnus-summary-high-ancient ((,class (:weight normal :foreground "#808080" :background "#FFFFE6"))))
-   `(gnus-summary-high-read ((,class (:weight normal :foreground "#808080" :background "#FFFFE6"))))
-   `(gnus-summary-high-ticked ((,class (:weight normal :foreground "black" :background "#E7AEB0"))))
-   `(gnus-summary-high-unread ((,class (:weight normal :foreground "black" :background "#FFFFCC"))))
-   `(gnus-summary-low-ancient ((,class (:slant italic :foreground "gray55"))))
-   `(gnus-summary-low-read ((,class (:slant italic :foreground "gray55" :background "#E0E0E0"))))
-   `(gnus-summary-low-ticked ((,class (:slant italic :foreground "black" :background "#E7AEB0"))))
-   `(gnus-summary-low-unread ((,class (:slant italic :foreground "black"))))
-   `(gnus-summary-normal-ancient ((,class (:foreground "#808080"))))
-   `(gnus-summary-normal-read ((,class (:foreground "#808080"))))
-   `(gnus-summary-normal-ticked ((,class (:foreground "black" :background "#E7AEB0"))))
-   `(gnus-summary-normal-unread ((,class (:foreground "black"))))
-   `(gnus-summary-selected ((,class (:underline t :foreground "black" :background "#FFD0D0"))))
-   `(gnus-x-face ((,class (:foreground "black" :background "white"))))
-
    ;; Message faces
    `(message-header-name ((,class ,mail-header-name)))
-   `(message-header-cc ((,class (:family "Sans Serif" :foreground "blue"))))
-   `(message-header-other ((,class (:family "Sans Serif" :foreground "#3399CC"))))
+   `(message-header-cc ((,class (:foreground "blue"))))
+   `(message-header-other ((,class (:foreground "#3399CC"))))
    `(message-header-subject ((,class ,subject)))
-   `(message-header-to ((,class (:family "Sans Serif" :foreground "blue"))))
+   `(message-header-to ((,class (:foreground "blue"))))
    `(message-cited-text ((,class (:foreground "#5050B0"))))
-   `(message-separator ((,class (:family "Sans Serif" :weight bold :foreground "red"))))
-   `(message-header-newsgroups ((,class (:family "Sans Serif" :foreground "#3399CC"))))
-   `(message-header-xheader ((,class (:family "Sans Serif" :foreground "#3399CC"))))
+   `(message-separator ((,class (:weight bold :foreground "red"))))
+   `(message-header-newsgroups ((,class (:foreground "#3399CC"))))
+   `(message-header-xheader ((,class (:foreground "#3399CC"))))
    `(message-mml ((,class (:foreground "forest green"))))
 
    ;; Diff
@@ -244,15 +175,6 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(flyspell-duplicate ((,class (:underline "#008000" :inherit nil))))
    `(flyspell-incorrect ((,class (:underline "red" :inherit nil))))
 
-   ;; ;; Semantic faces
-   ;; `(semantic-decoration-on-includes ((,class (:underline ,cham-4))))
-   ;; `(semantic-decoration-on-private-members-face ((,class (:background ,alum-2))))
-   ;; `(semantic-decoration-on-protected-members-face ((,class (:background ,alum-2))))
-   ;; `(semantic-decoration-on-unknown-includes ((,class (:background ,choc-3))))
-   ;; `(semantic-decoration-on-unparsed-includes ((,class (:underline ,orange-3))))
-   ;; `(semantic-tag-boundary-face ((,class (:overline ,blue-1))))
-   ;; `(semantic-unmatched-syntax-face ((,class (:underline ,red-1))))
-
    `(Info-title-1-face ((,class ,ol1)))
    `(Info-title-2-face ((,class ,ol2)))
    `(Info-title-3-face ((,class ,ol3)))
@@ -276,7 +198,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(cfw:face-saturday ((,class (:foreground "#4E4E4E" :background "white" :weight bold))))
    `(cfw:face-select ((,class (:foreground "#4A95EB" :background "#EDF1FA"))))
    `(cfw:face-sunday ((,class (:foreground "#4E4E4E" :background "white" :weight bold))))
-   `(cfw:face-title ((,class (:height 2.0 :foreground "#676767" :weight bold :inherit variable-pitch))))
+   `(cfw:face-title ((,class (:foreground "#676767" :weight bold :inherit variable-pitch))))
    `(cfw:face-today ((,class (:foreground "#4F4A3D" :background "#FFFABE"))))
    `(cfw:face-today-title ((,class (:foreground "#4A95EB" :background "#FFFABE"))))
    `(cfw:face-toolbar ((,class (:background "white"))))
@@ -308,9 +230,9 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(custom-comment ((,class (:background "gray85"))))
    `(custom-comment-tag ((,class (:foreground "blue4"))))
    `(custom-documentation ((,class (nil))))
-   `(custom-face-tag ((,class (:family "Sans Serif" :height 1.2 :weight bold))))
-   `(custom-group-tag ((,class (:height 1.2 :weight bold :foreground "blue1"))))
-   `(custom-group-tag-1 ((,class (:family "Sans Serif" :height 1.2 :weight bold :foreground "red1"))))
+   `(custom-face-tag ((,class (:weight bold))))
+   `(custom-group-tag ((,class (:weight bold :foreground "blue1"))))
+   `(custom-group-tag-1 ((,class (:weight bold :foreground "red1"))))
    `(custom-invalid ((,class (:foreground "yellow" :background "red"))))
    `(custom-link ((,class (:underline t :foreground "blue1"))))
    `(custom-modified ((,class (:foreground "white" :background "blue"))))
@@ -320,7 +242,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(custom-state ((,class (:foreground "green4"))))
    `(custom-themed ((,class (:foreground "white" :background "blue1"))))
    `(custom-variable-button ((,class (:weight bold :underline t))))
-   `(custom-variable-tag ((,class (:family "Sans Serif" :height 1.2 :weight bold :foreground "blue1"))))
+   `(custom-variable-tag ((,class (:weight bold :foreground "blue1"))))
    `(custom-visibility ((,class ,link)))
    `(diary-face ((,class (:foreground "#87C9FC"))))
    `(dircolors-face-asm ((,class (:foreground "black"))))
@@ -366,7 +288,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(font-latex-bold-face ((,class (:weight bold :foreground "black"))))
    `(font-latex-italic-face ((,class (:slant italic :foreground "#1A1A1A"))))
    `(font-latex-math-face ((,class (:foreground "blue"))))
-   `(font-latex-sectioning-1-face ((,class (:family "Sans Serif" :height 2.7 :weight bold :foreground "cornflower blue"))))
+   `(font-latex-sectioning-1-face ((,class (:weight bold :foreground "cornflower blue"))))
    `(font-latex-sectioning-2-face ((,class ,ol1)))
    `(font-latex-sectioning-3-face ((,class ,ol2)))
    `(font-latex-sectioning-4-face ((,class ,ol3)))
@@ -396,7 +318,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(helm-moccur-buffer ((,class (:foreground "#0066CC"))))
    `(helm-selection ((,class ,highlight-line)))
    `(helm-selection-line ((,class ,volatile-highlight)))
-   `(helm-source-header ((,class (:family "Sans Serif" :height 1.3 :weight bold :foreground "white" :background "#2F69BF"))))
+   `(helm-source-header ((,class (:weight bold :foreground "white" :background "#2F69BF"))))
    `(helm-visible-mark ((,class ,marked-line)))
    `(helm-w3m-bookmarks-face ((,class (:underline t :foreground "cyan1"))))
    `(highlight-symbol-face ((,class (:background "#FFFFA0"))))
@@ -407,12 +329,12 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(html-helper-italic-face ((,class (:slant italic :foreground "black"))))
    `(html-helper-underline-face ((,class (:underline t :foreground "black"))))
    `(html-tag-face ((,class (:foreground "blue"))))
-   `(ilog-non-change-face ((,class (:height 2.0 :foreground "#6434A3"))))
-   `(ilog-change-face ((,class (:height 2.0 :foreground "#008200"))))
-   `(ilog-echo-face ((,class (:height 2.0 :foreground "#006FE0"))))
+   `(ilog-non-change-face ((,class (:foreground "#6434A3"))))
+   `(ilog-change-face ((,class (:foreground "#008200"))))
+   `(ilog-echo-face ((,class (:foreground "#006FE0"))))
    `(ilog-load-face ((,class (:foreground "#BA36A5"))))
    `(ilog-message-face ((,class (:foreground "#808080"))))
-   `(info-file ((,class (:family "Sans Serif" :height 1.8 :weight bold :box (:line-width 1 :color "#0000CC") :foreground "cornflower blue" :background "LightSteelBlue1"))))
+   `(info-file ((,class (:weight bold :box (:line-width 1 :color "#0000CC") :foreground "cornflower blue" :background "LightSteelBlue1"))))
    `(info-header-node ((,class (:underline t :foreground "orange")))) ; nodes in header
    `(info-header-xref ((,class (:underline t :foreground "dodger blue")))) ; cross references in header
    `(info-menu-header ((,class ,ol2))) ; menu titles (headers) -- major topics
@@ -432,7 +354,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(magit-branch ((,class ,vc-branch)))
    `(magit-diff-add ((,class ,diff-added)))
    `(magit-diff-del ((,class ,diff-removed)))
-   `(magit-diff-file-header ((,class (:family "Sans Serif" :height 1.1 :weight bold :foreground "#4183C4"))))
+   `(magit-diff-file-header ((,class (:weight bold :foreground "#4183C4"))))
    `(magit-diff-hunk-header ((,class ,diff-hunk-header)))
    `(magit-diff-none ((,class ,diff-none)))
    `(magit-header ((,class (:foreground "white" :background "#FF4040"))))
@@ -440,7 +362,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(magit-item-mark ((,class ,marked-line)))
    `(magit-log-head-label ((,class (:box (:line-width 1 :color "blue" :style nil)))))
    `(magit-log-tag-label ((,class (:box (:line-width 1 :color "#00CC00" :style nil)))))
-   `(magit-section-title ((,class (:family "Sans Serif" :height 1.8 :weight bold :foreground "cornflower blue"))))
+   `(magit-section-title ((,class (:weight bold :foreground "cornflower blue"))))
    `(makefile-space-face ((,class (:background "hot pink"))))
    `(makefile-targets ((,class (:weight bold :foreground "blue"))))
    `(match ((,class ,match)))
@@ -465,17 +387,16 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(org-agenda-clocking ((,class ,clock-line)))
    `(org-agenda-column-dateline ((,class ,column)))
    `(org-agenda-current-time ((,class (:underline t :foreground "#1662AF"))))
-   `(org-agenda-date ((,class (:height 1.6 :weight bold :foreground "#1662AF"))))
-   `(org-agenda-date-today ((,class (:height 1.6 :weight bold :foreground "#4F4A3D" :background "#FFFABE"))))
-   `(org-agenda-date-weekend ((,class (:height 1.6 :weight bold :foreground "#4E4E4E"))))
+   `(org-agenda-date ((,class (:weight bold :foreground "#1662AF"))))
+   `(org-agenda-date-today ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFABE"))))
+   `(org-agenda-date-weekend ((,class (:weight bold :foreground "#4E4E4E"))))
    `(org-agenda-diary ((,class (:weight bold :foreground "green4" :background "light blue"))))
    `(org-agenda-dimmed-todo-face ((,class (:foreground "gold2"))))
    `(org-agenda-done ((,class (:foreground "#555555" :background "#EEEEEE"))))
    `(org-agenda-filter-category ((,class (:weight bold :foreground "orange"))))
    `(org-agenda-filter-tags ((,class (:weight bold :foreground "orange"))))
    `(org-agenda-restriction-lock ((,class (:background "#E77D63"))))
-   ;; `(org-agenda-structure ((,class (:height 1.6 :weight bold :box (:line-width 1 :color "#999999") :foreground "#666666" :background "#CCCCCC"))))
-   `(org-agenda-structure ((,class (:height 1.6 :bold nil :foreground "#999999"))))
+   `(org-agenda-structure ((,class (:bold nil :foreground "#999999"))))
    `(org-archived ((,class (:foreground "gray70"))))
    `(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
    `(org-block ((,class ,code-block)))
@@ -492,14 +413,14 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(org-dim ((,class (:foreground "#AAAAAA"))))
    `(org-document-info ((,class (:foreground "#484848"))))
    `(org-document-info-keyword ((,class (:foreground "#008ED1" :background "#EAEAFF"))))
-   `(org-document-title ((,class (:family "Sans Serif" :height 1.8 :weight bold :foreground "black"))))
+   `(org-document-title ((,class (:weight bold :foreground "black"))))
    `(org-done ((,class (:weight bold :box (:line-width 1 :color "#BBBBBB") :foreground "#BBBBBB" :background "#F0F0F0"))))
    `(org-drawer ((,class (:foreground "light sky blue"))))
    `(org-ellipsis ((,class (:underline nil :box (:line-width 1 :color "#999999") :foreground "#999999" :background "#FFF8C0")))) ; #FFEE62
    `(org-example ((,class (:foreground "blue" :background "#EAFFEA"))))
    `(org-footnote ((,class (:underline t :foreground "#008ED1"))))
    `(org-formula ((,class (:foreground "chocolate1"))))
-   `(org-headline-done ((,class (:height 1.0 :weight normal :foreground "#999999"))))
+   `(org-headline-done ((,class (:weight normal :foreground "#999999"))))
    `(org-hide ((,class (:foreground "#E2E2E2"))))
    `(org-inlinetask ((,class (:box (:line-width 1 :color "#EBEBEB") :foreground "#777777" :background "#FFFFD6"))))
    `(org-latex-and-related ((,class ,code-block)))
@@ -528,7 +449,7 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(org-tag ((,class (:weight normal :slant italic :foreground "#9A9FA4" :background "#F3F3F3"))))
    `(org-target ((,class ,link)))
    `(org-time-grid ((,class (:foreground "#CFCFCF"))))
-   `(org-todo ((,class (:weight bold :box (:line-width 1 :color "#D8ABA7") :foreground "#D8ABA7" :background "#FFE6E4"))))
+   `(org-todo ((,class (:weight bold :box (:line-width 1 :color "#D8ABA7") :foreground "#000000" :background "#FFBBBB"))))
    `(org-upcoming-deadline ((,class (:foreground "#FF5555"))))
    `(org-verbatim ((,class (:foreground "#0066CC"))))
    `(org-verse ((,class (:slant italic :foreground "dim gray" :background "#EEEEEE"))))
@@ -598,22 +519,6 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(vc-annotate-face-FF993F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFC63F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFF33F ((,class (:foreground "#FFF33F" :background "black"))))
-   `(w3m-anchor ((,class ,link)))
-   `(w3m-arrived-anchor ((,class (:foreground "purple1"))))
-   `(w3m-bitmap-image-face ((,class (:foreground "gray4" :background "green"))))
-   `(w3m-bold ((,class (:weight bold :foreground "black"))))
-   `(w3m-current-anchor ((,class (:weight bold :underline t :foreground "blue"))))
-   `(w3m-form ((,class (:underline t :foreground "tan1"))))
-   `(w3m-form-button-face ((,class (:weight bold :underline t :foreground "gray4" :background "light grey"))))
-   `(w3m-form-button-mouse-face ((,class (:underline t :foreground "light grey" :background "#2B7E2A"))))
-   `(w3m-form-button-pressed-face ((,class (:weight bold :underline t :foreground "gray4" :background "light grey"))))
-   `(w3m-header-line-location-content-face ((,class (:foreground "#7F7F7F":background "#F7F7F7"))))
-   `(w3m-header-line-location-title-face ((,class (:foreground "#2C55B1" :background "#F7F7F7"))))
-   `(w3m-history-current-url-face ((,class (:foreground "lemon chiffon"))))
-   `(w3m-image-face ((,class (:weight bold :foreground "DarkSeaGreen2"))))
-   `(w3m-link-numbering ((,class (:foreground "#B4C7EB")))) ; mouseless browsing
-   `(w3m-strike-through-face ((,class (:strike-through t))))
-   `(w3m-underline-face ((,class (:underline t))))
    `(which-func ((,class (:weight bold :foreground "white"))))
    `(widget-button ((,class ,link)))
    `(widget-button-pressed ((,class (:foreground "red"))))
@@ -623,27 +528,15 @@ Semantic, and Ansi-Color faces are included -- and much more...")
    `(widget-single-line-field ((,class (:background "gray85"))))
    `(yas/field-debug-face ((,class (:background "ivory2"))))
    `(yas/field-highlight-face ((,class (:background "DarkSeaGreen1"))))
-   ))
+   )
 
-(custom-theme-set-variables
- 'leuven
- '(ansi-color-names-vector ["#242424" "#E5786D" "#95E454" "#CAE682"
-                            "#8AC6F2" "#333366" "#CCAA8F" "#F6F3E8"]))
+  (custom-theme-set-variables
+   'leuven
+   '(ansi-color-names-vector ["#242424" "#E5786D" "#95E454" "#CAE682"
+                              "#8AC6F2" "#333366" "#CCAA8F" "#F6F3E8"]))
+  )
 
 ;;;###autoload
-(when (and (boundp 'custom-theme-load-path)
-           load-file-name)
-  ;; add theme folder to `custom-theme-load-path' when installing over MELPA
-  (add-to-list 'custom-theme-load-path
-               (file-name-as-directory (file-name-directory load-file-name))))
-
 (provide-theme 'leuven)
-
-;; Local Variables:
-;; time-stamp-format: "%:y%02m%02d.%02H%02M"
-;; time-stamp-start: "Version: "
-;; time-stamp-end: "$"
-;; no-byte-compile: t
-;; End:
 
 ;;; leuven-theme.el ends here
