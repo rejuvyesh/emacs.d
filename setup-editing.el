@@ -578,10 +578,11 @@ See the variable `align-rules-list' for more details."))
 ;; scratchpad buffers
 (setup-lazy '(scratch) "scratch"
   ;; don't want to remember which key I used
-  (global-set-key (kbd "C-c b") 'scratch)
-  ;; don't start in lisp
-  (setq initial-major-mode 'org-mode)
-  (setq initial-scratch-message nil))
+  (global-set-key (kbd "C-c b") 'scratch))
+
+;; don't start in lisp
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message nil)
 
 ;; oh pretty!
 (setup "pretty-lambdada"
