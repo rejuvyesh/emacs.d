@@ -1,3 +1,18 @@
+(setq inhibit-splash-screen t)
+
+(set-scroll-bar-mode 'right)
+;; remove the toolbar which no-one uses :)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; shows current selected region
+(setq-default transient-mark-mode t)
+(global-font-lock-mode t)
+(setq jit-lock-stealth-time 5)
+(setq frame-title-format "%b")
+(set-fringe-mode '(1 . 10))
+
 ;; color themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
@@ -78,24 +93,11 @@
   (setq sml/theme 'dark)
   (sml/setup))
 
-;; remove the toolbar which no-one uses :)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-
 ;; optical stuff
 (setup "heartbeat-cursor"
   (heartbeat-cursor-mode))
 (blink-cursor-mode -1)
 (setq-default cursor-type 'box)
-(setq inhibit-splash-screen t)
-
-;; shows current selected region
-(setq-default transient-mark-mode t)
-(global-font-lock-mode t)
-(setq jit-lock-stealth-time 5)
-(setq frame-title-format "%b")
-(set-fringe-mode '(1 . 10))
 
 ;; undo highlighting
 (setup "volatile-highlights"
