@@ -1,9 +1,9 @@
 ;; major modes
 
 ;; default modes
+(setq initial-major-mode 'org-mode)
 (setup-after "org-mode"
-  (setq-default major-mode 'org-mode)
-  (setq initial-major-mode 'org-mode))
+  (setq-default major-mode 'org-mode))
 
 ;; load raw text in a basic mode (for performance reasons)
 (add-to-list 'auto-mode-alist '("\\.log$" . fundamental-mode))
