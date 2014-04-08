@@ -9,9 +9,10 @@
 
 ;; Flycheck for code linting
 (setup "flycheck"
-  (add-hook 'after-init-hook #'global-flycheck-mode))
-(setup-lazy '(flycheck-color-mode-line) "flycheck"
-  (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (unbreak-stupid-map flycheck-mode-map)
+  (define-key flycheck-mode-map (kbd "C-c C-n") 'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error))
 
 ;; C coding style
 (setq c-default-style "linux"
@@ -208,8 +209,6 @@
     "Face used for marking error lines."
     :group 'enh-ruby)
 
-  (define-key enh-ruby-mode-map (kbd "C-c C-n") 'enh-ruby-find-error)
-  (define-key enh-ruby-mode-map (kbd "C-c C-p") 'enh-ruby-beginning-of-defun)
   ;; Rake files are Ruby, too
   (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
   (add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
