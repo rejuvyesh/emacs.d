@@ -517,6 +517,8 @@ Deletes whitespace at join."
 ;; disable version control in emacs
 (setup "vc"
   (setq vc-handled-backends ()))
+(setup "magit"
+  (global-set-key (kbd "C-x g") 'magit-status))
 
 ;; align
 (setup "align"
@@ -582,6 +584,8 @@ See the variable `align-rules-list' for more details."))
                   (concat "\\(\\s-*\\)" regexp) 1 1 t))
   (global-set-key (kbd "C-c C-=") 'align-repeat))
 
+;; diff- mode (better colors)
+(setup-lazy '(diff-mode) "diff-mode-")
 ;; a slightly saner diff command
 (setup-lazy '(ediff-mode) "ediff"
   (setq ediff-diff-options "-w"))
