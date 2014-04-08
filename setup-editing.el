@@ -569,9 +569,9 @@ See the variable `align-rules-list' for more details."))
   (global-set-key (kbd "C-c C-g") 'ace-jump-line-mode))
 
 ;; expand-region
-(setup-lazy '(er/expand-region) "expand-region"
-  (global-set-key (kbd "<C-prior>") 'er/expand-region)
-  (global-set-key (kbd "<C-next>") 'er/contract-region))
+(setup-lazy '(er/expand-region) "expand-region")
+(global-set-key (kbd "<C-prior>") 'er/expand-region)
+(global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; make zsh aliases work
 (setq shell-command-switch "-lc")
