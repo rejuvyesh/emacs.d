@@ -1,7 +1,5 @@
 ;; rejuvyesh's Emacs config
 
-;;; Code:
-
 (setq user-full-name "Jayesh Kumar Gupta"
       user-mail-address "mail@rejuvyesh.com")
 

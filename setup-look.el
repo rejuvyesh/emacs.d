@@ -25,8 +25,30 @@
 (on-frame-open (selected-frame))
 (add-hook 'after-make-frame-functions 'on-frame-open)
 
-;; using modified molokai theme
-(load-theme 'molokai t)
+(defvar bright-theme 'leuven  "Bright theme to use")
+(defvar dark-theme   'molokai "Dark theme to use")
+
+(defvar use-bright-theme t "Whether to use the bright or dark theme")
+
+(defun load-correct-theme ()
+  "Loads appropriate theme."
+  (interactive)
+  (if use-bright-theme (load-theme bright-theme t)
+    (load-theme dark-theme t)))
+
+(load-correct-theme)
+
+(defun toggle-bright-theme ()
+  "toggles between bright and dark theme"
+  (interactive)
+  (if use-bright-theme (progn
+                         (setq use-bright-theme nil)
+                         (disable-theme bright-theme)
+                         (load-theme dark-theme t))
+    (progn
+      (setq use-bright-theme t)
+      (disable-theme dark-theme)
+      (load-theme bright-theme t))))
 
 ;; highlight current line
 (defface hl-line '((t (:background nil)))
