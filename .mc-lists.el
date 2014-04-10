@@ -11,6 +11,7 @@
         hungry-delete-backward
         indent-for-tab-command
         indent-region
+        kill-and-join-forward
         kill-visual-line
         org-beginning-of-line
         org-kill-line
