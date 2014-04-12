@@ -812,8 +812,8 @@ See the variable `align-rules-list' for more details.")
 
 ;; go to last change
 ;; http://www.emacswiki.org/emacs/GotoChg
-(setup "goto-chg"
-  (global-set-key [f8] 'goto-last-change))
+(setup-lazy '(goto-last-change) "goto-chg")
+(global-set-key [f8] 'goto-last-change)
 
 ;; Find init file
 (defun find-user-init-file ()
