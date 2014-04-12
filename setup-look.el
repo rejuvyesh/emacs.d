@@ -153,7 +153,7 @@
   (setup-after "haskell-indentation"   (diminish 'haskell-indentation-mode))
   (setup-after "highlight-parentheses" (diminish 'highlight-parentheses-mode))
   (setup-after "hs-minor-mode"         (diminish 'hs-minor-mode))
-  (setup-after "smartparens-autoloads" (diminish 'smartparens-mode))
+  (setup-after "smartparens" (diminish 'smartparens-mode))
   (setup-after "undo-tree"             (diminish 'undo-tree-mode "↺"))
   (setup-after "visual-line-mode"      (diminish 'visual-line-mode))
   (setup-after "volatile-highlights"   (diminish 'volatile-highlights-mode))
