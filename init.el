@@ -1,6 +1,6 @@
 ;; rejuvyesh's Emacs config
 
-(setq user-full-name "Jayesh Kumar Gupta"
+(setq user-full-name    "rejuvyesh"
       user-mail-address "mail@rejuvyesh.com")
 
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
