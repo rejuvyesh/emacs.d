@@ -99,6 +99,9 @@
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
+;; muflax-notes
+(setup-lazy '(notes-mode) "notes-mode")
+
 ;; org-mode
 (setq load-path (cons "~/.emacs.d/local/org-mode/lisp" load-path))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -359,7 +362,22 @@
     (dired-next-line -1))
   (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
   (define-key dired-mode-map (vector 'remap 'smart-down) 'dired-jump-to-bottom)
-  (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom))
+  (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+
+  (defun dired-dotfiles-toggle ()
+    "Show/hide dot-files"
+    (interactive)
+    (when (equal major-mode 'dired-mode)
+      (if (or (not (boundp 'dired-dotfiles-show-p)) dired-dotfiles-show-p) ; if currently showing
+          (progn
+            (set (make-local-variable 'dired-dotfiles-show-p) nil)
+            (message "h")
+            (dired-mark-files-regexp "^\\\.")
+            (dired-do-kill-lines))
+        (progn (revert-buffer) ; otherwise just revert to re-show
+               (set (make-local-variable 'dired-dotfiles-show-p) t)))))
+
+  (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle))
 
 ;; mutt
 ;; mail support.
