@@ -34,9 +34,11 @@
   "Loads appropriate theme."
   (interactive)
   (if use-bright-theme (load-theme bright-theme t)
-    (load-theme dark-theme t)))
+    (load-theme dark-theme t))
+  )
 
-(load-correct-theme)
+(when (pretty-load?)
+  (load-correct-theme))
 
 (defun toggle-bright-theme ()
   "toggles between bright and dark theme"
@@ -57,8 +59,8 @@
 (global-hl-line-mode t)
 
 ;; fonts
-(defvar small-font  "Terminus 8")
-(defvar normal-font "Consolas 10")
+(defvar small-font  "Consolas 9")
+(defvar normal-font "Consolas 11")
 (defvar big-font    "Consolas 14")
 (defvar font-list (list
                    small-font
@@ -68,7 +70,9 @@
 
 (defun set-window-font ()
   (set-frame-font current-font))
-(add-hook 'after-make-window-system-frame-hooks 'set-window-font)
+
+(when (pretty-load?)
+  (set-window-font))
 
 ;; shortcut for the fonts
 (defun use-big-font ()
@@ -109,7 +113,8 @@
 ;; try to keep windows within a max margin
 (setup "automargin"
   (setq automargin-target-width 120)
-  (automargin-mode))
+  (when (pretty-load?)
+    (automargin-mode)))
 
 ;; smart-mode
 (setup "smart-mode-line"
