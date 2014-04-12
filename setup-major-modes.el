@@ -183,7 +183,7 @@
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
 ;; also revert dired
-(setq global-auto-revert-non-file-buffers t)
+(add-hook 'dired-mode-hook 'turn-on-auto-revert-mode)
 (setq auto-revert-verbose nil)
 
 ;; python 
