@@ -384,4 +384,31 @@
            (haskell-mode     . "ghc -Wall -fwarn-missing-import-lists %f") )))
 (global-set-key (kbd "C-S-c") '("smart-compile" smart-compile compile))
 
+;; magit
+(setup-lazy '(magit-status) "magit"
+  (set-default 'magit-unstage-all-confirm nil))
+
+(global-set-key (kbd "C-x g") 'magit-status)
+
+(setup-after "magit"
+  (defun magit-toggle-whitespace ()
+    (interactive)
+    (if (member "-w" magit-diff-options)
+        (magit-dont-ignore-whitespace)
+      (magit-ignore-whitespace)))
+
+  (defun magit-ignore-whitespace ()
+    (interactive)
+    (add-to-list 'magit-diff-options "-w")
+    (magit-refresh))
+
+  (defun magit-dont-ignore-whitespace ()
+    (interactive)
+    (setq magit-diff-options (remove "-w" magit-diff-options))
+    (magit-refresh))
+
+  (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace))
+
+
+
 (provide 'setup-major-modes)
