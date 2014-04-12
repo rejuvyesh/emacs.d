@@ -108,7 +108,7 @@
 (global-set-key (kbd "<end>")  'end-of-buffer)
 
 ;; allowed key components
-(setup "free-keys"
+(setup-lazy '(free-keys) "free-keys"
   (setq free-keys-keys
         (concat "abcdefghijklmnopqrstuvwxyz"
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -363,6 +363,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x c C-o") 'helm-swoop)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (setq enable-recursive-minibuffers t)
   (setq helm-ff-lynx-style-map nil
         helm-input-idle-delay 0.1
         helm-idle-delay 0.1
@@ -513,12 +514,6 @@ Deletes whitespace at join."
   (add-hook 'markdown-mode-hook 'turn-on-spell-check)
   (add-hook 'org-mode-hook 'turn-on-spell-check)
   )
-
-;; disable version control in emacs
-(setup "vc"
-  (setq vc-handled-backends ()))
-(setup "magit"
-  (global-set-key (kbd "C-x g") 'magit-status))
 
 ;; align
 (setup "align"
@@ -854,5 +849,7 @@ See the variable `align-rules-list' for more details.")
 ;; ￣ＹＹＹＹＹＹＹＹ￣
 
 (setup-lazy '(sudden-death) "sudden-death")
+
+(setup-lazy '(keyboard-cat-mode) "keyboard-cat-mode")
 
 (provide 'setup-editing)
