@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        LaTeX-babel-insert-hyphen
         align-repeat
         down-list
         ghc-save-buffer
@@ -13,6 +14,7 @@
         indent-region
         kill-and-join-forward
         kill-visual-line
+        mark-whole-buffer
         org-beginning-of-line
         org-kill-line
         org-self-insert-command
