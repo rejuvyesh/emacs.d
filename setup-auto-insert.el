@@ -1,20 +1,19 @@
-(setup "autoinsert")
 ;;(auto-insert-mode)
+(setup "autoinsert")
 (add-hook 'find-file-hooks 'auto-insert)
 (setq auto-insert-directory "~/.emacs.d/templates/")
 (setq auto-insert 'other)
 (setq auto-insert-query nil)
 (setq auto-insert-alist '(("\\.sh$" . ["sh" rejuvyesh/auto-update-defaults])
                           ("\\.py$" . ["py" rejuvyesh/auto-update-defaults])
-                          ("\\.c$" . ["c" rejuvyesh/auto-update-c-source-file])
-                          ("\\.h$" . ["h" rejuvyesh/auto-update-header-file])
+                          ("\\.c$"  . ["c" rejuvyesh/auto-update-c-source-file])
+                          ("\\.h$"  . ["h" rejuvyesh/auto-update-header-file])
                           ("\\.hs$" . ["hs" rejuvyesh/auto-update-header-file])
                           ("\\.rb$" . ["rb" rejuvyesh/auto-update-header-file])
                           ("\\.go$" . ["go" rejuvyesh/auto-update-header-file])
                           ))
 
-
-
+;; header
 (defun rejuvyesh/auto-replace-header-name ()
   (save-excursion
     (while (search-forward "###" nil t)
@@ -27,6 +26,7 @@
     )
   )
 
+;; file name
 (defun rejuvyesh/auto-replace-file-name ()
   (save-excursion
     ;; Replace @@@ with file name
@@ -38,6 +38,7 @@
     )
   )
 
+;; if without extension
 (defun rejuvyesh/auto-replace-file-name-no-ext ()
   (save-excursion
     ;; Replace @@@ with file name
@@ -48,6 +49,8 @@
         ))
     )
   )
+
+;; date
 
 (defun rejuvyesh/insert-today ()
   "Insert today's date into buffer"
@@ -69,6 +72,7 @@
   (rejuvyesh/auto-replace-file-name)
   )
 
+;; especially c with its header files
 (defun rejuvyesh/auto-update-c-source-file ()
   (save-excursion
     ;; Replace HHHH with file name sans suffix
@@ -79,6 +83,7 @@
   (rejuvyesh/auto-replace-file-name)
   (rejuvyesh/auto-replace-date-time))
 
+;; defaults for others
 (defun rejuvyesh/auto-update-defaults ()
   (rejuvyesh/auto-replace-file-name)
   (rejuvyesh/auto-replace-file-name-no-ext)
@@ -86,5 +91,5 @@
   )
 
 (provide 'setup-auto-insert)
-;;; emacs-rc-auto-insert.el ends here
+;;; setup-auto-insert.el ends here
 

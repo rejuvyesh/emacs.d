@@ -33,7 +33,7 @@
 (define-key isearch-mode-map (kbd "C-c C-SPC") 'isearch-toggle-lax-whitespace)
 (define-key isearch-mode-map (kbd "C-c C-o") 'isearch-occur)
 
-;; search wort at point, like vim
+;; search word at point, like vim
 (defun isearch-word-at-point ()
   (interactive)
   (call-interactively 'isearch-forward-regexp))
@@ -58,5 +58,9 @@
 
 (add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
+
+;; search info
+(setup-after "anzu"
+  (global-anzu-mode t))
 
 (provide 'setup-isearch)

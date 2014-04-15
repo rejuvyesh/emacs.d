@@ -1,4 +1,5 @@
-;; local stores manually maintained packages
+;; `local' stores manually maintained packages
+
 (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
     (let* ((my-lisp-dir "~/.emacs.d/local/")
            (default-directory my-lisp-dir))
@@ -8,12 +9,14 @@
 (setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
 
 ;; package-repositories
+;; no need for others when you have melpa
+;; TODO look into qelpa
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-;; some generic aliases that make elisp less painful
+;; some generic aliases that make elisp less painful (from common lisp)
 (require 'cl-lib)
 (defalias 'first 'cl-first)
 (defalias 'second 'cl-second)

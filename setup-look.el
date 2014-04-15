@@ -7,6 +7,7 @@
 ;; shows current selected region
 (setq-default transient-mark-mode t)
 (global-font-lock-mode t)
+;; mostly for font-lock speed issues
 (setq jit-lock-stealth-time 5)
 (setq frame-title-format "%b")
 (set-scroll-bar-mode 'right)
@@ -55,11 +56,13 @@
 ;; highlight current line
 (defface hl-line '((t (:background nil)))
   "Face to use for `hl-line-face'." :group 'hl-line)
-(setq hl-line-face 'hl-line)
-(global-hl-line-mode t)
+
+(setup "hl-line"
+  (setq hl-line-face 'hl-line)
+  (global-hl-line-mode t))
 
 ;; fonts
-(defvar small-font  "Consolas 9")
+(defvar small-font  "Consolas 8")
 (defvar normal-font "Consolas 11")
 (defvar big-font    "Consolas 14")
 (defvar font-list (list
@@ -96,7 +99,9 @@
 
 ;; scrolling
 (setq scroll-preserve-screen-position t)
+;; don't accelerate scrolling
 (setq mouse-wheel-progressive-speed nil)
+;; move pointer to the farthest possible position
 (setq scroll-error-top-bottom t)
 ;; smooth scrolling with margin
 (setup "smooth-scrolling"
@@ -116,18 +121,21 @@
   (when (pretty-load?)
     (automargin-mode)))
 
-;; smart-mode
+;; smart-mode line
+;; fix mode line with colors
 (setup "smart-mode-line"
   (setq sml/theme 'dark)
   (sml/setup))
 
 ;; optical stuff
-(setup "heartbeat-cursor"
-  (heartbeat-cursor-mode))
+;; (setup "heartbeat-cursor"
+;;   (heartbeat-cursor-mode))
+;; Stop cursor blinking
 (blink-cursor-mode -1)
 (setq-default cursor-type 'box)
 
 ;; undo highlighting
+;; highlight changes made by undo
 (setup "volatile-highlights"
   (volatile-highlights-mode t))
 
@@ -135,6 +143,7 @@
 (setq echo-keystrokes 0.1)
 
 ;; avoid splitting horizontally
+;; because all screens these days are widescreen
 (setq split-height-threshold nil)
 (setq split-width-threshold 90)
 
@@ -142,6 +151,7 @@
 (setup-lazy '(rainbow-mode) "rainbow-mode")
 
 ;; diminish
+;; hide information about minor modes from mode-line
 (setup "diminish"
   (setup-after "anzu"                  (diminish 'anzu-mode))
   (setup-after "auto-complete"         (diminish 'auto-complete-mode "↝"))
@@ -153,7 +163,7 @@
   (setup-after "haskell-indentation"   (diminish 'haskell-indentation-mode))
   (setup-after "highlight-parentheses" (diminish 'highlight-parentheses-mode))
   (setup-after "hs-minor-mode"         (diminish 'hs-minor-mode))
-  (setup-after "smartparens" (diminish 'smartparens-mode))
+  (setup-after "smartparens"           (diminish 'smartparens-mode))
   (setup-after "undo-tree"             (diminish 'undo-tree-mode "↺"))
   (setup-after "visual-line-mode"      (diminish 'visual-line-mode))
   (setup-after "volatile-highlights"   (diminish 'volatile-highlights-mode))

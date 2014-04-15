@@ -1,6 +1,7 @@
 ;; generic editing features
 
 ;; safety first
+;; save all auto saves in a single directory
 (setq make-backup-files nil)
 (defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosave-dir/"))
 (setq auto-save-list-file-prefix "~/.emacs-saves/cache/auto-save-list/.saves-")
@@ -30,6 +31,7 @@
 (setq kill-ring-max 2000)
 (setup "kill-ring-search"
   (global-set-key (kbd "M-C-y") 'kill-ring-search))
+;; cycle in the reverse direction
 (defun yank-pop-reverse ()
   (interactive)
   (yank-pop -1))
@@ -42,7 +44,7 @@
   (global-adaptive-wrap-prefix-mode 1)
   (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
 
-;; goto and hint-style navigation
+;; goto and hint-style navigation (just like say pentadactyl in firefox)
 (setup-lazy '(ace-jump-mode ace-jump-char-mode ace-jump-line-mode) "ace-jump-mode")
 (setup-lazy '(ace-jump-buffer) "ace-jump-buffer")
 (setup-lazy '(ace-link) "ace-link")
@@ -242,10 +244,6 @@
     (call-interactively 'vr/query-replace)))
 (global-set-key (kbd "C-c r") 'vr/query-replace)
 (global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
-
-;; search info
-(setup "anzu"
-  (global-anzu-mode t))
 
 ;; copy end of line, like C-k
 (defun copy-line ()

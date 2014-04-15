@@ -1,9 +1,10 @@
-;; auto completion
+;; auto completion setup
 
 ;; snippets
-(setup-in-idle "yasnippet")
-(setup-lazy '(yas-expand yas-next-field-or-maybe-expand) "yasnippet"
+(setup "yasnippet"
+  ;; set snippet directory
   (setq yas-snippet-dirs "~/.emacs.d/snippets")
+  ;; turn on yasnippet everywhere
   (yas-global-mode 1)
   (yas-reload-all)
   (defun my-yas/goto-end-of-active-field ()
@@ -21,16 +22,17 @@
       (if (= (point) position)
           (move-beginning-of-line 1)
         (goto-char position))))
-  (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete
-  (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete
   (define-key yas-keymap (kbd "C-j") 'my-yas/goto-start-of-active-field)
   (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
-  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
-  )
+  (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
+  (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete uses this
+  ;; Use C-t to expand snippet instead of conflicting <TAB>
+  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand))
 
 ;; auto-yasnippet
+;; hybrid of keyboard macro and yasnippet
 (setup-after "yasnippet"
-  (setup "auto-yasnippet")
+  (setup-lazy '(aya-create aya-expand) "auto-yasnippet")
   (global-set-key (kbd "C-c ~") 'aya-create)
   (global-set-key (kbd "C-c C-~") 'aya-expand))
 
@@ -38,19 +40,22 @@
 (setup "fuzzy")
 (setup-after "fuzzy"
   (setup "auto-complete-config"
+    ;; set sources to look into
     (setq ac-sources '(ac-source-abbrev
                        ac-source-dictionary
                        ac-source-words-in-same-mode-buffers))
     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
     (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
+    ;; auto start completion
     (setq ac-auto-start 1)
-    (setq ac-use-menu-map t
+    (setq ac-use-menu-map t  
           ac-auto-show-menu t
           ac-quick-help-delay 0.5
           ac-use-fuzzy t
           ac-ignore-case nil)
-    (setq ac-dwim nil) ; To get pop-ups with docs even if a word is uniquely completed
-    ;; extra modes auto-complete must support
+    ;; To get pop-ups with docs even if a word is uniquely completed
+    (setq ac-dwim nil) 
+    ;; use autocomplete evrywhere
     (global-auto-complete-mode t)
     (define-key ac-completing-map (kbd "RET") 'ac-complete)
     (define-key ac-completing-map (kbd "M-n") 'ac-next)
@@ -80,7 +85,7 @@
   (setup-after "go-mode"
     (setup "go-autocomplete")))
 
-;; auto correction
+;; auto correction via abbreviation file
 (setq abbrev-file-name
       "~/.emacs.d/abbrev_defs")
 (setq save-abbrevs t)
