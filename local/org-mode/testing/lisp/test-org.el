@@ -27,6 +27,64 @@
 
 ;;; Comments
 
+(ert-deftest test-org/toggle-comment ()
+  "Test `org-toggle-comment' specifications."
+  ;; Simple headline.
+  (should
+   (equal "* Test"
+	  (org-test-with-temp-text "* COMMENT Test"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  (should
+   (equal "* COMMENT Test"
+	  (org-test-with-temp-text "* Test"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  ;; Headline with a regular keyword.
+  (should
+   (equal "* TODO Test"
+	  (org-test-with-temp-text "* TODO COMMENT Test"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  (should
+   (equal "* TODO COMMENT Test"
+	  (org-test-with-temp-text "* TODO Test"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  ;; Empty headline.
+  (should
+   (equal "* "
+	  (org-test-with-temp-text "* COMMENT"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  (should
+   (equal "* COMMENT"
+	  (org-test-with-temp-text "* "
+	    (org-toggle-comment)
+	    (buffer-string))))
+  ;; Headline with a single keyword.
+  (should
+   (equal "* TODO "
+	  (org-test-with-temp-text "* TODO COMMENT"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  (should
+   (equal "* TODO COMMENT"
+	  (org-test-with-temp-text "* TODO"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  ;; Headline with a keyword, a priority cookie and contents.
+  (should
+   (equal "* TODO [#A] Headline"
+	  (org-test-with-temp-text "* TODO [#A] COMMENT Headline"
+	    (org-toggle-comment)
+	    (buffer-string))))
+  (should
+   (equal "* TODO [#A] COMMENT Headline"
+	  (org-test-with-temp-text "* TODO [#A] Headline"
+	    (org-toggle-comment)
+	    (buffer-string)))))
+
 (ert-deftest test-org/comment-dwim ()
   "Test `comment-dwim' behaviour in an Org buffer."
   ;; No region selected, no comment on current line and line not
@@ -544,7 +602,64 @@
 
 
 
+;;; Headline
+
+(ert-deftest test-org/in-commented-heading-p ()
+  "Test `org-in-commented-heading-p' specifications."
+  ;; Commented headline.
+  (should
+   (org-test-with-temp-text "* COMMENT Headline\nBody"
+     (goto-char (point-max))
+     (org-in-commented-heading-p)))
+  ;; Commented ancestor.
+  (should
+   (org-test-with-temp-text "* COMMENT Headline\n** Level 2\nBody"
+     (goto-char (point-max))
+     (org-in-commented-heading-p)))
+  ;; Comment keyword is case-sensitive.
+  (should-not
+   (org-test-with-temp-text "* Comment Headline\nBody"
+     (goto-char (point-max))
+     (org-in-commented-heading-p)))
+  ;; Keyword is standalone.
+  (should-not
+   (org-test-with-temp-text "* COMMENTHeadline\nBody"
+     (goto-char (point-max))
+     (org-in-commented-heading-p)))
+  ;; Optional argument.
+  (should-not
+   (org-test-with-temp-text "* COMMENT Headline\n** Level 2\nBody"
+     (goto-char (point-max))
+     (org-in-commented-heading-p t))))
+
+
+
 ;;; Links
+
+;;;; Coderefs
+
+(ert-deftest test-org/coderef ()
+  "Test coderef links specifications."
+  (should
+   (org-test-with-temp-text "
+#+BEGIN_SRC emacs-lisp
+\(+ 1 1)                  (ref:sc)
+#+END_SRC
+\[[(sc)]]"
+     (goto-char (point-max))
+     (org-open-at-point)
+     (looking-at "(ref:sc)"))))
+
+;;;; Custom ID
+
+(ert-deftest test-org/custom-id ()
+  "Test custom ID links specifications."
+  (should
+   (org-test-with-temp-text
+       "* H1\n:PROPERTIES:\n:CUSTOM_ID: custom\n:END:\n* H2\n[[#custom]]"
+     (goto-char (point-max))
+     (org-open-at-point)
+     (org-looking-at-p "\\* H1"))))
 
 ;;;; Fuzzy Links
 
@@ -553,30 +668,36 @@
 
 (ert-deftest test-org/fuzzy-links ()
   "Test fuzzy links specifications."
-  ;; 1. Fuzzy link goes in priority to a matching target.
+  ;; Fuzzy link goes in priority to a matching target.
   (should
    (org-test-with-temp-text "#+NAME: Test\n|a|b|\n<<Test>>\n* Test\n[[Test]]"
      (goto-line 5)
      (org-open-at-point)
      (looking-at "<<Test>>")))
-  ;; 2. Then fuzzy link points to an element with a given name.
+  ;; Then fuzzy link points to an element with a given name.
   (should
    (org-test-with-temp-text "Test\n#+NAME: Test\n|a|b|\n* Test\n[[Test]]"
      (goto-line 5)
      (org-open-at-point)
      (looking-at "#\\+NAME: Test")))
-  ;; 3. A target still lead to a matching headline otherwise.
+  ;; A target still lead to a matching headline otherwise.
   (should
    (org-test-with-temp-text "* Head1\n* Head2\n*Head3\n[[Head2]]"
      (goto-line 4)
      (org-open-at-point)
      (looking-at "\\* Head2")))
-  ;; 4. With a leading star in link, enforce heading match.
+  ;; With a leading star in link, enforce heading match.
   (should
    (org-test-with-temp-text "* Test\n<<Test>>\n[[*Test]]"
      (goto-line 3)
      (org-open-at-point)
-     (looking-at "\\* Test"))))
+     (looking-at "\\* Test")))
+  ;; Correctly un-hexify fuzzy links.
+  (should
+   (org-test-with-temp-text "* With space\n[[*With%20space][With space]]"
+     (goto-char (point-max))
+     (org-open-at-point)
+     (bobp))))
 
 
 ;;;; Link Escaping
@@ -655,12 +776,15 @@ http://article.gmane.org/gmane.emacs.orgmode/21459/"
      (org-link-escape "http://some.host.com/form?&id=blah%2Bblah25")))))
 
 (ert-deftest test-org/org-link-escape-chars-browser ()
-  "Escape a URL to pass to `browse-url'."
+  "Test of the constant `org-link-escape-chars-browser'.
+See there why this test is a candidate to be removed once Org
+drops support for Emacs 24.1 and 24.2."
   (should
    (string=
     (concat "http://lists.gnu.org/archive/cgi-bin/namazu.cgi?query="
 	    "%22Release%208.2%22&idxname=emacs-orgmode")
-    (org-link-escape-browser
+    (org-link-escape-browser ; Do not replace with `url-encode-url',
+			     ; see docstring above.
      (concat "http://lists.gnu.org/archive/cgi-bin/namazu.cgi?query="
 	     "\"Release 8.2\"&idxname=emacs-orgmode")))))
 

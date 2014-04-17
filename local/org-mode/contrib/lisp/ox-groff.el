@@ -1251,11 +1251,10 @@ INFO is a plist holding contextual information.  See
          (imagep (org-export-inline-image-p
                   link org-groff-inline-image-rules))
          (path (cond
-                ((member type '("http" "https" "ftp" "mailto"))
-                 (concat type ":" raw-path))
+                ((member type '("http" "https" "ftp"))
+                 (concat type "://" raw-path))
+		((string= type "mailto") (concat type ":" raw-path))
                 ((string= type "file")
-                 (when (string-match "\\(.+\\)::.+" raw-path)
-                   (setq raw-path (match-string 1 raw-path)))
                  (if (file-name-absolute-p raw-path)
                      (concat "file://" (expand-file-name raw-path))
                    (concat "file://" raw-path)))
@@ -1274,7 +1273,8 @@ INFO is a plist holding contextual information.  See
       (let ((destination (org-export-resolve-radio-link link info)))
         (when destination
           (format "\\fI [%s] \\fP"
-                  (org-export-solidify-link-text path)))))
+                  (org-export-solidify-link-text
+		   (org-element-property :value destination))))))
 
      ;; Links pointing to a headline: find destination and build
      ;; appropriate referencing command.

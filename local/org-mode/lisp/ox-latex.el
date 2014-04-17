@@ -106,7 +106,8 @@
 		   (:latex-class-options "LATEX_CLASS_OPTIONS" nil nil t)
 		   (:latex-header "LATEX_HEADER" nil nil newline)
 		   (:latex-header-extra "LATEX_HEADER_EXTRA" nil nil newline)
-		   (:latex-hyperref-p nil "texht" org-latex-with-hyperref t))
+		   (:latex-hyperref nil nil org-latex-hyperref-template t)
+		   (:latex-custom-id-labels nil nil org-latex-custom-id-as-label))
   :filters-alist '((:filter-options . org-latex-math-block-options-filter)
 		   (:filter-parse-tree . org-latex-math-block-tree-filter)))
 
@@ -347,11 +348,21 @@ the toc:nil option, not to those generated with #+TOC keyword."
   :group 'org-export-latex
   :type 'string)
 
-(defcustom org-latex-with-hyperref t
-  "Toggle insertion of \\hypersetup{...} in the preamble."
+(defcustom org-latex-hyperref-template
+  "\\hypersetup{\n pdfkeywords={%k},\n  pdfsubject={%d},\n  pdfcreator={%c}}\n"
+  "Template for hyperref package options.
+
+Value is a format string, which can contain the following placeholders:
+
+  %k for KEYWORDS line
+  %d for DESCRIPTION line
+  %c for CREATOR line
+
+Set it to the empty string to ignore the command completely."
   :group 'org-export-latex
-  :type 'boolean
-  :safe #'booleanp)
+  :version "24.5"
+  :package-version '(Org . "8.3")
+  :type 'string)
 
 ;;;; Headline
 
@@ -375,6 +386,59 @@ which format headlines like for Org version prior to 8.0."
   :package-version '(Org . "8.0")
   :type 'function)
 
+(defcustom org-latex-custom-id-as-label nil
+   "Toggle use of CUSTOM_ID properties for generating section labels.
+
+When this variable is non-nil, Org will use the value of a
+headline's CUSTOM_ID property as the key for the \\label command
+for the LaTeX section corresponding to the headline.
+
+By default, Org generates its own internal section labels for all
+headlines during LaTeX export.  This process ensures that the
+\\label keys are unique and valid, but it means the keys are not
+available in advance of the export process.
+
+Setting this variable gives you control over how Org generates
+labels for sections during LaTeX export, so that you may know
+their keys in advance.  One reason to do this is that it allows
+you to refer to headlines using a single label both in Org's link
+syntax and in embedded LaTeX code.
+
+For example, when this variable is non-nil, a headline like this:
+
+  ** Some section
+     :PROPERTIES:
+     :CUSTOM_ID: sec:foo
+     :END:
+  This is section [[#sec:foo]].
+  #+BEGIN_LATEX
+  And this is still section \\ref{sec:foo}.
+  #+END_LATEX
+
+will be exported to LaTeX as:
+
+  \\subsection{Some section}
+  \\label{sec:foo}
+  This is section \\ref{sec:foo}.
+  And this is still section \\ref{sec:foo}.
+
+Note, however, that setting this variable introduces a limitation
+on the possible values for CUSTOM_ID.  When this variable is
+non-nil and a headline defines a CUSTOM_ID value, Org simply
+passes this value to \\label unchanged.  You are responsible for
+ensuring that the value is a valid LaTeX \\label key, and that no
+other \\label commands with the same key appear elsewhere in your
+document.  (Keys may contain letters, numbers, and the following
+punctuation: '_' '.' '-' ':'.)  There are no such limitations on
+CUSTOM_ID when this variable is nil.
+
+For headlines that do not define the CUSTOM_ID property, Org will
+continue to use its default labeling scheme to generate labels
+and resolve links into section references."
+  :group 'org-export-latex
+  :type 'boolean
+  :version "24.5"
+  :package-version '(Org . "8.3"))
 
 ;;;; Footnotes
 
@@ -708,7 +772,13 @@ will typeset the code in a small size font with underlined, bold
 black keywords.
 
 Note that the same options will be applied to blocks of all
-languages."
+languages.  If you need block-specific options, you may use the
+following syntax:
+
+  #+ATTR_LATEX: :options key1=value1,key2=value2
+  #+BEGIN_SRC <LANG>
+  ...
+  #+END_SRC"
   :group 'org-export-latex
   :type '(repeat
 	  (list
@@ -755,7 +825,13 @@ will result in src blocks being exported with
 \\begin{minted}[bgcolor=bg,frame=lines]{<LANG>}
 
 as the start of the minted environment. Note that the same
-options will be applied to blocks of all languages."
+options will be applied to blocks of all languages.  If you need
+block-specific options, you may use the following syntax:
+
+  #+ATTR_LATEX: :options key1=value1,key2=value2
+  #+BEGIN_SRC <LANG>
+  ...
+  #+END_SRC"
   :group 'org-export-latex
   :type '(repeat
 	  (list
@@ -866,19 +942,20 @@ logfiles to remove, set `org-latex-logfiles-extensions'."
   :group 'org-export-latex
   :type 'boolean)
 
-(defcustom org-latex-known-errors
-  '(("Reference.*?undefined" .  "[undefined reference]")
-    ("Citation.*?undefined" .  "[undefined citation]")
-    ("Undefined control sequence" .  "[undefined control sequence]")
-    ("^! LaTeX.*?Error" .  "[LaTeX error]")
-    ("^! Package.*?Error" .  "[package error]")
-    ("Runaway argument" .  "Runaway argument"))
+(defcustom org-latex-known-warnings
+  '(("Reference.*?undefined" . "[undefined reference]")
+    ("Runaway argument" . "[runaway argument]")
+    ("Underfull \\hbox" . "[underfull hbox]")
+    ("Overfull \\hbox" . "[overfull hbox]")
+    ("Citation.*?undefined" . "[undefined citation]")
+    ("Undefined control sequence" . "[undefined control sequence]"))
   "Alist of regular expressions and associated messages for the user.
-The regular expressions are used to find possible errors in the
-log of a latex-run."
+The regular expressions are used to find possible warnings in the
+log of a latex-run.  These warnings will be reported after
+calling `org-latex-compile'."
   :group 'org-export-latex
-  :version "24.4"
-  :package-version '(Org . "8.0")
+  :version "24.5"
+  :package-version '(Org . "8.3")
   :type '(repeat
 	  (cons
 	   (string :tag "Regexp")
@@ -1005,11 +1082,13 @@ See `org-latex-text-markup-alist' for details."
     (cond
      ;; No format string: Return raw text.
      ((not fmt) text)
-     ;; Handle the `verb' special case: Find and appropriate separator
+     ;; Handle the `verb' special case: Find an appropriate separator
      ;; and use "\\verb" command.
      ((eq 'verb fmt)
       (let ((separator (org-latex--find-verb-separator text)))
-	(concat "\\verb" separator text separator)))
+	(concat "\\verb" separator
+		(replace-regexp-in-string "\n" " " text)
+		separator)))
      ;; Handle the `protectedtexttt' special case: Protect some
      ;; special chars and use "\texttt{%s}" format string.
      ((eq 'protectedtexttt fmt)
@@ -1134,12 +1213,13 @@ holding export options."
      ;; Title
      (format "\\title{%s}\n" title)
      ;; Hyperref options.
-     (when (plist-get info :latex-hyperref-p)
-       (format "\\hypersetup{\n  pdfkeywords={%s},\n  pdfsubject={%s},\n  pdfcreator={%s}}\n"
-	       (or (plist-get info :keywords) "")
-	       (or (plist-get info :description) "")
-	       (if (not (plist-get info :with-creator)) ""
-		 (plist-get info :creator))))
+     (format-spec (plist-get info :latex-hyperref)
+                  (format-spec-make
+                   ?k (or (plist-get info :keywords) "")
+                   ?d (or (plist-get info :description)"")
+                   ?c (if (plist-get info :with-creator)
+                          (plist-get info :creator)
+                        "")))
      ;; Document start.
      "\\begin{document}\n\n"
      ;; Title command.
@@ -1357,7 +1437,16 @@ holding contextual information."
 	       ((= (length sec) 4)
 		(if numberedp (concat (car sec) "\n%s" (nth 1 sec))
 		  (concat (nth 2 sec) "\n%s" (nth 3 sec)))))))
-	   (text (org-export-data (org-element-property :title headline) info))
+	   ;; Create a temporary export back-end that hard-codes
+	   ;; "\underline" within "\section" and alike.
+	   (section-back-end
+	    (org-export-create-backend
+	     :parent 'latex
+	     :transcoders
+	     '((underline . (lambda (o c i) (format "\\underline{%s}" c))))))
+	   (text
+	    (org-export-data-with-backend
+	     (org-element-property :title headline) section-back-end info))
 	   (todo
 	    (and (plist-get info :with-todo-keywords)
 		 (let ((todo (org-element-property :todo-keyword headline)))
@@ -1373,10 +1462,15 @@ holding contextual information."
 			       todo todo-type priority text tags))
 	   ;; Associate \label to the headline for internal links.
 	   (headline-label
-	    (format "\\label{sec-%s}\n"
-		    (mapconcat 'number-to-string
-			       (org-export-get-headline-number headline info)
-			       "-")))
+	    (let ((custom-label
+		   (and (plist-get info :latex-custom-id-labels)
+			(org-element-property :CUSTOM_ID headline))))
+	      (if custom-label (format "\\label{%s}\n" custom-label)
+		(format "\\label{sec-%s}\n"
+			(mapconcat
+			 #'number-to-string
+			 (org-export-get-headline-number headline info)
+			 "-")))))
 	   (pre-blanks
 	    (make-string (org-element-property :pre-blank headline) 10)))
       (if (or (not section-fmt) (org-export-low-level-p headline info))
@@ -1410,8 +1504,9 @@ holding contextual information."
 	(let ((opt-title
 	       (funcall org-latex-format-headline-function
 			todo todo-type priority
-			(org-export-data
-			 (org-export-get-alt-title headline info) info)
+			(org-export-data-with-backend
+			 (org-export-get-alt-title headline info)
+			 section-back-end info)
 			(and (eq (plist-get info :with-tags) t) tags))))
 	  (if (and numberedp opt-title
 		   (not (equal opt-title full-text))
@@ -1479,7 +1574,7 @@ contextual information."
       (let* ((org-lang (org-element-property :language inline-src-block))
 	     (mint-lang (or (cadr (assq (intern org-lang)
 					org-latex-minted-langs))
-			    org-lang))
+			    (downcase org-lang)))
 	     (options (org-latex--make-option-string
 		       org-latex-minted-options)))
 	(concat (format "\\mint%s{%s}"
@@ -1707,6 +1802,7 @@ used as a communication channel."
 	 (float (let ((float (plist-get attr :float)))
 		  (cond ((and (not float) (plist-member attr :float)) nil)
 			((string= float "wrap") 'wrap)
+			((string= float "sideways") 'sideways)
 			((string= float "multicolumn") 'multicolumn)
 			((or float
 			     (org-element-property :caption parent)
@@ -1782,6 +1878,10 @@ used as a communication channel."
 \\centering
 %s%s
 %s\\end{wrapfigure}" placement comment-include image-code caption))
+      (sideways (format "\\begin{sidewaysfigure}
+\\centering
+%s%s
+%s\\end{sidewaysfigure}" comment-include image-code caption))
       (multicolumn (format "\\begin{figure*}%s
 \\centering
 %s%s
@@ -1799,14 +1899,16 @@ DESC is the description part of the link, or the empty string.
 INFO is a plist holding contextual information.  See
 `org-export-data'."
   (let* ((type (org-element-property :type link))
-	 (raw-path (org-element-property :path link))
+	 (raw-path (replace-regexp-in-string
+		    "%" "\\%" (org-element-property :path link) nil t))
 	 ;; Ensure DESC really exists, or set it to nil.
 	 (desc (and (not (string= desc "")) desc))
 	 (imagep (org-export-inline-image-p
 		  link org-latex-inline-image-rules))
 	 (path (cond
-		((member type '("http" "https" "ftp" "mailto"))
-		 (concat type ":" raw-path))
+		((member type '("http" "https" "ftp"))
+		 (concat type "://" raw-path))
+		((string= type "mailto") (concat type ":" raw-path))
 		((string= type "file")
 		 (if (not (file-name-absolute-p raw-path)) raw-path
 		   (concat "file://" (expand-file-name raw-path))))
@@ -1821,8 +1923,9 @@ INFO is a plist holding contextual information.  See
       (let ((destination (org-export-resolve-radio-link link info)))
 	(when destination
 	  (format "\\hyperref[%s]{%s}"
-		  (org-export-solidify-link-text path)
-		  (org-export-data (org-element-contents destination) info)))))
+		  (org-export-solidify-link-text
+		   (org-element-property :value destination))
+		  desc))))
      ;; Links pointing to a headline: Find destination and build
      ;; appropriate referencing command.
      ((member type '("custom-id" "fuzzy" "id"))
@@ -1845,12 +1948,17 @@ INFO is a plist holding contextual information.  See
 	  ;; number.  Otherwise, display description or headline's
 	  ;; title.
 	  (headline
-	   (let ((label
-		  (format "sec-%s"
-			  (mapconcat
-			   'number-to-string
-			   (org-export-get-headline-number destination info)
-			   "-"))))
+	   (let* ((custom-label
+		   (and (plist-get info :latex-custom-id-labels)
+			(org-element-property :CUSTOM_ID destination)))
+		  (label
+		   (or
+		    custom-label
+		    (format "sec-%s"
+			    (mapconcat
+			     #'number-to-string
+			     (org-export-get-headline-number destination info)
+			     "-")))))
 	     (if (and (plist-get info :section-numbers) (not desc))
 		 (format "\\ref{%s}" label)
 	       (format "\\hyperref[%s]{%s}" label
@@ -2192,16 +2300,20 @@ contextual information."
 		(format
 		 "\\begin{minted}[%s]{%s}\n%s\\end{minted}"
 		 ;; Options.
-		 (org-latex--make-option-string
-		  (if (or (not num-start)
-			  (assoc "linenos" org-latex-minted-options))
-		      org-latex-minted-options
-		    (append
-		     `(("linenos")
-		       ("firstnumber" ,(number-to-string (1+ num-start))))
-		     org-latex-minted-options)))
+		 (concat
+		  (org-latex--make-option-string
+		   (if (or (not num-start)
+			   (assoc "linenos" org-latex-minted-options))
+		       org-latex-minted-options
+		     (append
+		      `(("linenos")
+			("firstnumber" ,(number-to-string (1+ num-start))))
+		      org-latex-minted-options)))
+		  (let ((local-options (plist-get attributes :options)))
+		    (and local-options (concat "," local-options))))
 		 ;; Language.
-		 (or (cadr (assq (intern lang) org-latex-minted-langs)) lang)
+		 (or (cadr (assq (intern lang) org-latex-minted-langs))
+		     (downcase lang))
 		 ;; Source code.
 		 (let* ((code-info (org-export-unravel-code src-block))
 			(max-width
@@ -2241,23 +2353,26 @@ contextual information."
 	   ;; Options.
 	   (format
 	    "\\lstset{%s}\n"
-	    (org-latex--make-option-string
-	     (append
-	      org-latex-listings-options
-	      (cond
-	       ((and (not float) (plist-member attributes :float)) nil)
-	       ((string= "multicolumn" float) '(("float" "*")))
-	       ((and float (not (assoc "float" org-latex-listings-options)))
-		`(("float" ,org-latex-default-figure-position))))
-	      `(("language" ,lst-lang))
-	      (when label `(("label" ,label)))
-	      (when caption-str `(("caption" ,caption-str)))
-	      (cond ((assoc "numbers" org-latex-listings-options) nil)
-		    ((not num-start) '(("numbers" "none")))
-		    ((zerop num-start) '(("numbers" "left")))
-		    (t `(("numbers" "left")
-			 ("firstnumber"
-			  ,(number-to-string (1+ num-start)))))))))
+	    (concat
+	     (org-latex--make-option-string
+	      (append
+	       org-latex-listings-options
+	       (cond
+		((and (not float) (plist-member attributes :float)) nil)
+		((string= "multicolumn" float) '(("float" "*")))
+		((and float (not (assoc "float" org-latex-listings-options)))
+		 `(("float" ,org-latex-default-figure-position))))
+	       `(("language" ,lst-lang))
+	       (when label `(("label" ,label)))
+	       (when caption-str `(("caption" ,caption-str)))
+	       (cond ((assoc "numbers" org-latex-listings-options) nil)
+		     ((not num-start) '(("numbers" "none")))
+		     ((zerop num-start) '(("numbers" "left")))
+		     (t `(("numbers" "left")
+			  ("firstnumber"
+			   ,(number-to-string (1+ num-start))))))))
+	     (let ((local-options (plist-get attributes :options)))
+	       (and local-options (concat "," local-options)))))
 	   ;; Source code.
 	   (format
 	    "\\begin{lstlisting}\n%s\\end{lstlisting}"
@@ -2440,7 +2555,8 @@ This function assumes TABLE has `org' as its `:type' property and
 		      (let ((float (plist-get attr :float)))
 			(cond
 			 ((and (not float) (plist-member attr :float)) nil)
-			 ((string= float "sidewaystable") "sidewaystable")
+			 ((or (string= float "sidewaystable")
+			      (string= float "sideways")) "sidewaystable")
 			 ((string= float "multicolumn") "table*")
 			 ((or float
 			      (org-element-property :caption table)
@@ -2919,7 +3035,8 @@ Return PDF file name or an error if it couldn't be produced."
 	 (default-directory (if (file-name-absolute-p texfile)
 				(file-name-directory full-name)
 			      default-directory))
-	 errors)
+	 (time (current-time))
+	 warnings)
     (unless snippet (message (format "Processing LaTeX file %s..." texfile)))
     (save-window-excursion
       (cond
@@ -2944,14 +3061,15 @@ Return PDF file name or an error if it couldn't be produced."
 	      outbuf))
 	   org-latex-pdf-process)
 	  ;; Collect standard errors from output buffer.
-	  (setq errors (and (not snippet) (org-latex--collect-errors outbuf)))))
+	  (setq warnings (and (not snippet)
+			      (org-latex--collect-warnings outbuf)))))
        (t (error "No valid command to process to PDF")))
       (let ((pdffile (concat out-dir base-name ".pdf")))
 	;; Check for process failure.  Provide collected errors if
 	;; possible.
-	(if (not (file-exists-p pdffile))
-	    (error (concat (format "PDF file %s wasn't produced" pdffile)
-			   (when errors (concat ": " errors))))
+	(if (or (not (file-exists-p pdffile))
+		(time-less-p (nth 5 (file-attributes pdffile)) time))
+	    (error (format "PDF file %s wasn't produced" pdffile))
 	  ;; Else remove log files, when specified, and signal end of
 	  ;; process to user, along with any error encountered.
 	  (when (and (not snippet) org-latex-remove-logfiles)
@@ -2962,29 +3080,31 @@ Return PDF file name or an error if it couldn't be produced."
 				   "\\."
 				   (regexp-opt org-latex-logfiles-extensions))))
 	      (delete-file file)))
-	  (message (concat "Process completed"
-			   (if (not errors) "."
-			     (concat " with errors: " errors)))))
+	  (message (concat "PDF file produced"
+			   (cond
+			    ((eq warnings 'error) " with errors.")
+			    (warnings (concat " with warnings: " warnings))
+			    (t ".")))))
 	;; Return output file name.
 	pdffile))))
 
-(defun org-latex--collect-errors (buffer)
-  "Collect some kind of errors from \"pdflatex\" command output.
-
-BUFFER is the buffer containing output.
-
-Return collected error types as a string, or nil if there was
-none."
+(defun org-latex--collect-warnings (buffer)
+  "Collect some warnings from \"pdflatex\" command output.
+BUFFER is the buffer containing output.  Return collected
+warnings types as a string, `error' if a LaTeX error was
+encountered or nil if there was none."
   (with-current-buffer buffer
     (save-excursion
       (goto-char (point-max))
       (when (re-search-backward "^[ \t]*This is .*?TeX.*?Version" nil t)
-	(let ((case-fold-search t)
-	      (errors ""))
-	  (dolist (latex-error org-latex-known-errors)
-	    (when (save-excursion (re-search-forward (car latex-error) nil t))
-	      (setq errors (concat errors " " (cdr latex-error)))))
-	  (and (org-string-nw-p errors) (org-trim errors)))))))
+	(if (re-search-forward "^!" nil t) 'error
+	  (let ((case-fold-search t)
+		(warnings ""))
+	    (dolist (warning org-latex-known-warnings)
+	      (save-excursion
+		(when (save-excursion (re-search-forward (car warning) nil t))
+		  (setq warnings (concat warnings " " (cdr warning))))))
+	    (and (org-string-nw-p warnings) (org-trim warnings))))))))
 
 ;;;###autoload
 (defun org-latex-publish-to-latex (plist filename pub-dir)
@@ -3010,7 +3130,9 @@ Return output file name."
   ;; in working directory and then moved to publishing directory.
   (org-publish-attachment
    plist
-   (org-latex-compile (org-publish-org-to 'latex filename ".tex" plist))
+   (org-latex-compile
+    (org-publish-org-to
+     'latex filename ".tex" plist (file-name-directory filename)))
    pub-dir))
 
 

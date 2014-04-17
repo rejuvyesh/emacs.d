@@ -741,7 +741,8 @@ captured item after finalizing."
 	      (pos (org-capture-get :initial-target-position))
 	      (ipt (org-capture-get :insertion-point))
 	      (size (org-capture-get :captured-entry-size)))
-	  (when reg
+	  (if (not reg)
+	      (widen)
 	    (cond ((< ipt (car reg))
 		   ;; insertion point is before the narrowed region
 		   (narrow-to-region (+ size (car reg)) (+ size (cdr reg))))
@@ -811,7 +812,8 @@ already gone.  Any prefix argument will be passed to the refile command."
   "Go to the location where the last capture note was stored."
   (interactive)
   (org-goto-marker-or-bmk org-capture-last-stored-marker
-			  "org-capture-last-stored")
+			  (plist-get org-bookmark-names-plist
+				 :last-capture))
   (message "This is the last note stored by a capture process"))
 
 ;;; Supporting functions for handling the process
@@ -821,7 +823,7 @@ already gone.  Any prefix argument will be passed to the refile command."
   (org-capture-put
    :initial-target-region
    ;; Check if the buffer is currently narrowed
-   (when (/= (buffer-size) (- (point-max) (point-min)))
+   (when (org-buffer-narrowed-p)
      (cons (point-min) (point-max))))
   ;; store the current point
   (org-capture-put :initial-target-position (point)))
@@ -1147,6 +1149,9 @@ may have been stored before."
     ;; Check if the template is good
     (if (not (string-match org-table-dataline-regexp txt))
 	(setq txt "| %?Bad template |\n"))
+    (if (functionp table-line-pos)
+	(setq table-line-pos (funcall table-line-pos))
+      (setq table-line-pos (eval table-line-pos)))
     (cond
      ((and table-line-pos
 	   (string-match "\\(I+\\)\\([-+][0-9]\\)" table-line-pos))

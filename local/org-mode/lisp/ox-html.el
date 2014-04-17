@@ -169,10 +169,8 @@
     "progress" "section" "video")
   "New elements in html5.
 
-<hgroup> is not included because it's currently impossible to
-wrap special blocks around multiple headlines. For other blocks
-that should contain headlines, use the HTML_CONTAINER property on
-the headline itself.")
+For blocks that should contain headlines, use the HTML_CONTAINER
+property on the headline itself.")
 
 (defconst org-html-special-string-regexps
   '(("\\\\-" . "&#x00ad;")		; shy
@@ -758,9 +756,10 @@ link's path."
 
 (defcustom org-html-htmlize-output-type 'inline-css
   "Output type to be used by htmlize when formatting code snippets.
-Choices are `css', to export the CSS selectors only, or `inline-css', to
-export the CSS attribute values inline in the HTML.  We use as default
-`inline-css', in order to make the resulting HTML self-containing.
+Choices are `css' to export the CSS selectors only,`inline-css'
+to export the CSS attribute values inline in the HTML or `nil' to
+export plain text.  We use as default `inline-css', in order to
+make the resulting HTML self-containing.
 
 However, this will fail when using Emacs in batch mode for export, because
 then no rich font definitions are in place.  It will also not be good if
@@ -773,7 +772,7 @@ all the faces you are interested in are defined, for example by loading files
 in all modes you want.  Then, use the command
 \\[org-html-htmlize-generate-css] to extract class definitions."
   :group 'org-export-html
-  :type '(choice (const css) (const inline-css)))
+  :type '(choice (const css) (const inline-css) (const nil)))
 
 (defcustom org-html-htmlize-font-prefix "org-"
   "The prefix for CSS class names for htmlize font specifications."
@@ -796,7 +795,7 @@ When exporting to HTML5, these values will be disregarded."
 		:value-type (string :tag "Value")))
 
 (defcustom org-html-table-header-tags '("<th scope=\"%s\"%s>" . "</th>")
-  "The opening tag for table header fields.
+  "The opening and ending tags for table header fields.
 This is customizable so that alignment options can be specified.
 The first %s will be filled with the scope of the field, either row or col.
 The second %s will be replaced by a style entry to align the field.
@@ -806,7 +805,7 @@ See also the variable `org-html-table-align-individual-fields'."
   :type '(cons (string :tag "Opening tag") (string :tag "Closing tag")))
 
 (defcustom org-html-table-data-tags '("<td%s>" . "</td>")
-  "The opening tag for table data fields.
+  "The opening and ending tags for table data fields.
 This is customizable so that alignment options can be specified.
 The first %s will be filled with the scope of the field, either row or col.
 The second %s will be replaced by a style entry to align the field.
@@ -1896,6 +1895,10 @@ is the language used for CODE, as a string, or nil."
       (message "Cannot fontify src block (htmlize.el >= 1.34 required)")
       ;; Simple transcoding.
       (org-html-encode-plain-text code))
+     ;; Case 3: plain text explicitly set
+     ((not org-html-htmlize-output-type)
+      ;; Simple transcoding.
+      (org-html-encode-plain-text code))
      (t
       ;; Map language
       (setq lang (or (assoc-default lang org-src-lang-modes) lang))
@@ -2483,7 +2486,8 @@ INFO is a plist holding contextual information.  See
 					     &optional term-counter-id
 					     headline)
   "Format a list item into HTML."
-  (let ((checkbox (concat (org-html-checkbox checkbox info)
+  (let ((class (symbol-name checkbox))
+	(checkbox (concat (org-html-checkbox checkbox info)
 			  (and checkbox " ")))
 	(br (org-html-close-tag "br" nil info)))
     (concat
@@ -2492,20 +2496,20 @@ INFO is a plist holding contextual information.  See
 	(let* ((counter term-counter-id)
 	       (extra (if counter (format " value=\"%s\"" counter) "")))
 	  (concat
-	   (format "<li%s>" extra)
+	   (format "<li class=\"%s\"%s>" class extra)
 	   (when headline (concat headline br)))))
        (unordered
 	(let* ((id term-counter-id)
 	       (extra (if id (format " id=\"%s\"" id) "")))
 	  (concat
-	   (format "<li%s>" extra)
+	   (format "<li class=\"%s\"%s>" class extra)
 	   (when headline (concat headline br)))))
        (descriptive
 	(let* ((term term-counter-id))
 	  (setq term (or term "(no term)"))
 	  ;; Check-boxes in descriptive lists are associated to tag.
-	  (concat (format "<dt> %s </dt>"
-			  (concat checkbox term))
+	  (concat (format "<dt class=\"%s\">%s</dt>"
+			  class (concat checkbox term))
 		  "<dd>"))))
      (unless (eq type 'descriptive) checkbox)
      contents
@@ -2717,10 +2721,12 @@ INFO is a plist holding contextual information.  See
 	 (desc (org-string-nw-p desc))
 	 (path
 	  (cond
-	   ((member type '("http" "https" "ftp" "mailto"))
-	    (org-link-escape
-	     (org-link-unescape
-	      (concat type ":" raw-path)) org-link-escape-chars-browser))
+	   ((member type '("http" "https" "ftp"))
+	    (org-link-escape-browser
+	     (org-link-unescape (concat type "://" raw-path))))
+	   ((string= type "mailto")
+	    (org-link-escape-browser
+	     (org-link-unescape (concat type ":" raw-path))))
 	   ((string= type "file")
 	    ;; Treat links to ".org" files as ".html", if needed.
 	    (setq raw-path
@@ -2778,9 +2784,9 @@ INFO is a plist holding contextual information.  See
       (let ((destination (org-export-resolve-radio-link link info)))
 	(when destination
 	  (format "<a href=\"#%s\"%s>%s</a>"
-		  (org-export-solidify-link-text path)
-		  attributes
-		  (org-export-data (org-element-contents destination) info)))))
+		  (org-export-solidify-link-text
+		   (org-element-property :value destination))
+		  attributes desc))))
      ;; Links pointing to a headline: Find destination and build
      ;; appropriate referencing command.
      ((member type '("custom-id" "fuzzy" "id"))
@@ -2897,6 +2903,8 @@ the plist used as a communication channel."
   (let* ((parent (org-export-get-parent paragraph))
 	 (parent-type (org-element-type parent))
 	 (style '((footnote-definition " class=\"footpara\"")))
+	 (attributes (org-html--make-attribute-string
+		      (org-export-read-attribute :attr_html paragraph)))
 	 (extra (or (cadr (assoc parent-type style)) "")))
     (cond
      ((and (eq (org-element-type parent) 'item)
@@ -2923,7 +2931,10 @@ the plist used as a communication channel."
 	    (label (org-element-property :name paragraph)))
 	(org-html--wrap-image contents info caption label)))
      ;; Regular paragraph.
-     (t (format "<p%s>\n%s</p>" extra contents)))))
+     (t (format "<p%s%s>\n%s</p>"
+		(if (org-string-nw-p attributes)
+		    (concat " " attributes) "")
+		extra contents)))))
 
 ;;;; Plain List
 

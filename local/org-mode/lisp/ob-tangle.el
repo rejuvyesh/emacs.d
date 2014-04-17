@@ -37,11 +37,13 @@
 (declare-function org-fill-template "org" (template alist))
 (declare-function org-babel-update-block-body "org" (new-body))
 (declare-function org-up-heading-safe "org" ())
+(declare-function org-in-commented-heading-p "org" (&optional no-inheritance))
 (declare-function make-directory "files" (dir &optional parents))
 (declare-function org-before-first-heading-p "org" ())
 
 (defcustom org-babel-tangle-lang-exts
-  '(("emacs-lisp" . "el"))
+  '(("emacs-lisp" . "el")
+    ("elisp" . "el"))
   "Alist mapping languages to their file extensions.
 The key is the language name, the value is the string that should
 be inserted as the extension commonly used to identify files
@@ -356,17 +358,6 @@ that the appropriate major-mode is set.  SPEC has the form:
        insert-comment
        (org-fill-template org-babel-tangle-comment-format-end link-data)))))
 
-(defvar org-comment-string) ;; Defined in org.el
-(defun org-babel-under-commented-heading-p ()
-  "Return t if currently under a commented heading."
-  (unless (org-before-first-heading-p)
-    (if (let ((hd (nth 4 (org-heading-components))))
-	  (and hd (string-match (concat "^" org-comment-string) hd)))
-	t
-      (save-excursion
-	(and (org-up-heading-safe)
-	     (org-babel-under-commented-heading-p))))))
-
 (defun org-babel-tangle-collect-blocks (&optional language tangle-file)
   "Collect source blocks in the current Org-mode file.
 Return an association list of source-code block specifications of
@@ -390,7 +381,7 @@ can be used to limit the collected code blocks by target file."
       (let* ((info (org-babel-get-src-block-info 'light))
 	     (src-lang (nth 0 info))
 	     (src-tfile (cdr (assoc :tangle (nth 2 info)))))
-        (unless (or (org-babel-under-commented-heading-p)
+        (unless (or (org-in-commented-heading-p)
 		    (string= (cdr (assoc :tangle (nth 2 info))) "no")
 		    (and tangle-file (not (equal tangle-file src-tfile))))
           (unless (and language (not (string= language src-lang)))

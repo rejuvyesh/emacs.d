@@ -105,29 +105,74 @@ This function is called by `org-babel-execute-src-block'."
       buffer)))
 
 ;; helper functions
+(defun org-babel-variable-assignments:sh-generic
+    (varname values &optional sep hline)
+  "Returns a list of statements declaring the values as a generic variable."
+  (format "%s=%s" varname (org-babel-sh-var-to-sh values sep hline)))
+
+(defun org-babel-variable-assignments:bash_array
+    (varname values &optional sep hline)
+  "Returns a list of statements declaring the values as a bash array."
+  (format "unset %s\ndeclare -a %s=( \"%s\" )"
+     varname varname
+     (mapconcat 'identity
+       (mapcar
+         (lambda (value) (org-babel-sh-var-to-sh value sep hline))
+         values)
+       "\" \"")))
+
+(defun org-babel-variable-assignments:bash_assoc
+    (varname values &optional sep hline)
+  "Returns a list of statements declaring the values as bash associative array."
+  (format "unset %s\ndeclare -A %s\n%s"
+    varname varname
+    (mapconcat 'identity
+      (mapcar
+        (lambda (items)
+          (format "%s[\"%s\"]=%s"
+            varname
+            (org-babel-sh-var-to-sh (car items) sep hline)
+            (org-babel-sh-var-to-sh (cdr items) sep hline)))
+        values)
+      "\n")))
+
+(defun org-babel-variable-assignments:bash (varname values &optional sep hline)
+  "Represents the parameters as useful Bash shell variables."
+  (if (listp values)
+      (if (and (listp (car values)) (= 1 (length (car values))))
+	  (org-babel-variable-assignments:bash_array varname values sep hline)
+	(org-babel-variable-assignments:bash_assoc varname values sep hline))
+    (org-babel-variable-assignments:sh-generic varname values sep hline)))
 
 (defun org-babel-variable-assignments:sh (params)
   "Return list of shell statements assigning the block's variables."
-  (let ((sep (cdr (assoc :separator params))))
+  (let ((sep (cdr (assoc :separator params)))
+	(hline (when (string= "yes" (cdr (assoc :hlines params)))
+		 (or (cdr (assoc :hline-string params))
+		     "hline"))))
     (mapcar
      (lambda (pair)
-       (format "%s=%s"
-	       (car pair)
-	       (org-babel-sh-var-to-sh (cdr pair) sep)))
+       (if (string= org-babel-sh-command "bash")
+	   (org-babel-variable-assignments:bash
+            (car pair) (cdr pair) sep hline)
+         (org-babel-variable-assignments:sh-generic
+	  (car pair) (cdr pair) sep hline)))
      (mapcar #'cdr (org-babel-get-header params :var)))))
 
-(defun org-babel-sh-var-to-sh (var &optional sep)
+(defun org-babel-sh-var-to-sh (var &optional sep hline)
   "Convert an elisp value to a shell variable.
 Convert an elisp var into a string of shell commands specifying a
 var of the same value."
-  (format org-babel-sh-var-quote-fmt (org-babel-sh-var-to-string var sep)))
+  (format org-babel-sh-var-quote-fmt
+	  (org-babel-sh-var-to-string var sep hline)))
 
-(defun org-babel-sh-var-to-string (var &optional sep)
+(defun org-babel-sh-var-to-string (var &optional sep hline)
   "Convert an elisp value to a string."
   (let ((echo-var (lambda (v) (if (stringp v) v (format "%S" v)))))
     (cond
      ((and (listp var) (or (listp (car var)) (equal (car var) 'hline)))
-      (orgtbl-to-generic var  (list :sep (or sep "\t") :fmt echo-var)))
+      (orgtbl-to-generic var  (list :sep (or sep "\t") :fmt echo-var
+				    :hline hline)))
      ((listp var)
       (mapconcat echo-var var "\n"))
      (t (funcall echo-var var)))))

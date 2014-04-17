@@ -121,7 +121,7 @@ information."
 
 (defun org-get-local-archive-location ()
   "Get the archive location applicable at point."
-  (let ((re "^#\\+ARCHIVE:[ \t]+\\(\\S-.*\\S-\\)[ \t]*$")
+  (let ((re "^[ \t]*#\\+ARCHIVE:[ \t]+\\(\\S-.*\\S-\\)[ \t]*$")
 	prop)
     (save-excursion
       (save-restriction
@@ -158,7 +158,7 @@ archive file is."
       (save-restriction
 	(goto-char (point-min))
 	(while (re-search-forward
-		"^\\(#\\+\\|[ \t]*:\\)ARCHIVE:[ \t]+\\(.*\\)"
+		"^[ \t]*\\(#\\+\\|:\\)ARCHIVE:[ \t]+\\(.*\\)"
 		nil t)
 	  (setq file (org-extract-archive-file
 		      (org-match-string-no-properties 2)))

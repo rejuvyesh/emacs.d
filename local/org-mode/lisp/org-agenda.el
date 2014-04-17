@@ -2145,6 +2145,7 @@ The following commands are available:
   ;; Keep global-font-lock-mode from turning on font-lock-mode
   (org-set-local 'font-lock-global-modes (list 'not major-mode))
   (setq mode-name "Org-Agenda")
+  (setq indent-tabs-mode nil)
   (use-local-map org-agenda-mode-map)
   (easy-menu-add org-agenda-menu)
   (if org-startup-truncated (setq truncate-lines t))
@@ -2538,7 +2539,7 @@ For example, if you have a custom agenda command \"p\" and you
 want this command to be accessible only from plain text files,
 use this:
 
-   '((\"p\" ((in-file . \"\\.txt\"))))
+   '((\"p\" ((in-file . \"\\\\.txt\\\\'\"))))
 
 Here are the available contexts definitions:
 
@@ -2556,7 +2557,7 @@ accessible if there is at least one valid check.
 You can also bind a key to another agenda custom command
 depending on contextual rules.
 
-    '((\"p\" \"q\" ((in-file . \"\\.txt\"))))
+    '((\"p\" \"q\" ((in-file . \"\\\\.txt\\\\'\"))))
 
 Here it means: in .txt files, use \"p\" as the key for the
 agenda command otherwise associated with \"q\".  (The command
@@ -3857,11 +3858,12 @@ dimming them."
 		  e (point-at-eol)
 		  ov (make-overlay b e))
 	    (if invis1
-		(overlay-put ov 'invisible t)
+		(progn (overlay-put ov 'invisible t)
+		       (overlay-put ov 'intangible t))
 	      (overlay-put ov 'face 'org-agenda-dimmed-todo-face))
 	    (overlay-put ov 'org-type 'org-blocked-todo))))))
-    (when (org-called-interactively-p 'interactive)
-      (message "Dim or hide blocked tasks...done")))
+  (when (org-called-interactively-p 'interactive)
+    (message "Dim or hide blocked tasks...done")))
 
 (defvar org-agenda-skip-function nil
   "Function to be called at each match during agenda construction.
@@ -4923,7 +4925,7 @@ See `org-agenda-skip-if' for details."
   (org-agenda-skip-if nil conditions))
 
 (defun org-agenda-skip-subtree-if (&rest conditions)
-  "Skip entry if any of CONDITIONS is true.
+  "Skip subtree if any of CONDITIONS is true.
 See `org-agenda-skip-if' for details."
   (org-agenda-skip-if t conditions))
 
@@ -5092,6 +5094,7 @@ of what a project is and how to check if it stuck, customize the variable
 	      (mapconcat 'identity re-list "\\|")
 	    (error "No information how to identify unstuck projects")))
     (org-tags-view nil matcher)
+    (setq org-agenda-buffer-name (buffer-name))
     (with-current-buffer org-agenda-buffer-name
       (setq org-agenda-redo-command
 	    `(org-agenda-list-stuck-projects ,current-prefix-arg)))))
@@ -5459,7 +5462,7 @@ This function is invoked if `org-agenda-todo-ignore-deadlines',
 
 ;;;###autoload
 (defun org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item
-  (&optional end)
+    (&optional end)
   "Do we have a reason to ignore this TODO entry because it has a time stamp?"
   (when (or org-agenda-todo-ignore-with-date
 	    org-agenda-todo-ignore-scheduled
@@ -5696,10 +5699,10 @@ This function is invoked if `org-agenda-todo-ignore-deadlines',
 	      (setq txt "SEXP entry returned empty string"))
 	    (setq txt (org-agenda-format-item extra txt level category tags 'time))
 	    (org-add-props txt props 'org-marker marker
-	      'org-category category 'date date 'todo-state todo-state
-	      'org-category-position category-pos 'tags tags
-	      'level level
-	      'type "sexp" 'warntime warntime)
+			   'org-category category 'date date 'todo-state todo-state
+			   'org-category-position category-pos 'tags tags
+			   'level level
+			   'type "sexp" 'warntime warntime)
 	    (push txt ee)))))
     (nreverse ee)))
 
@@ -6250,6 +6253,7 @@ an hour specification like [h]h:mm."
 		    category-pos (get-text-property (point) 'org-category-position))
 	      (if (and (eq org-agenda-skip-scheduled-if-deadline-is-shown
 			   'repeated-after-deadline)
+		       (org-get-deadline-time (point))
 		       (<= 0 (- d2 (time-to-days (org-get-deadline-time (point))))))
 		  (throw :skip nil))
 	      (if (not (re-search-backward "^\\*+[ \t]+" nil t))
@@ -7376,7 +7380,7 @@ With two prefix arguments, remove the regexp filters."
 			 (read-from-minibuffer
 			  (if (equal strip '(4))
 			      "Filter out entries matching regexp: "
-			      "Narrow to entries matching regexp: ")))))
+			    "Narrow to entries matching regexp: ")))))
 	(push flt org-agenda-regexp-filter)
 	(org-agenda-filter-apply org-agenda-regexp-filter 'regexp))
     (org-agenda-filter-show-all-re)
@@ -7651,7 +7655,7 @@ When NO-OPERATOR is non-nil, do not add the + operator to returned tags."
       (let* ((pos (org-get-at-bol 'org-hd-marker))
              (tophl (and pos (org-find-top-headline pos))))
         (if (and tophl (funcall (if negative 'identity 'not)
-                                 (string= hl tophl)))
+				(string= hl tophl)))
             (org-agenda-filter-hide-line 'category)))
       (beginning-of-line 2)))
   (if (get-char-property (point) 'invisible)
@@ -7661,10 +7665,11 @@ When NO-OPERATOR is non-nil, do not add the + operator to returned tags."
 
 (defun org-agenda-filter-hide-line (type)
   "Hide lines with TYPE in the agenda buffer."
-  (let (ov)
-    (setq ov (make-overlay (max (point-min) (1- (point-at-bol)))
-			   (point-at-eol)))
+  (let* ((b (max (point-min) (1- (point-at-bol))))
+	 (e (point-at-eol))
+	 (ov (make-overlay b e)))
     (overlay-put ov 'invisible t)
+    (overlay-put ov 'intangible t)
     (overlay-put ov 'type type)
     (cond ((eq type 'tag) (push ov org-agenda-tag-filter-overlays))
 	  ((eq type 'category) (push ov org-agenda-cat-filter-overlays))
@@ -8292,7 +8297,7 @@ When called with a prefix argument, include all archive files as well."
       (when (next-single-property-change (point-at-eol) 'org-marker)
 	(move-end-of-line 1)
 	(goto-char (next-single-property-change (point) 'org-marker))))
-    (org-move-to-column col nil nil t))
+    (org-move-to-column col))
   (org-agenda-do-context-action))
 
 (defun org-agenda-previous-item (n)
@@ -8304,7 +8309,7 @@ When called with a prefix argument, include all archive files as well."
 		  (move-end-of-line 0)
 		  (previous-single-property-change (point) 'org-marker))))
       (if goto (goto-char goto))
-      (org-move-to-column col nil nil t)))
+      (org-move-to-column col)))
   (org-agenda-do-context-action))
 
 (defun org-agenda-do-context-action ()
@@ -8501,7 +8506,8 @@ It also looks at the text of the entry itself."
 		     (org-get-at-bol 'org-marker)))
 	 (buffer (and marker (marker-buffer marker)))
 	 (prefix (buffer-substring (point-at-bol) (point-at-eol)))
-	 (lkall (org-offer-links-in-entry buffer marker arg prefix))
+	 (lkall (and buffer (org-offer-links-in-entry
+			     buffer marker arg prefix)))
 	 (lk0 (car lkall))
 	 (lk (if (stringp lk0) (list lk0) lk0))
 	 (lkend (cdr lkall))
@@ -8557,6 +8563,7 @@ It also looks at the text of the entry itself."
       (and delete-other-windows (delete-other-windows))
       (widen)
       (goto-char pos)
+      (org-back-to-heading t)
       (when (derived-mode-p 'org-mode)
 	(org-show-context 'agenda)
 	(save-excursion
@@ -8803,13 +8810,13 @@ the same tree node, and the headline of the tree node in the Org-mode file."
 	  (org-back-to-heading)
 	  (move-marker org-last-heading-marker (point))))
       (beginning-of-line 1)
-      (save-excursion
+      (save-window-excursion
 	(org-agenda-change-all-lines newhead hdmarker 'fixface just-one))
       (when (org-bound-and-true-p org-clock-out-when-done)
       	(string-match (concat "^" (regexp-opt org-done-keywords-for-agenda))
 		      newhead)
 	(org-agenda-unmark-clocking-task))
-      (org-move-to-column col nil nil t))))
+      (org-move-to-column col))))
 
 (defun org-agenda-add-note (&optional arg)
   "Add a time-stamped note to the entry at point."
@@ -8965,7 +8972,7 @@ Called with a universal prefix arg, show the priority instead of setting it."
 	  (end-of-line 1)
 	  (setq newhead (org-get-heading)))
 	(org-agenda-change-all-lines newhead hdmarker)
-	(org-move-to-column col nil nil t)))))
+	(org-move-to-column col)))))
 
 ;; FIXME: should fix the tags property of the agenda line.
 (defun org-agenda-set-tags (&optional tag onoff)
@@ -9174,7 +9181,9 @@ Called with a universal prefix arg, show the priority instead of setting it."
       (goto-char (point-max))
       (while (not (bobp))
 	(when (equal marker (org-get-at-bol 'org-marker))
-	  (org-move-to-column (- (window-width) (length stamp)) t nil t)
+	  (remove-text-properties (point-at-bol) (point-at-eol) '(display))
+	  (org-move-to-column (- (window-width) (length stamp)) t)
+
 	  (org-agenda-fix-tags-filter-overlays-at (point))
           (if (featurep 'xemacs)
 	      ;; Use `duplicable' property to trigger undo recording
@@ -9185,7 +9194,7 @@ Called with a universal prefix arg, show the priority instead of setting it."
                  ex (list 'invisible t 'end-glyph gl 'duplicable t))
                 (insert-extent ex (1- (point)) (point-at-eol)))
             (add-text-properties
-             (1- (point)) (point-at-eol)
+	     (1- (point)) (point-at-eol)
 	     (list 'display (org-add-props stamp nil
 			      'face 'secondary-selection))))
 	  (beginning-of-line 1))
@@ -9276,7 +9285,7 @@ ARG is passed through to `org-deadline'."
 	  (org-clock-in arg)
 	  (setq newhead (org-get-heading)))
 	(org-agenda-change-all-lines newhead hdmarker))
-      (org-move-to-column col nil nil t))))
+      (org-move-to-column col))))
 
 (defun org-agenda-clock-out ()
   "Stop the currently running clock."
@@ -9296,7 +9305,7 @@ ARG is passed through to `org-deadline'."
 	    (setq newhead (org-get-heading))))))
     (org-agenda-change-all-lines newhead marker)
     (move-marker marker nil)
-    (org-move-to-column col nil nil t)
+    (org-move-to-column col)
     (org-agenda-unmark-clocking-task)))
 
 (defun org-agenda-clock-cancel (&optional arg)

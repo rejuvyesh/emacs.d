@@ -1502,7 +1502,7 @@ original parsed data.  INFO is a plist holding export options."
 	      (email (and (plist-get info :with-email) email)))
 	 (concat
 	  ;; Title.
-	  (when title
+	  (when (org-string-nw-p title)
 	    (concat
 	     (format "\n<text:p text:style-name=\"%s\">%s</text:p>"
 		     "OrgTitle" (format "\n<text:title>%s</text:title>" title))
@@ -2711,8 +2711,9 @@ INFO is a plist holding contextual information.  See
 	 (imagep (org-export-inline-image-p
 		  link org-odt-inline-image-rules))
 	 (path (cond
-		((member type '("http" "https" "ftp" "mailto"))
-		 (concat type ":" raw-path))
+		((member type '("http" "https" "ftp"))
+		 (concat type "://" raw-path))
+		((string= type "mailto") (concat type ":" raw-path))
 		((string= type "file")
 		 (if (file-name-absolute-p raw-path)
 		     (concat "file://" (expand-file-name raw-path))
@@ -2735,11 +2736,11 @@ INFO is a plist holding contextual information.  See
      ((string= type "radio")
       (let ((destination (org-export-resolve-radio-link link info)))
 	(when destination
-	  (let ((desc (org-export-data (org-element-contents destination) info))
-		(href (org-export-solidify-link-text path)))
-	    (format
-	     "<text:bookmark-ref text:reference-format=\"text\" text:ref-name=\"OrgXref.%s\">%s</text:bookmark-ref>"
-	     href desc)))))
+	  (format
+	   "<text:bookmark-ref text:reference-format=\"text\" text:ref-name=\"OrgXref.%s\">%s</text:bookmark-ref>"
+	   (org-export-solidify-link-text
+	    (org-element-property :value destination))
+	   desc))))
      ;; Links pointing to a headline: Find destination and build
      ;; appropriate referencing command.
      ((member type '("custom-id" "fuzzy" "id"))

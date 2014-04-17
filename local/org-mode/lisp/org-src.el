@@ -119,11 +119,12 @@ These are the regions where each line starts with a colon."
   "If non-nil preserve leading whitespace characters on export.
 If non-nil leading whitespace characters in source code blocks
 are preserved on export, and when switching between the org
-buffer and the language mode edit buffer.  If this variable is nil
-then, after editing with \\[org-edit-src-code], the
-minimum (across-lines) number of leading whitespace characters
-are removed from all lines, and the code block is uniformly
-indented according to the value of `org-edit-src-content-indentation'."
+buffer and the language mode edit buffer.
+
+When this variable is nil, after editing with \\[org-edit-src-code],
+the minimum (across-lines) number of leading whitespace characters
+are removed from all lines, and the code block is uniformly indented
+according to the value of `org-edit-src-content-indentation'."
   :group 'org-edit-structure
   :type 'boolean)
 
@@ -577,14 +578,6 @@ the language, a switch telling if the content should be in a single line."
 	(pos (point))
 	re1 re2 single beg end lang lfmt match-re1 ind entry)
     (catch 'exit
-      (when (org-at-table.el-p)
-	(re-search-backward "^[\t]*[^ \t|\\+]" nil t)
-	(setq beg (1+ (point-at-eol)))
-	(goto-char beg)
-	(or (re-search-forward "^[\t]*[^ \t|\\+]" nil t)
-	    (progn (goto-char (point-max)) (newline)))
-	(setq end (1- (point-at-bol)))
-	(throw 'exit (list beg end 'table.el nil nil 0)))
       (while (setq entry (pop re-list))
 	(setq re1 (car entry) re2 (nth 1 entry) lang (nth 2 entry)
 	      single (nth 3 entry))
@@ -615,7 +608,15 @@ the language, a switch telling if the content should be in a single line."
 			(throw 'exit
 			       (list (match-end 0) end
 				     (org-edit-src-get-lang lang)
-				     single lfmt ind))))))))))))
+				     single lfmt ind)))))))))
+      (when (org-at-table.el-p)
+	(re-search-backward "^[\t]*[^ \t|\\+]" nil t)
+	(setq beg (1+ (point-at-eol)))
+	(goto-char beg)
+	(or (re-search-forward "^[\t]*[^ \t|\\+]" nil t)
+	    (progn (goto-char (point-max)) (newline)))
+	(setq end (1- (point-at-bol)))
+	(throw 'exit (list beg end 'table.el nil nil 0))))))
 
 (defun org-edit-src-get-lang (lang)
   "Extract the src language."
@@ -737,8 +738,8 @@ with \",*\", \",#+\", \",,*\" and \",,#+\"."
       (unless (or single preserve-indentation (= total-nindent 0))
 	(setq indent (make-string total-nindent ?\ ))
 	(goto-char (point-min))
-	(while (re-search-forward "^" nil t)
-	  (replace-match indent)))
+	(while (re-search-forward "\\(^\\).+" nil t)
+	  (replace-match indent nil nil nil 1)))
       (if (org-bound-and-true-p org-edit-src-picture)
 	  (setq total-nindent (+ total-nindent 2)))
       (setq code (buffer-string))

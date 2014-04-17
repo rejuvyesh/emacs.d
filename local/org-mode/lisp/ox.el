@@ -263,6 +263,16 @@ whose extension is either \"png\", \"jpeg\", \"jpg\", \"gif\",
 See `org-export-inline-image-p' for more information about
 rules.")
 
+(defconst org-export-ignored-local-variables
+  '(org-font-lock-keywords
+    org-element--cache org-element--cache-objects org-element--cache-sync-keys
+    org-element--cache-sync-requests org-element--cache-sync-timer)
+  "List of variables not copied through upon buffer duplication.
+Export process takes place on a copy of the original buffer.
+When this copy is created, all Org related local variables not in
+this list are copied to the new buffer.  Variables with an
+unreadable value are also ignored.")
+
 (defvar org-export-async-debug nil
   "Non-nil means asynchronous export process should leave data behind.
 
@@ -307,6 +317,7 @@ there is no export process in progress.
 
 It can be used to teach Babel blocks how to act differently
 according to the back-end used.")
+
 
 
 ;;; User-configurable Variables
@@ -2368,8 +2379,8 @@ returned by the function."
 				       ?\s)))))))))))
 	  (when new
 	    ;; Splice NEW at BLOB location in parse tree.
-	    (dolist (e new) (org-element-insert-before e blob))
-	    (org-element-extract-element blob))))
+	    (dolist (e new (org-element-extract-element blob))
+	      (unless (string= e "") (org-element-insert-before e blob))))))
     info)
   ;; Return modified parse tree.
   data)
@@ -2964,11 +2975,7 @@ The function assumes BUFFER's major mode is `org-mode'."
 	       (when (consp entry)
 		 (let ((var (car entry))
 		       (val (cdr entry)))
-		   (and (not (memq var '(org-font-lock-keywords
-					 ;; Do not share cache across
-					 ;; buffers as values are
-					 ;; modified by side effect.
-					 org-element--cache)))
+		   (and (not (memq var org-export-ignored-local-variables))
 			(or (memq var
 				  '(default-directory
 				     buffer-file-name
@@ -3272,7 +3279,9 @@ with their line restriction, when appropriate.  It is used to
 avoid infinite recursion.  Optional argument DIR is the current
 working directory.  It is used to properly resolve relative
 paths."
-  (let ((case-fold-search t))
+  (let ((case-fold-search t)
+	(file-prefix (make-hash-table :test #'equal))
+	(current-prefix 0))
     (goto-char (point-min))
     (while (re-search-forward "^[ \t]*#\\+INCLUDE:" nil t)
       (let ((element (save-match-data (org-element-at-point))))
@@ -3342,13 +3351,16 @@ paths."
 		 (with-temp-buffer
 		   (let ((org-inhibit-startup t)) (org-mode))
 		   (insert
-		    (org-export--prepare-file-contents file lines ind minlevel))
+		    (org-export--prepare-file-contents
+		     file lines ind minlevel
+		     (or (gethash file file-prefix)
+			 (puthash file (incf current-prefix) file-prefix))))
 		   (org-export-expand-include-keyword
 		    (cons (list file lines) included)
 		    (file-name-directory file))
 		   (buffer-string)))))))))))))
 
-(defun org-export--prepare-file-contents (file &optional lines ind minlevel)
+(defun org-export--prepare-file-contents (file &optional lines ind minlevel id)
   "Prepare the contents of FILE for inclusion and return them as a string.
 
 When optional argument LINES is a string specifying a range of
@@ -3362,7 +3374,12 @@ headline encountered.
 
 Optional argument MINLEVEL, when non-nil, is an integer
 specifying the level that any top-level headline in the included
-file should have."
+file should have.
+
+Optional argument ID is an integer that will be inserted before
+each footnote definition and reference if FILE is an Org file.
+This is useful to avoid conflicts when more than one Org file
+with footnotes is included in a document."
   (with-temp-buffer
     (insert-file-contents file)
     (when lines
@@ -3421,6 +3438,21 @@ file should have."
 	       (org-map-entries
 		(lambda () (if (< offset 0) (delete-char (abs offset))
 			(insert (make-string offset ?*)))))))))))
+    ;; Append ID to all footnote references and definitions, so they
+    ;; become file specific and cannot collide with footnotes in other
+    ;; included files.
+    (goto-char (point-min))
+    (while (re-search-forward org-footnote-re nil t)
+      (let ((reference (org-element-context)))
+	(when (memq (org-element-type reference)
+		    '(footnote-reference footnote-definition))
+	  (goto-char (org-element-property :begin reference))
+	  (forward-char)
+	  (let ((label (org-element-property :label reference)))
+	    (cond ((not label))
+		  ((org-string-match-p "\\`[0-9]+\\'" label)
+		   (insert (format "fn:%d-" id)))
+		  (t (forward-char 3) (insert (format "%d-" id))))))))
     (org-element-normalize-string (buffer-string))))
 
 (defun org-export-execute-babel-code ()
@@ -3428,8 +3460,7 @@ file should have."
   ;; Get a pristine copy of current buffer so Babel references can be
   ;; properly resolved.
   (let ((reference (org-export-copy-buffer)))
-    (unwind-protect (let ((org-current-export-file reference))
-		      (org-babel-exp-process-buffer))
+    (unwind-protect (org-babel-exp-process-buffer reference)
       (kill-buffer reference))))
 
 (defun org-export--copy-to-kill-ring-p ()

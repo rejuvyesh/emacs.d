@@ -813,7 +813,8 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
        (org-mode)
        (let ((title
 	      (let ((property (plist-get (org-export-get-environment) :title)))
-		(if property (org-element-interpret-data property)
+		(if property
+		    (org-no-properties (org-element-interpret-data property))
 		  (file-name-nondirectory (file-name-sans-extension file))))))
 	 (unless visiting (kill-buffer buffer))
 	 (org-publish-cache-set-file-property file :title title)
@@ -1161,22 +1162,30 @@ the file including them will be republished as well."
 	 (org-inhibit-startup t)
 	 (visiting (find-buffer-visiting filename))
 	 included-files-ctime buf)
-
     (when (equal (file-name-extension filename) "org")
       (setq buf (find-file (expand-file-name filename)))
       (with-current-buffer buf
 	(goto-char (point-min))
-	(while (re-search-forward
-		"^#\\+INCLUDE:[ \t]+\"\\([^\t\n\r\"]*\\)\"[ \t]*.*$" nil t)
-	  (let* ((included-file (expand-file-name (match-string 1))))
-	    (add-to-list 'included-files-ctime
-			 (org-publish-cache-ctime-of-src included-file) t))))
+	(while (re-search-forward "^[ \t]*#\\+INCLUDE:" nil t)
+	  (let* ((element (org-element-at-point))
+		 (included-file
+		  (and (eq (org-element-type element) 'keyword)
+		       (let ((value (org-element-property :value element)))
+			 (and value
+			      (string-match "^\\(\".+?\"\\|\\S-+\\)" value)
+			      (org-remove-double-quotes
+			       (match-string 1 value)))))))
+	    (when included-file
+	      (add-to-list 'included-files-ctime
+			   (org-publish-cache-ctime-of-src
+			    (expand-file-name included-file))
+			   t)))))
       (unless visiting (kill-buffer buf)))
     (if (null pstamp) t
       (let ((ctime (org-publish-cache-ctime-of-src filename)))
 	(or (< pstamp ctime)
 	    (when included-files-ctime
-	      (not (null (delq nil (mapcar (lambda(ct) (< ctime ct))
+	      (not (null (delq nil (mapcar (lambda (ct) (< ctime ct))
 					   included-files-ctime))))))))))
 
 (defun org-publish-cache-set-file-property
