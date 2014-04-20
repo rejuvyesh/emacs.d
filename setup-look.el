@@ -153,6 +153,7 @@
 ;; diminish
 ;; hide information about minor modes from mode-line
 (setup "diminish"
+  (setup-after "abbrev"                (diminish 'abbrev-mode))
   (setup-after "anzu"                  (diminish 'anzu-mode))
   (setup-after "auto-complete"         (diminish 'auto-complete-mode "↝"))
   (setup-after "auto-revert-mode"      (diminish 'auto-revert-mode))
