@@ -5,6 +5,8 @@
       '(
         LaTeX-babel-insert-hyphen
         align-repeat
+        dired-back-to-start-of-files
+        dired-do-chgrp
         down-list
         ghc-save-buffer
         handle-switch-frame
@@ -29,6 +31,7 @@
         sp-forward-sexp
         sp-remove-active-pair-overlay
         upcase-region
+        wdired-finish-edit
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
         yaml-electric-dash-and-dot
@@ -45,6 +48,7 @@
         helm-find-files
         ido-switch-buffer
         markdown-exdent-or-delete
+        phi-search
         save-buffers-kill-terminal
         select-window-2
         sp-add-to-next-sexp
