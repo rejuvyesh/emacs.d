@@ -29,7 +29,8 @@
   ;; Use C-t to expand snippet instead of conflicting <TAB>
   (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
   (define-key yas-keymap (kbd "C-t") 'yas-next-field-or-maybe-expand)
-  (define-key yas-keymap (kbd "C-T") 'yas-next-field))
+  (define-key yas-keymap (kbd "C-T") 'yas-next-field)
+  (define-key yas-minor-mode-map (kbd "C-c C-t") 'yas-reload-all))
 
 ;; auto-yasnippet
 ;; hybrid of keyboard macro and yasnippet
