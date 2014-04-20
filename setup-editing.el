@@ -622,9 +622,8 @@ See the variable `align-rules-list' for more details.")
   (shell-command-completion-mode))
 
 ;; scratchpad buffers
-(setup-lazy '(scratch) "scratch"
-  ;; don't want to remember which key I used
-  (global-set-key (kbd "C-c b") 'scratch))
+(setup-lazy '(scratch) "scratch")
+(global-set-key (kbd "C-c b") 'scratch)
 
 ;; highlight some whitespace
 (setup-lazy '(whitespace-mode global-whitespace-mode) "whitespace"
