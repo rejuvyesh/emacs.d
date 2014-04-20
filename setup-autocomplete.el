@@ -27,7 +27,9 @@
   (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
   (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete uses this
   ;; Use C-t to expand snippet instead of conflicting <TAB>
-  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand))
+  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
+  (define-key yas-keymap (kbd "C-t") 'yas-next-field-or-maybe-expand)
+  (define-key yas-keymap (kbd "C-T") 'yas-next-field))
 
 ;; auto-yasnippet
 ;; hybrid of keyboard macro and yasnippet
