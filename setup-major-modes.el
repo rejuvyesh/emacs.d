@@ -330,7 +330,7 @@
   (setup "wdired")
   (setup "dired-details")
   (setup "dired-details+")
-  
+  (setup "dired-open")
   ;; reload dired after making changes
   (--each '(dired-do-rename
             dired-do-copy
@@ -377,7 +377,15 @@
         (progn (revert-buffer) ; otherwise just revert to re-show
                (set (make-local-variable 'dired-dotfiles-show-p) t)))))
 
-  (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle))
+  (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
+
+  ;; open by extension
+  (setq dired-open-extensions '(
+                                ("pdf" . "zathura")
+                                ("djvu" . "zathura")
+                                ("mkv" . "mpv")
+                                ))
+  )
 
 ;; mutt
 ;; mail support.
