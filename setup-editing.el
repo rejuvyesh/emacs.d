@@ -353,11 +353,13 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (setup "helm-config"
   (helm-mode t))
 (setup-after "helm"
+  (setup "helm-flycheck")
   (define-key helm-map (kbd "C-w") 'subword-backward-kill)
   (define-key helm-map (kbd "M-w") 'helm-yank-text-at-point)
   (global-set-key (kbd "C-x c t") 'helm-cmd-t)
   (global-set-key (kbd "C-x c g") 'helm-do-grep)
   (global-set-key (kbd "C-x c o") 'helm-occur)
+  (global-set-key (kbd "C-x c e") 'helm-flycheck)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x c C-o") 'helm-swoop)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
