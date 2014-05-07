@@ -124,7 +124,7 @@
 ;; smart-mode line
 ;; fix mode line with colors
 (setup "smart-mode-line"
-  (setq sml/theme 'dark)
+  (setq sml/theme 'respectful)
   (sml/setup))
 
 ;; optical stuff
@@ -177,6 +177,6 @@
   (add-hook 'ruby-mode-hook (lambda () (setq mode-name "RB"))))
 (setup-after "enh-ruby-mode"
   (add-hook 'enh-ruby-mode-hook (lambda () (setq mode-name "RB+"))))
-(add-hook 'shell-mode-hook (lambda () (setq mode-name "sh")))
+(add-hook 'sh-mode-hook (lambda () (setq mode-name "sh")))
 
 (provide 'setup-look)
