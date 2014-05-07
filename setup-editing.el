@@ -367,8 +367,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
         helm-idle-delay 0.1
         helm-follow-mode-persistent t ))
 
-(setup-lazy '(helm-C-x-b) "helm-C-x-b"
-  (global-set-key [remap switch-to-buffer] 'helm-C-x-b))
+(setup-lazy '(helm-C-x-b) "helm-C-x-b")
+(global-set-key [remap switch-to-buffer] 'helm-C-x-b)
 
 ;; recent files
 (setup "recentf"
