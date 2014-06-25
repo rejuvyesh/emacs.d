@@ -5,6 +5,7 @@
       '(
         LaTeX-babel-insert-hyphen
         align-repeat
+        comment-region
         dired-back-to-start-of-files
         dired-do-chgrp
         down-list
@@ -30,6 +31,7 @@
         sp-backward-symbol
         sp-forward-sexp
         sp-remove-active-pair-overlay
+        undo-tree-visualize
         upcase-region
         wdired-finish-edit
         whole-line-or-region-kill-region
