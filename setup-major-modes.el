@@ -202,6 +202,10 @@
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
   (setup "inf-haskell"
     (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
+  (setup-after "flycheck"
+    (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+  (setq haskell-process-suggest-remove-import-lines t)
+  (setq haskell-process-log t)
   (define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
   (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info))
 
