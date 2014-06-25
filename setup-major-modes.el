@@ -411,8 +411,13 @@
            (octave-mode      . (run-octave))
            (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
            (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
-           (haskell-mode     . "ghc -Wall -fwarn-missing-import-lists %f") )))
-(global-set-key (kbd "C-S-c") '("smart-compile" smart-compile compile))
+           (if (f-exists? ".cabal-sandbox/x86_64-linux-ghc-7.8.2-packages.conf.d")
+               (haskell-mode . "ghc -package-db=.cabal-sandbox/x86_64-linux-ghc-7.8.2-packages.conf.d -Wall -fwarn-missing-import-lists %f")
+             (haskell-mode   . "ghc -Wall -fwarn-missing-import-lists %f")
+             )
+           )
+        ))
+(global-set-key (kbd "C-S-c") 'smart-compile)
 
 ;; magit
 (setup-lazy '(magit-status) "magit"
