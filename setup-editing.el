@@ -446,13 +446,6 @@ indented text (quotes, code) and lists intact."
   (replace-regexp "\\([^\n]\\)\n\\([^ *\\>-\n]\\)" "\\1 \\2" nil begin end))
 (global-set-key "\M-Q" 'unfill-region)
 
-;; insert new line *after* the current one
-(defun next-newline-and-indent ()
-  (interactive)
-  (end-of-line)
-  (newline-and-indent))
-(global-set-key "\C-o" 'next-newline-and-indent)
-
 ;; delete spaces when killing a line
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
