@@ -367,7 +367,12 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (setq helm-ff-lynx-style-map nil
         helm-input-idle-delay 0.1
         helm-idle-delay 0.1
-        helm-follow-mode-persistent t ))
+        helm-follow-mode-persistent t
+        helm-split-window-default-side 'right )
+  (defadvice helm-default-display-buffer
+    (before helm-fullscreen-split activate)
+    (delete-other-windows))
+  )
 
 (setup-lazy '(helm-C-x-b) "helm-C-x-b")
 (global-set-key [remap switch-to-buffer] 'helm-C-x-b)
