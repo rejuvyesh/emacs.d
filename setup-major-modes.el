@@ -188,10 +188,10 @@
 
 ;; python 
 
-(setup-lazy '(python-mode) "elpy"
-  (elpy-enable)
-  (elpy-use-ipython)
-  (elpy-clean-modeline))
+(setup-lazy '(python-mode) "python"
+  (setq python-indent-offset 2)
+  (unbreak-stupid-map python-mode-map)
+  )
 
 ;; haskell mode
 (setup-lazy '(haskell-mode) "haskell-mode")
