@@ -191,6 +191,21 @@
 (setup-lazy '(python-mode) "python"
   (setq python-indent-offset 2)
   (unbreak-stupid-map python-mode-map)
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:complete-on-dot t)
+  (setq jedi:environment-virtualenv
+        (list "virtualenv3" "--system-site-packages"))
+  (setq
+   python-shell-interpreter "ipython"
+   python-shell-interpreter-args ""
+   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+   python-shell-completion-setup-code
+   "from IPython.core.completerlib import module_completion"
+   python-shell-completion-module-string-code
+   "';'.join(module_completion('''%s'''))\n"
+   python-shell-completion-string-code
+   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
   )
 
 ;; haskell mode
