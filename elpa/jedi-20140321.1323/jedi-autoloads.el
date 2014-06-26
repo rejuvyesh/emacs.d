@@ -6,7 +6,7 @@
 ;;;### (autoloads (jedi:install-server-block jedi:install-server
 ;;;;;;  jedi:setup anything-jedi-related-names helm-jedi-related-names
 ;;;;;;  jedi:ac-setup jedi:complete jedi:start-dedicated-server)
-;;;;;;  "jedi" "jedi.el" (21295 6239 191815 669000))
+;;;;;;  "jedi" "jedi.el" (21419 23813 717258 49000))
 ;;; Generated autoloads from jedi.el
 
 (autoload 'jedi:start-dedicated-server "jedi" "\
@@ -34,7 +34,7 @@ Add Jedi AC sources to `ac-sources'.
 If auto-completion is all you need, you can call this function instead
 of `jedi:setup', like this::
 
-	 (add-hook 'python-mode-hook 'jedi:ac-setup)
+   (add-hook 'python-mode-hook 'jedi:ac-setup)
 
 Note that this function calls `auto-complete-mode' if it is not
 already enabled, for people who don't call `global-auto-complete-mode'
@@ -60,7 +60,7 @@ It setups `ac-sources' (calls `jedi:ac-setup') and turns
 This function is intended to be called from `python-mode-hook',
 like this::
 
-			 (add-hook 'python-mode-hook 'jedi:setup)
+       (add-hook 'python-mode-hook 'jedi:setup)
 
 You can also call this function as a command, to quickly test
 what jedi can do.
@@ -88,19 +88,19 @@ an unusual location, use `python-environment-virtualenv' to specify the
 location.
 
 .. NOTE:: jediepcserver.py is installed in a virtual environment but it
-	 does not mean Jedi.el cannot recognize the modules in virtual
-	 environment you are using for your Python development.  Jedi
-	 EPC server recognize the virtualenv it is in (i.e., the
-	 environment variable ``VIRTUAL_ENV`` in your Emacs) and then
-	 add modules in that environment to its ``sys.path``.  You can
-	 also add ``--virtual-env PATH/TO/ENV`` to `jedi:server-args'
-	 to include modules of virtual environment even you launch
-	 Emacs outside of the virtual environment.
+   does not mean Jedi.el cannot recognize the modules in virtual
+   environment you are using for your Python development.  Jedi
+   EPC server recognize the virtualenv it is in (i.e., the
+   environment variable ``VIRTUAL_ENV`` in your Emacs) and then
+   add modules in that environment to its ``sys.path``.  You can
+   also add ``--virtual-env PATH/TO/ENV`` to `jedi:server-args'
+   to include modules of virtual environment even you launch
+   Emacs outside of the virtual environment.
 
 .. NOTE:: It is highly recommended to use this command to install
-	 Python modules for Jedi.el.  You still can install Python
-	 modules used by Jedi.el manually.  However, you are then
-	 responsible for keeping Jedi.el and Python modules compatible.
+   Python modules for Jedi.el.  You still can install Python
+   modules used by Jedi.el manually.  However, you are then
+   responsible for keeping Jedi.el and Python modules compatible.
 
 See also:
 
@@ -116,7 +116,7 @@ Blocking version `jedi:install-server'.
 
 ;;;***
 
-;;;### (autoloads nil nil ("jedi-pkg.el") (21295 6239 294548 204000))
+;;;### (autoloads nil nil ("jedi-pkg.el") (21419 23813 829658 977000))
 
 ;;;***
 
