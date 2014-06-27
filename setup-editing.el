@@ -310,7 +310,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
          (insert (expand-file-name filename)))
         (t
          (insert (file-relative-name filename)))))
-(global-set-key "\C-c\C-i" 'insert-file-name)
+(global-set-key (kbd "C-c C-i") 'insert-file-name)
 
 (setup "ido"
   (ido-mode 1)
@@ -372,7 +372,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
     (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
       (when file
         (find-file file))))
-  (global-set-key "\C-x\C-r" 'recentf-ido-find-file))
+  (global-set-key (kbd "C-x C-r") 'recentf-ido-find-file))
 
 ;; unique names
 (setup "uniquify"
@@ -414,7 +414,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (interactive)
   (yank)
   (call-interactively 'indent-region))
-(global-set-key "\C-y" 'yank-and-indent)
+(global-set-key (kbd "C-y") 'yank-and-indent)
 
 ;; undo hardwrapped regions (mostly markdown)
 (defun unfill-region (begin end)
@@ -432,7 +432,7 @@ Deletes whitespace at join."
   (if (and (eolp) (not (bolp)))
       (delete-indentation t)
     (kill-line arg)))
-(global-set-key "\C-k" 'kill-and-join-forward)
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
 
 ;; delete all space before point up to beginning of line or non-whitespace char
 (setup "hungry-delete"
@@ -449,7 +449,7 @@ Deletes whitespace at join."
 (setup "wcheck-mode"
   (setq ispell-really-hunspell t)
   (setq wcheck-timer-idle .2)
-  (define-key global-map "\C-cs" 'wcheck-actions)
+  (define-key global-map (kbd "C-c s") 'wcheck-actions)
   (setq-default
    wcheck-language "English"
    wcheck-language-data '(("English"
