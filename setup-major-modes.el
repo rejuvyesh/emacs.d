@@ -82,6 +82,7 @@
 ;; markdown
 (setup-lazy '(markdown-mode) "markdown-mode"
   (setq markdown-command "pandoc --smart -f markdown -t html")
+  (setq markdown-enable-math t)
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
