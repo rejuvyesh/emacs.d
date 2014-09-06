@@ -41,7 +41,7 @@
 (setup "adaptive-wrap"
   (setq-default fill-column 80)
   (global-visual-line-mode 1)
-  (global-adaptive-wrap-prefix-mode 1)
+  (setq adaptive-wrap-prefix-mode 1)
   (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
 
 ;; goto and hint-style navigation (just like say pentadactyl in firefox)
@@ -534,24 +534,35 @@ See the variable `align-rules-list' for more details.")
   (add-to-list 'align-rules-list
                '(haskell-left-arrows
                  (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode)))))
+                 (modes quote (haskell-mode literate-haskell-mode))))
 
-(defun align-region-or-current ()
-  "Align current selected region or implied region if nothing is selected."
-  (interactive)
-  (if (and mark-active
-           (/= (point) (mark)))
-      (align (point) (mark))
-    (align-current)))
-;; align current region
-(global-set-key (kbd "C-c =") 'align-region-or-current)
+  (defun align-region-or-current ()
+    "Align current selected region or implied region if nothing is selected."
+    (interactive)
+    (if (and mark-active
+             (/= (point) (mark)))
+        (align (point) (mark))
+      (align-current)))
 
 ;; repeat regex (teh fuck ain't that the default?!)
-(defun align-repeat (start end regexp)
-  "Repeat alignment with respect to the given regular expression."
-  (interactive "r\nsAlign regexp: ")
-  (align-regexp start end
-                (concat "\\(\\s-*\\)" regexp) 1 1 t))
+  (defun align-repeat (start end regexp)
+    "Repeat alignment with respect to the given regular expression."
+    (interactive "r\nsAlign regexp: ")
+    (align-regexp start end
+                  (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+  (defun align-whitespace (start end)
+    "Align region by whitespace."
+    (interactive "r")
+    (align-regexp start end (concat "\\(\\s-*\\)" "\\s-") 1 0 t))
+
+  ;; align should always indent with spaces
+  (defadvice align-areas (around fix-tab-indent activate)
+    (let ((indent-tabs-mode nil))
+      ad-do-it))
+)
+;; align current region
+(global-set-key (kbd "C-c =") 'align-region-or-current)
 (global-set-key (kbd "C-c C-=") 'align-repeat)
 
 ;; diff- mode (better colors)
