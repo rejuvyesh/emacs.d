@@ -62,9 +62,9 @@
   (global-hl-line-mode t))
 
 ;; fonts
-(defvar small-font  "Consolas 8")
-(defvar normal-font "Consolas 11")
-(defvar big-font    "Consolas 14")
+(defvar small-font  "Fantasque Sans Mono 8")
+(defvar normal-font "Fantasque Sans Mono 11")
+(defvar big-font    "Fantasque Sans Mono 14")
 (defvar font-list (list
                    small-font
                    normal-font
