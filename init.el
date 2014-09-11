@@ -13,7 +13,7 @@
 (setup-initialize)
 
 ;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (expand-file-name "init/custom.el" user-emacs-directory))
 ;; and load custom-file
 (setup-include "custom")
 

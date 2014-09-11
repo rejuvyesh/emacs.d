@@ -21,6 +21,7 @@
  '(matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
  '(minimap-window-location (quote left))
  '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.pdf\\'" . system))))
+ '(paradox-github-token t)
  '(safe-local-variable-values (quote ((encoding . utf-8))))
  '(send-mail-function (quote smtpmail-send-it)))
 (custom-set-faces
@@ -35,5 +36,5 @@
  '(diff-header ((((background dark)) (:foreground "Cyan")) (t (:foreground "Red"))) t)
  '(diff-hunk-header ((((background dark)) (:foreground "Black" :background "#05057F7F8D8D")) (t (:foreground "White" :background "Salmon"))) t)
  '(diff-index ((((background dark)) (:foreground "Magenta")) (t (:foreground "Green"))) t)
- '(diff-nonexistent ((((background dark)) (:foreground "#FFFFFFFF7474")) (t (:foreground "DarkBlue"))))
+ '(diff-nonexistent ((((background dark)) (:foreground "#FFFFFFFF7474")) (t (:foreground "DarkBlue"))) t)
  '(diff-removed ((((background dark)) (:foreground "#7474FFFF7474")) (t (:foreground "DarkMagenta"))) t))
