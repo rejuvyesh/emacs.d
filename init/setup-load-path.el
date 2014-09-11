@@ -6,7 +6,8 @@
       (progn
         (setq load-path (cons my-lisp-dir load-path))
         (normal-top-level-add-subdirs-to-load-path))))
-(setq load-path (cons (expand-file-name "~/.emacs.d") load-path))
+(setq load-path (cons (expand-file-name "~/.emacs.d/init")   load-path))
+(setq load-path (cons (expand-file-name "~/.emacs.d/themes") load-path))
 
 ;; package-repositories
 ;; no need for others when you have melpa
