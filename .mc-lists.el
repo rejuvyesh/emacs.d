@@ -2,44 +2,87 @@
 ;; It keeps track of your preferences for running commands with multiple cursors.
 
 (setq mc/cmds-to-run-for-all
-      '(
-        LaTeX-babel-insert-hyphen
-        align-repeat
-        comment-region
+      '(Buffer-menu-delete
+        ace-jump-done
+        ace-jump-line-mode
+        align-region-or-current
+        beginning-of-visual-line
+        c-electric-colon
+        c-electric-pound
+        c-electric-semi&comma
+        copy-line
+        copy-with-append
+        delimit-columns-current
         dired-back-to-start-of-files
-        dired-do-chgrp
-        down-list
-        ghc-save-buffer
+        downcase-region
+        downcase-word-or-region
+        duplicate-line
+        electric-graphviz-dot-semi
+        end-of-buffer
+        end-of-visual-line
+        enh-ruby-electric-brace
+        enh-ruby-find-error
+        er/mark-defun
+        eval-defun
+        fold-dwim-toggle
+        generalized-shell-command
+        go-mode-insert-and-indent
         handle-switch-frame
-        haskell-indentation-delete-backward-char
         hungry-delete-backward
+        hungry-delete-forward
+        ibus-exec-callback
+        ido-switch-buffer
+        iedit-mode
+        increment-integer-at-point
         indent-for-tab-command
+        indent-new-comment-line
         indent-region
         kill-and-join-forward
-        kill-visual-line
-        mark-whole-buffer
-        org-beginning-of-line
-        org-kill-line
+        kill-without-append
+        kmacro-end-or-call-macro
+        literal-delete-backward-char
+        literal-delete-char
+        literal-tab
+        lua-electric-match
+        md/move-lines-down
+        md/move-lines-up
+        mouse-yank-primary
+        move-line-down
+        move-line-up
+        mozc-handle-event
+        notes-dedent-or-delete
+        notes-indent-line
+        org-force-cycle-archived
+        org-force-self-insert
+        org-indent-line
+        org-return-indent
         org-self-insert-command
+        orgtbl-ctrl-c-ctrl-c
+        orgtbl-self-insert-command
+        package-menu-mark-unmark
         phi-rectangle-kill-region
+        phi-rectangle-kill-ring-save
         phi-rectangle-next-line
         phi-rectangle-yank
-        scroll-right
+        sh-assignment
         smart-beginning-of-line
         smart-end-of-line
         sp--self-insert-command
+        sp-add-to-previous-sexp
         sp-backward-symbol
-        sp-forward-sexp
+        sp-beginning-of-sexp
+        sp-end-of-sexp
         sp-remove-active-pair-overlay
-        undo-tree-visualize
-        upcase-region
-        wdired-finish-edit
+        sp-unwrap-sexp
+        toggle-title-case
+        toggle-upcase
+        wdired-previous-line
+        whole-line-or-region-comment-dwim-2
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
-        yaml-electric-dash-and-dot
+        whole-line-or-region-yank
         yank-and-indent
         yas-expand
-        yas-next-field-or-maybe-expand
         ))
 
 (setq mc/cmds-to-run-once
@@ -52,7 +95,6 @@
         markdown-exdent-or-delete
         phi-search
         save-buffers-kill-terminal
-        select-window-2
         sp-add-to-next-sexp
         sp-add-to-previous-sexp
         ))
