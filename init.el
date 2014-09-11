@@ -1,11 +1,11 @@
 ;; rejuvyesh's Emacs config
 
 ;; Set User credentials
-(setq user-full-name    "rejuvyesh"
-      user-mail-address "mail@rejuvyesh.com")
+(setq user-full-name    "rejuvyesh")
+(setq user-mail-address "mail@rejuvyesh.com")
 
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
-(load "~/.emacs.d/load-path.el")
+(load "~/.emacs.d/init/setup-load-path.el")
 
 ;; init `setup.el' by @zk-phi for loads of optimization for init startup
 (require 'setup)
