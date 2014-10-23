@@ -2,7 +2,9 @@
 ;; It keeps track of your preferences for running commands with multiple cursors.
 
 (setq mc/cmds-to-run-for-all
-      '(Buffer-menu-delete
+      '(
+        Buffer-menu-delete
+        LaTeX-babel-insert-hyphen
         ace-jump-done
         ace-jump-line-mode
         align-region-or-current
@@ -28,6 +30,7 @@
         generalized-shell-command
         go-mode-insert-and-indent
         handle-switch-frame
+        haskell-indentation-delete-char
         hungry-delete-backward
         hungry-delete-forward
         ibus-exec-callback
@@ -44,6 +47,7 @@
         literal-delete-char
         literal-tab
         lua-electric-match
+        markdown-enter-key
         md/move-lines-down
         md/move-lines-up
         mouse-yank-primary
@@ -52,6 +56,8 @@
         mozc-handle-event
         notes-dedent-or-delete
         notes-indent-line
+        org-beginning-of-line
+        org-cycle
         org-force-cycle-archived
         org-force-self-insert
         org-indent-line
@@ -87,14 +93,8 @@
 
 (setq mc/cmds-to-run-once
       '(
-        align-current
-        bc-set
         helm-M-x
         helm-find-files
+        help-for-help
         ido-switch-buffer
-        markdown-exdent-or-delete
-        phi-search
-        save-buffers-kill-terminal
-        sp-add-to-next-sexp
-        sp-add-to-previous-sexp
         ))
