@@ -14,17 +14,29 @@
 (scroll-bar-mode -1)
 (set-fringe-mode '(1 . 10))
 
+;; selective hooks for either terminals or X windows
+(defvar after-make-console-frame-hooks '()
+  "Hooks to run after creating a new TTY frame")
+
+(defvar after-make-window-system-frame-hooks '()
+  "Hooks to run after creating a new window-system frame")
+
+(defun run-after-make-frame-hooks (frame)
+  "Selectively run either `after-make-console-frame-hooks' or
+`after-make-window-system-frame-hooks'"
+  (select-frame frame)
+  (run-hooks (if window-system
+                 'after-make-window-system-frame-hooks
+               'after-make-console-frame-hooks)))
+
+(defun run-after-make-frame-hooks-current-frame ()
+  (run-after-make-frame-hooks (selected-frame)))
+
+(add-hook 'after-make-frame-functions 'run-after-make-frame-hooks)
+(add-hook 'after-init-hook 'run-after-make-frame-hooks-current-frame)
+
 ;; color themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-
-;; Remove background color from terminal emacs,
-;; so that it can remain transparent
-;; http://stackoverflow.com/questions/19054228/emacs-disable-theme-background-color-in-terminal
-;; (defun on-frame-open (frame)
-;;   (if (not (display-graphic-p frame))
-;;       (set-face-background 'default "unspecified-bg" frame)))
-;; (on-frame-open (selected-frame))
-;; (add-hook 'after-make-frame-functions 'on-frame-open)
 
 (defvar bright-theme 'leuven  "Bright theme to use")
 (defvar dark-theme   'molokai "Dark theme to use")
