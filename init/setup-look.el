@@ -125,6 +125,7 @@
 ;; smart-mode line
 ;; fix mode line with colors
 (setup "smart-mode-line"
+  (setq sml/no-confirm-load-theme t)
   (setq sml/theme 'respectful)
   (sml/setup))
 
