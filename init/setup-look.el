@@ -130,8 +130,6 @@
   (sml/setup))
 
 ;; optical stuff
-;; (setup "heartbeat-cursor"
-;;   (heartbeat-cursor-mode))
 ;; Stop cursor blinking
 (blink-cursor-mode -1)
 (setq-default cursor-type 'box)
