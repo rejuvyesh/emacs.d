@@ -2,5 +2,5 @@
 # name: bang
 # key: !
 # --
-#!/bin/zsh
+#!/usr/bin/env zsh
 $0
