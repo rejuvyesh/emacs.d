@@ -24,11 +24,16 @@
       c-basic-offset tab-width
       c-block-comment-prefix "* ")
 (global-set-key (kbd "M-RET") 'c-indent-new-comment-line)
+(setup "guess-offset")
 (setup-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
   (setq c-eldoc-buffer-regenerate-time 15))
 (setup-after "cc-mode"
   (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
-  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
+  (add-hook 'c-mode-hook   'c-turn-on-eldoc-mode))
+
+;; show what function we're in
+(setup "which-func"
+  (which-function-mode 1))
 
 (setup-after "auto-complete-config"
   (add-hook 'c-mode-hook
@@ -40,7 +45,7 @@
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)
 (setup-lazy '(R R-mode julia-mode) "ess-site"
-  (setq inferior-julia-program-name "~/dev/julia/julia/usr/bin/julia-basic")))
+  (setq inferior-julia-program-name "julia")))
 
 ;; auctex
 (setup-lazy '(latex-mode LaTeX-mode tex-mode TeX-mode) "latex"
@@ -191,11 +196,9 @@
 
 (setup-lazy '(python-mode) "python"
   (setq python-indent-offset 2)
+  (add-hook 'python-mode-hook (lambda () (setq tab-width 2)))
   (unbreak-stupid-map python-mode-map)
   (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:complete-on-dot t)
-  (setq jedi:environment-virtualenv
-        (list "virtualenv3" "--system-site-packages"))
   (setq
    python-shell-interpreter "ipython"
    python-shell-interpreter-args ""
@@ -231,7 +234,6 @@
 ;; enhanced ruby mode
 (setup-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
-  (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 
   ;; better colors for warnings
   (defface erm-syn-warnline
@@ -247,12 +249,13 @@
   (setq enh-ruby-deep-indent-paren nil))
 
 ;; Rake files are Ruby, too
-(add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.builder$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("\\.rake$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Rakefile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Gemfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Capfile$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("\\.builder$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("\\.gemspec$" . enh-ruby-mode))
 
 (setup-after "enh-ruby-mode"
   ;; misc stuff
@@ -263,7 +266,7 @@
     (ruby-block-mode t)
     (setq ruby-block-highlight-toggle t))
   ;; erb
-  (setup-lazy '(rhtml-mode)"rhtml-mode")
+  (setup-lazy '(rhtml-mode) "rhtml-mode")
   (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode)))
 
 ;; Sometimes you have to
@@ -313,11 +316,17 @@
 (setup-lazy '(json-mode) "json-mode")
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
+;; shell stuff
+(setup-lazy '(sh-mode) "sh-script"
+  (setq sh-basic-offset tab-width)
+  (add-hook 'sh-mode-hook 'whitespace-mode))
+
 ;; matlab
 (setup-lazy '(matlab-mode) "matlab-load"
   (add-hook 'matlab-mode
             (lambda ()
               (auto-complete-mode 1)
+              (whitespace-mode)
               )))
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
 
@@ -327,10 +336,9 @@
 
 ;; mark stuff like FIXME
 (setup-lazy '(fic-mode) "fic-mode")
-(add-hook 'prog-mode-hook 'fic-mode)
-;; misbehaving modes
+(add-hook 'prog-mode-hook     'fic-mode)
 (add-hook 'enh-ruby-mode-hook 'fic-mode)
-(add-hook 'js2-mode-hook 'fic-mode)
+(add-hook 'js2-mode-hook      'fic-mode)
 
 ;; emacs-lisp
 (setup "bytecomp"
@@ -427,13 +435,22 @@
            (octave-mode      . (run-octave))
            (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
            (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
-           (if (f-exists? ".cabal-sandbox/x86_64-linux-ghc-7.8.2-packages.conf.d")
-               (haskell-mode . "ghc -package-db=.cabal-sandbox/x86_64-linux-ghc-7.8.2-packages.conf.d -Wall -fwarn-missing-import-lists %f")
+           (if (f-exists? ".cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d")
+               (haskell-mode . "ghc -package-db=.cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d -Wall -fwarn-missing-import-lists %f")
              (haskell-mode   . "ghc -Wall -fwarn-missing-import-lists %f")
              )
            )
         ))
 (global-set-key (kbd "C-S-c") 'smart-compile)
+
+(setup-lazy '(conf-mode) "conf-mode")
+
+(setup-lazy '(paradox-list-packages) "paradox"
+  (setq paradox-github-token t))
+
+(setup-lazy '(nix-mode) "nix-mode"
+  (add-hook 'nix-mode-hook 'whitespace-mode))
+(add-to-list 'auto-mode-alist '("\\.nix" . nix-mode))
 
 ;; magit
 (setup-lazy '(magit-status) "magit"
