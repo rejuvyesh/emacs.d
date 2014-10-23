@@ -17,6 +17,9 @@
 ;; and load custom-file
 (setup-include "custom")
 
+;; helpers
+(setup "setup-helpers")
+
 ;; theme , fonts etc
 (setup "setup-look")
 
