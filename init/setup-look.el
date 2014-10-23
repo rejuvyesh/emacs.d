@@ -113,8 +113,8 @@
   (setq-default bidi-display-reordering nil)
   (setq auto-window-vscroll nil))
 
-;; ;; yascroll
-;; (global-yascroll-bar-mode 1)
+;; yascroll
+(global-yascroll-bar-mode 1)
 
 ;; try to keep windows within a max margin
 (setup "automargin"
