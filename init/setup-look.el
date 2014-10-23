@@ -81,33 +81,22 @@
                    small-font
                    normal-font
                    big-font))
-(defvar current-font normal-font)
+(defvar default-font normal-font)
 
-(defun set-window-font ()
-  (set-frame-font current-font))
+(defun set-window-font (&optional font)
+  (set-frame-font (or font default-font)))
+(add-hook 'after-make-window-system-frame-hooks 'set-window-font)
 
 (when (pretty-load?)
   (set-window-font))
 
 ;; shortcut for the fonts
-(defun use-big-font ()
-  "use big font"
-  (interactive)
-  (setq current-font big-font)
-  (set-window-font))
-(defun use-normal-font ()
-  "use normal font"
-  (interactive)
-  (setq current-font normal-font)
-  (set-window-font))
-(defun use-small-font ()
-  "use small font"
-  (interactive)
-  (setq current-font small-font)
-  (set-window-font))
-(global-set-key (kbd "C-c <f1>") 'use-small-font)
-(global-set-key (kbd "C-c <f2>") 'use-normal-font)
-(global-set-key (kbd "C-c <f3>") 'use-big-font)
+(defmacro use-font (font)
+  `(defun ,(intern (format "use-%s" font)) ()
+     ,(format "Use font set in '%s'" font)
+     (interactive)
+     (set-window-font ,font)))
+(loop for font in font-list collect (eval `(use-font, font)))
 
 ;; scrolling
 (setq scroll-preserve-screen-position t)
