@@ -4,6 +4,36 @@
 
 Helper macros to write faster, portable and robust init script
 
+** NOTE: CHANGES IN VERSION 1.0.2
+
+- API for anaphoric macros is changed.
+
+  Please use =​,it= instead of =(it)=. You can also write more complex
+  expressions like =​,(car it)=.
+
+- new anaphoric macro: =!foreach=
+
+  this macro is like =dolist=, but does much more things during
+  compile. here's an example:
+
+  #+begin_src emacs-lisp
+    (!foreach '((text-mode-hook . electric-spacing-mode)
+                (latex-mode-hook . magic-latex-buffer)
+                (lisp-mode-hook . highlight-stages-lisp-initialize))
+      (add-hook ,(car it) ,(cdr it)))
+  #+end_src
+
+  this is equivalent to:
+
+  #+begin_src emacs-lisp
+    (progn
+      (add-hook 'text-mode-hook 'electric-spacing-mode)
+      (add-hook 'latex-mode-hook 'magic-latex-buffer)
+      (add-hook 'lisp-mode-hook 'highlight-stages-lisp-initialize))
+  #+end_src
+
+- performance improvements
+
 ** Improving Performance
 
 Heavily customized Emacs are sometimes said slow to start-up. But,
@@ -124,9 +154,9 @@ but still much faster.
 *** Method 3: Compile-time Execution
 
 For more severe tune-up, "setup.el" provides a bunch of macros to
-control compile-time executions. The most basic macro is =!= (or
-=setup-eval= as an alias). It evaluates body *during compile* and
-replace itself with the evaluated value.
+control compile-time executions. The most basic macro is =!=. It
+evaluates body *during compile* and replace itself with the evaluated
+value.
 
 For example, the following piece of script :
 
@@ -165,23 +195,34 @@ but, if we know that the init script runs in Mac, then simply
   (setup-include "./init/init-mac.el")
 #+end_src
 
-is faster. "setup.el" provides a macro =!case= (or =setup-case=),
-which is like =case= but the conditional branch is expanded *during
-compile* so that the compiled script can run with no extra
-overheads. This requires you to compile the init script on each
-systems you use, but runs slightly faster on startup.
+is faster. "setup.el" provides a macro =!case=, which is like =case=
+but the conditional branch is expanded *during compile* so that the
+compiled script can run with no extra overheads. This requires you to
+compile the init script on each systems you use, but runs slightly
+faster on startup.
 
-In addition, =!case= is an anaphoric macro, so that the results of
-test can be refered with =(it)= in body :
+In addition, =!case= is an anaphoric macro, so the results of the test
+can be refered with =​,it= in body :
 
 #+begin_src emacs-lisp
   (!case emacs-major-version
     ((24 23)   (message "Welcome to Emacs!"))
-    (otherwise (error "Emacs version %d is unsupported." (it))))
+    (otherwise (error "Emacs version %d is unsupported." ,it)))
 #+end_src
 
-=(it)= is also substituted *during compile* thus this makes init
-script no slower.
+=​,it= is also substituted *during compile* thus this makes init script
+no slower. More complex expressions can also be written after =​,​=,
+=​,(car it)= for example.
+
+Other anaphoric macros provided by setup.el are: =!if=, =!when=,
+=!cond=, =!unless=, =!foreach=.
+
+#+begin_src emacs-lisp
+  (!foreach '((text-mode-hook . electric-spacing-mode)
+              (latex-mode-hook . magic-latex-buffer)
+              (lisp-mode-hook . highlight-stages-lisp-initialize))
+    (add-hook ,(car it) ,(cdr it)))
+#+end_src
 
 For compile-time execution, following (anaphoric) macros are also
 provided.
