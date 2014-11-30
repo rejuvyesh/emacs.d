@@ -265,17 +265,7 @@
   (setup "ruby-block" ; show what block an end belongs to
     (ruby-block-mode t)
     (setq ruby-block-highlight-toggle t))
-  ;; erb
-  (setup-lazy '(rhtml-mode) "rhtml-mode")
-  (add-to-list 'auto-mode-alist '("\\.erb$" . rhtml-mode)))
-
-;; Sometimes you have to
-(setup-lazy '(php-mode) "php-mode")
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-
-;; javascript
-(setup-lazy '(js2-mode) "js2-mode")
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+  )
 
 ;; lua
 (setup-lazy '(lua-mode) "lua-mode"
@@ -284,8 +274,38 @@
 ;; (s)css
 (setup-lazy '(scss-mode) "scss-mode"
   (setq scss-compile-at-save nil))
-(setup-lazy '(css-mode) "css-mode"
-  (setq css-indent-level 2))
+
+;; web-mode
+(setup-lazy '(web-mode) "web-mode"
+  :prepare (push (! `(,(format "\\.%s$"
+                               (regexp-opt
+                                '("phtml" "tpl" "php" "gsp" "jsp"
+                                  "aspx" "ascx" "erb" "mustache" "djhtml"
+                                  "html" "js" "jsx" "css" "xml")))
+                      . web-mode)) auto-mode-alist)
+  (setq web-mode-markup-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-style-padding 2
+        web-mode-script-padding 2
+        web-mode-block-padding 2)
+
+  (setup-keybinds web-mode-map
+    [remap comment-dwim] 'web-mode-comment-or-uncomment
+    "C-c C-'" 'web-mode-element-close)
+
+  (setup-after "auto-complete"
+    (setup "auto-complete-config"
+      (setq web-mode-ac-sources-alist
+            '(("javascript" . (ac-source-words-in-same-mode-buffers))
+              ("php" . (ac-source-words-in-same-mode-buffers))
+              ("css" . (ac-source-css-property ac-source-words-in-same-mode-buffers))
+              ("html" . (ac-source-words-in-same-mode-buffers))))
+      (push 'web-mode ac-modes)))
+
+  (setup-after "smart-compile"
+    (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
+  )
 
 ;; eldoc, ie function signatures in the minibuffer
 (setup-lazy '(turn-on-eldoc-mode) "eldoc"
