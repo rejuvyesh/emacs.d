@@ -48,7 +48,7 @@
   (setq inferior-julia-program-name "julia")))
 
 ;; auctex
-(setup-lazy '(latex-mode LaTeX-mode tex-mode TeX-mode) "latex"
+(setup-lazy '(latex-mode LaTeX-mode) "latex"
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
