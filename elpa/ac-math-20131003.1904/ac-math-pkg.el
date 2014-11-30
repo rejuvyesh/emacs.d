@@ -1,1 +1,0 @@
-(define-package "ac-math" "20131003.1904" "Auto-complete sources for input of mathematical symbols and latex tags" '((auto-complete "1.4")) :url "https://github.com/vitoshka/ac-math" :keywords '("latex" "auto-complete" "unicode" "symbols"))
