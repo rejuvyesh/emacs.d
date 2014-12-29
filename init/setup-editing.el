@@ -330,18 +330,23 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; helm
 (setup "helm-config"
-  (helm-mode t))
+  (helm-mode t)
+  (setup-keybinds helm-map
+    "C-w" 'subword-backward-kill
+    "M-w" 'helm-yank-text-at-point)
+  )
 (setup-after "helm"
-  (setup "helm-flycheck")
-  (define-key helm-map (kbd "C-w") 'subword-backward-kill)
-  (define-key helm-map (kbd "M-w") 'helm-yank-text-at-point)
-  (global-set-key (kbd "C-x c t") 'helm-cmd-t)
-  (global-set-key (kbd "C-x c g") 'helm-do-grep)
-  (global-set-key (kbd "C-x c o") 'helm-occur)
-  (global-set-key (kbd "C-x c e") 'helm-flycheck)
-  (global-set-key (kbd "M-x") 'helm-M-x)
+  (setup-lazy '(helm-flycheck) "helm-flycheck")
+  (setup-keybinds flycheck-mode-map
+    "C-x c e" 'helm-flycheck)
+  (global-set-key (kbd "C-x c t")   'helm-cmd-t)
+  (global-set-key (kbd "C-x c g")   'helm-do-grep)
+  (global-set-key (kbd "C-x c o")   'helm-occur)
+  (global-set-key (kbd "M-x")       'helm-M-x)
+  (global-set-key (kbd "M-y")       'helm-show-kill-ring)
   (global-set-key (kbd "C-x c C-o") 'helm-swoop)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-x C-f")   'helm-find-files)
+  (global-set-key (kbd "C-x b")     'helm-mini)
   (setq enable-recursive-minibuffers t)
   (setq helm-ff-lynx-style-map nil
         helm-input-idle-delay 0.1
