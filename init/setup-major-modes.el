@@ -89,6 +89,7 @@
 ;; markdown
 (setup-lazy '(markdown-mode) "markdown-mode"
   (setq markdown-command "pandoc --smart -f markdown -t html")
+  (setq markdown-css-path (expand-file-name "markdown.css" "~/.pandoc/css/markdown.css"))
   (setq markdown-enable-math t)
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
