@@ -53,16 +53,24 @@
   (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (setq TeX-source-correlate-method 'synctex)
+  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-save-query nil)
   (setq TeX-newline-function 'reindent-then-newline-and-indent)
   (setq-default TeX-PDF-mode t)
   (setq-default TeX-engine 'xetex)      ; use xelatex by default
+  (setq TeX-view-program-list
+        '(("zathura"
+           ("zathura" (mode-io-correlate "-sync.sh")
+            " "
+            (mode-io-correlate "%n:1:%b ")
+            "%o"))))
   (setq TeX-view-program-selection '((output-pdf "zathura")))
   (setup-after "auto-complete"
       (push 'LaTeX-mode ac-modes)  ; make auto-complete aware of `latex-mode`
       )
+  )
 
 ;;(setup-lazy '(org-mode markdown-mode latex-mode) "ac-math"
 (setup "ac-math"
