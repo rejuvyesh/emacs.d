@@ -60,7 +60,9 @@
   (setq-default TeX-PDF-mode t)
   (setq-default TeX-engine 'xetex)      ; use xelatex by default
   (setq TeX-view-program-selection '((output-pdf "zathura")))
-  (add-to-list 'ac-modes 'LaTeX-mode))   ; make auto-complete aware of `latex-mode`
+  (setup-after "auto-complete"
+      (push 'LaTeX-mode ac-modes)  ; make auto-complete aware of `latex-mode`
+      )
 
 ;;(setup-lazy '(org-mode markdown-mode latex-mode) "ac-math"
 (setup "ac-math"
