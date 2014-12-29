@@ -388,7 +388,6 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; indentation
 (setq-default tab-width 2)
-(setq sh-basic-offset tab-width)
 (global-set-key (kbd "C-c i") 'indent-region)
 
 ;; don't use tabs normally, except for a few special modes
