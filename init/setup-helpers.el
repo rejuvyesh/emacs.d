@@ -55,4 +55,4 @@
   (or (display-graphic-p)
       (daemonp)))
 
-(provide 'init-helpers)
+(provide 'setup-helpers)
