@@ -223,7 +223,8 @@
 
 ;; undo tree
 (setup "undo-tree"
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps t))
 
 ;; nested parentheses are highlighted when inside of them
 (setup "highlight-parentheses"
