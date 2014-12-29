@@ -217,9 +217,9 @@
     (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)))
 
 ;; edit symbol in multiple places simultaneously
-(setup "iedit"
-  (global-set-key (kbd "C-c ;") 'iedit-mode)
-  (global-set-key (kbd "C-c C-;") 'iedit-mode-toggle-on-function))
+(setup-lazy '(iedit-mode iedit-mode-toggle-on-function) "iedit")
+(global-set-key (kbd "C-c ;") 'iedit-mode)
+(global-set-key (kbd "C-c C-;") 'iedit-mode-toggle-on-function)
 
 ;; undo tree
 (setup "undo-tree"
