@@ -483,6 +483,10 @@
   (add-hook 'nix-mode-hook 'whitespace-mode))
 (add-to-list 'auto-mode-alist '("\\.nix" . nix-mode))
 
+(setup-lazy '(hledger-mode) "hledger-mode"
+  (add-hook 'hledger-mode 'whitespace-mode))
+(add-to-list 'auto-mode-alist '("\\.hledger\\.journal" . hledger-mode))
+
 ;; magit
 (setup-lazy '(magit-status) "magit"
   (set-default 'magit-unstage-all-confirm nil))
