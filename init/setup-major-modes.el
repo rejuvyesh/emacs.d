@@ -487,6 +487,8 @@
   (add-hook 'hledger-mode 'whitespace-mode))
 (add-to-list 'auto-mode-alist '("\\.hledger\\.journal" . hledger-mode))
 
+(setup-lazy '(dactyl-mode) "dactyl-mode")
+(add-to-list 'auto-mode-alist '("\\.pentadactylrc" . dactyl-mode))
 ;; magit
 (setup-lazy '(magit-status) "magit"
   (set-default 'magit-unstage-all-confirm nil))
