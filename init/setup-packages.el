@@ -1,7 +1,7 @@
 ;;; local packages
 ;; elpa package-repositories
 (setup "package"
-  (setq package-user-dir (emacs-d "packages"))
+
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
   (defun package-disabled-packages ()
