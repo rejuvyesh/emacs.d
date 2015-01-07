@@ -24,7 +24,7 @@
       c-basic-offset tab-width
       c-block-comment-prefix "* ")
 (global-set-key (kbd "M-RET") 'c-indent-new-comment-line)
-(setup "guess-offset")
+
 (setup-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
   (setq c-eldoc-buffer-regenerate-time 15))
 (setup-after "cc-mode"
