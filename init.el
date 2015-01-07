@@ -20,11 +20,6 @@
 (setq setup-environ-warning-alist '((emacs-version)))
 (setup-initialize)
 
-;; Keep emacs Custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;; and load custom-file
-(setup-include "custom")
-
 ;; packages
 (setup "setup-packages")
 
