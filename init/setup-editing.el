@@ -4,7 +4,6 @@
 ;; save all auto saves in a single directory
 (setq make-backup-files nil)
 (defvar autosave-dir (expand-file-name (emacs-d "cache/autosave-dir/")))
-(setq auto-save-list-file-prefix "~/.emacs-saves/cache/auto-save-list/.saves-")
 (setq auto-save-list-file-prefix autosave-dir)
 (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
 (setq confirm-kill-emacs 'y-or-n-p)
@@ -19,11 +18,11 @@
   (setq history-length         1000)
   (setq search-ring-max        1000)
   (setq regexp-search-ring-max 1000)
-  (setq savehist-file (emacs-d "cache/history"))
   (setq savehist-additional-variables '(search-ring
                                         regexp-search-ring
                                         kill-ring
                                         compile-command))
+  (setq savehist-file   (emacs-d "cache/history"))
   (setq save-place-file (emacs-d "cache/saveplace"))
   (setq-default save-place t))
 
