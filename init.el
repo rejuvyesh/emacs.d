@@ -25,6 +25,9 @@
 ;; and load custom-file
 (setup-include "custom")
 
+;; packages
+(setup "setup-packages")
+
 ;; helpers
 (setup "setup-helpers")
 
