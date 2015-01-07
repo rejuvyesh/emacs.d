@@ -51,16 +51,18 @@
 
 ;; fonts
 (defvar small-font  "Fantasque Sans Mono 8")
-(defvar normal-font "Fantasque Sans Mono 11")
-(defvar big-font    "Fantasque Sans Mono 14")
-(defvar font-list (list
-                   small-font
-                   normal-font
-                   big-font))
+(defvar normal-font "Fantasque Sans Mono 10")
+(defvar big-font    "Fantasque Sans Mono 11")
+(defvar huge-font   "Fantasque Sans Mono 13")
+(defvar font-list '(small-font
+                    normal-font
+                    big-font
+                    huge-font))
 (defvar default-font normal-font)
 
 (defun set-window-font (&optional font)
   (set-frame-font (or font default-font)))
+
 (add-hook 'after-make-window-system-frame-hooks 'set-window-font)
 
 (when (pretty-load?)
@@ -72,6 +74,7 @@
      ,(format "Use font set in '%s'" font)
      (interactive)
      (set-window-font ,font)))
+
 (loop for font in font-list collect (eval `(use-font, font)))
 
 ;; scrolling
