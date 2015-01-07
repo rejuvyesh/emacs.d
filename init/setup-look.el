@@ -38,32 +38,8 @@
 ;; color themes
 (add-to-list 'custom-theme-load-path (emacs-d "themes/"))
 
-(defvar bright-theme 'leuven  "Bright theme to use")
-(defvar dark-theme   'molokai "Dark theme to use")
 
-(defvar use-bright-theme t "Whether to use the bright or dark theme")
-
-(defun load-correct-theme ()
-  "Loads appropriate theme."
-  (interactive)
-  (if use-bright-theme (load-theme bright-theme t)
-    (load-theme dark-theme t))
-  )
-
-(when (pretty-load?)
-  (load-correct-theme))
-
-(defun toggle-bright-theme ()
-  "toggles between bright and dark theme"
-  (interactive)
-  (if use-bright-theme (progn
-                         (setq use-bright-theme nil)
-                         (disable-theme bright-theme)
-                         (load-theme dark-theme t))
-    (progn
-      (setq use-bright-theme t)
-      (disable-theme dark-theme)
-      (load-theme bright-theme t))))
+(setup "moe-theme-switcher")
 
 ;; highlight current line
 (defface hl-line '((t (:background nil)))
@@ -196,3 +172,4 @@
 (add-hook 'sh-mode-hook (lambda () (setq mode-name "sh")))
 
 (provide 'setup-look)
+;;; setup-look ends here
