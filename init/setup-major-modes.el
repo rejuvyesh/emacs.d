@@ -52,6 +52,7 @@
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook #'latex-extra-mode)
   (setq TeX-source-correlate-method 'synctex)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   (setq TeX-auto-save t)
