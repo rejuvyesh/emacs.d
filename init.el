@@ -4,6 +4,14 @@
 (setq user-full-name    "rejuvyesh")
 (setq user-mail-address "mail@rejuvyesh.com")
 
+;; load path
+(defun emacs-d (path)
+  (let ((user-dir
+         (cond ((boundp 'user-init-dir) user-init-dir)
+               ((boundp 'user-emacs-directory) user-emacs-directory)
+               (t "~/.emacs.d/"))))
+    (concat user-dir path)))
+
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
 (load "~/.emacs.d/init/setup-load-path.el")
 
