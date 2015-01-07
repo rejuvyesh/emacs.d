@@ -10,8 +10,10 @@
         align-region-or-current
         beginning-of-visual-line
         c-electric-colon
+        c-electric-lt-gt
         c-electric-pound
         c-electric-semi&comma
+        c-electric-slash
         copy-line
         copy-with-append
         delimit-columns-current
@@ -30,6 +32,7 @@
         generalized-shell-command
         go-mode-insert-and-indent
         handle-switch-frame
+        haskell-indentation-delete-backward-char
         haskell-indentation-delete-char
         hungry-delete-backward
         hungry-delete-forward
@@ -97,4 +100,9 @@
         helm-find-files
         help-for-help
         ido-switch-buffer
+        markdown-cycle
+        markdown-exdent-or-delete
+        org-open-at-mouse
+        phi-search
+        save-buffers-kill-terminal
         ))
