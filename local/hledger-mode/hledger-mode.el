@@ -58,3 +58,5 @@
   (run-hooks 'hledger-mode-hook))
 
 (provide 'hledger-mode)
+
+;;; hledger-mode.el ends here
