@@ -790,9 +790,8 @@ See the variable `align-rules-list' for more details.")
         (make-directory dir)))))
 
 ;; gist
-(setup-after "yagist"
-  (setup "cipher/aes"
-    (setq yagist-encrypt-risky-config t)))
+(setup-after "gist"
+  (setq gist-view-gist t))
 
 ;; More emacs rocks: Join current line with the next
 (global-set-key (kbd "M-j")
