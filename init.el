@@ -13,7 +13,7 @@
     (concat user-dir path)))
 
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
-(load "~/.emacs.d/init/setup-load-path.el")
+(load (emacs-d "init/setup-load-path.el"))
 
 ;; init `setup.el' by @zk-phi for loads of optimization for init startup
 (require 'setup)

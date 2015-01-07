@@ -3,7 +3,7 @@
 ;; safety first
 ;; save all auto saves in a single directory
 (setq make-backup-files nil)
-(defvar autosave-dir (expand-file-name "~/.emacs.d/cache/autosave-dir/"))
+(defvar autosave-dir (expand-file-name (emacs-d "cache/autosave-dir/")))
 (setq auto-save-list-file-prefix "~/.emacs-saves/cache/auto-save-list/.saves-")
 (setq auto-save-list-file-prefix autosave-dir)
 (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
@@ -19,12 +19,12 @@
   (setq history-length         1000)
   (setq search-ring-max        1000)
   (setq regexp-search-ring-max 1000)
-  (setq savehist-file "~/.emacs.d/cache/history")
+  (setq savehist-file (emacs-d "cache/history"))
   (setq savehist-additional-variables '(search-ring
                                         regexp-search-ring
                                         kill-ring
                                         compile-command))
-  (setq save-place-file "~/.emacs.d/cache/saveplace")
+  (setq save-place-file (emacs-d "cache/saveplace"))
   (setq-default save-place t))
 
 ;; more useful kill-ring
@@ -319,7 +319,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (setq ido-default-buffer-method 'selected-window)
   (setq ido-enable-flex-matching t) ; fuzzy matching
   (setq ido-use-virtual-buffers t)
-  (setq ido-save-directory-list-file "~/.emacs.d/cache/ido.last")
+  (setq ido-save-directory-list-file (emacs-d "cache/ido.last"))
   (setq ido-case-fold t) ; case insensitive
   (setq ido-enable-last-directory-history t)
   (setq ido-default-buffer-method 'selected-window) ; ignore buffers in different frames
@@ -363,7 +363,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 ;; recent files
 (setup "recentf"
   (setq recentf-max-saved-items 1000)
-  (setq recentf-save-file "~/.emacs.d/cache/recentf")
+  (setq recentf-save-file (emacs-d "cache/recentf"))
   (setq recentf-exclude (append recentf-exclude
                                 '("\.emacs\.d/cache"
                                   "\.emacs\.d/elpa")))
@@ -589,12 +589,12 @@ See the variable `align-rules-list' for more details.")
 ;; tramp
 (setup-after "tramp"
   (setq tramp-default-method "ssh")
-  (setq tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+  (setq tramp-persistency-file-name (emacs-d "cache/tramp"))
   ;; cookies
-  (setq url-cookie-file "~/.emacs.d/cache/url/cookies"))
+  (setq url-cookie-file (emacs-d "cache/url/cookies")))
 
 ;; normal bookmarks
-(setq bookmark-default-file "~/.emacs.d/cache/bookmarks")
+(setq bookmark-default-file (emacs-d "cache/bookmarks"))
 
 ;; undo window changes
 (setup "winner"

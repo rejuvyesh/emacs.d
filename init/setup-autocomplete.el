@@ -3,7 +3,7 @@
 ;; snippets
 (setup "yasnippet"
   ;; set snippet directory
-  (setq yas-snippet-dirs "~/.emacs.d/snippets")
+  (setq yas-snippet-dirs (emacs-d "snippets"))
 
   (defun my-yas/goto-end-of-active-field ()
     (interactive)
@@ -59,8 +59,8 @@
     (setq ac-sources '(ac-source-abbrev
                        ac-source-dictionary
                        ac-source-words-in-same-mode-buffers))
-    (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-    (setq ac-comphist-file "~/.emacs.d/cache/ac-comphist.dat")
+    (add-to-list 'ac-dictionary-directories (emacs-d "ac-dict"))
+    (setq ac-comphist-file (emacs-d "cache/ac-comphist.dat"))
     ;; auto start completion
     (setq ac-auto-start 1)
     (setq ac-use-menu-map t  
@@ -102,7 +102,7 @@
 
 ;; auto correction via abbreviation file
 (setq abbrev-file-name
-      "~/.emacs.d/abbrev_defs")
+      (emacs-d "abbrev_defs"))
 (setq save-abbrevs t)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))

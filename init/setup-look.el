@@ -36,7 +36,7 @@
 (add-hook 'after-init-hook 'run-after-make-frame-hooks-current-frame)
 
 ;; color themes
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(add-to-list 'custom-theme-load-path (emacs-d "themes/"))
 
 (defvar bright-theme 'leuven  "Bright theme to use")
 (defvar dark-theme   'molokai "Dark theme to use")

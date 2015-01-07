@@ -1,7 +1,7 @@
 ;;(auto-insert-mode)
 (setup "autoinsert")
 (add-hook 'find-file-hooks 'auto-insert)
-(setq auto-insert-directory "~/.emacs.d/templates/")
+(setq auto-insert-directory (emacs-d "templates/"))
 (setq auto-insert 'other)
 (setq auto-insert-query nil)
 (setq auto-insert-alist '(("\\.sh$" . ["sh" rejuvyesh/auto-update-defaults])

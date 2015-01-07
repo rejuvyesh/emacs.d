@@ -120,7 +120,7 @@
 (setup-lazy '(notes-mode) "notes-mode")
 
 ;; org-mode
-(setq load-path (cons "~/.emacs.d/local/org-mode/lisp" load-path))
+(setq load-path (cons (emacs-d "local/org-mode/lisp" load-path)))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
 ;; loaded so that we can diminish it later
