@@ -352,9 +352,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
         helm-input-idle-delay 0.1
         helm-idle-delay 0.1
         helm-follow-mode-persistent t
-        helm-split-window-default-side 'right )
-  (setq helm-buffers-fuzzy-matching t
-        helm-recentf-fuzzy-match    t)
+        helm-split-window-default-side 'right)
+
   (defadvice helm-default-display-buffer
     (before helm-fullscreen-split activate)
     (delete-other-windows))
