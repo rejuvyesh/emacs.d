@@ -3,7 +3,7 @@
 # key: propg
 # --
 def _get_${1:foo}(self):
-    return self._$1
+  return self._$1
 
 $1 = property(_get_$1)
 

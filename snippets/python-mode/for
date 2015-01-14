@@ -2,4 +2,4 @@
 # key: for
 # --
 for ${var} in ${collection}:
-    $0
+  $0

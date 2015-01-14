@@ -3,10 +3,10 @@
 # key: propsg
 # --
 def _set_${1:foo}(self, value):
-    self._$1 = value
+  self._$1 = value
 
 def _get_$1(self):
-    return self._$1
+  return self._$1
 
 $1 = property(_get_$1, _set_$1)
 

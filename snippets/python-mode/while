@@ -2,4 +2,4 @@
 # key: while
 # --
 while ${condition}:
-    $0
+  $0
