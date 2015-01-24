@@ -424,10 +424,13 @@
 
   ;; open by extension
   (setq dired-open-extensions '(
-                                ("pdf" . "zathura")
+                                ("pdf"  . "zathura")
                                 ("djvu" . "zathura")
-                                ("mkv" . "mpv")
+                                ("mkv"  . "rmpv")
+                                ("mp4"  . "rmpv")
                                 ))
+  ;; sort number naturally
+  (setq dired-listing-switches "--group-directories-first -v -al")
   )
 
 ;; mutt
