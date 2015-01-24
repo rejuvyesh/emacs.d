@@ -478,7 +478,20 @@
 (add-to-list 'auto-mode-alist '("\\.pentadactylrc" . dactyl-mode))
 ;; magit
 (setup-lazy '(magit-status) "magit"
-  (set-default 'magit-unstage-all-confirm nil))
+  (set-default 'magit-unstage-all-confirm nil)
+  (setq magit-log-cutoff-length 1000)
+
+  ;; full screen magit-status
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+  (defun magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer"
+    (interactive)
+    (kill-buffer)
+    (jump-to-register :magit-fullscreen))
+  )
 
 (global-set-key (kbd "C-x g") 'magit-status)
 
