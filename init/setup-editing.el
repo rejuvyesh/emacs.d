@@ -766,6 +766,8 @@ See the variable `align-rules-list' for more details.")
   (define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
   (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)))
 
+(setup-lazy '(toggle-quotes) "toggle-quotes")
+(global-set-key (kbd "C-'") 'toggle-quotes)
 ;; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
 (setq shift-select-mode nil)
 
