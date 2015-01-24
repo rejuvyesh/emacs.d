@@ -233,15 +233,9 @@
 (setup-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
 
-  ;; better colors for warnings
-  (defface erm-syn-warnline
-    '((t (:underline "orange")))
-    "Face used for marking warning lines."
-    :group 'enh-ruby)
-  (defface erm-syn-errline
-    '((t (:underline "pink")))
-    "Face used for marking error lines."
-    :group 'enh-ruby)
+  ;; we use flycheck to cover errors
+  (setq enh-ruby-check-syntax nil)
+
   (setq ruby-indent-level tab-width)
   (setq enh-ruby-bounce-deep-indent t)
   (setq enh-ruby-deep-indent-paren nil))
