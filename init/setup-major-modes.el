@@ -1,6 +1,7 @@
 ;; major modes
 
 ;; default modes
+(setup "org-mode")
 (setq initial-major-mode 'org-mode)
 (setup-after "org-mode"
   (setq-default major-mode 'org-mode))
@@ -110,7 +111,6 @@
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.page$" . markdown-mode))
 
 ;; yaml
 (setup-lazy '(yaml-mode) "yaml-mode")
@@ -123,6 +123,8 @@
 ;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.page$" . org-mode))
+
 ;; loaded so that we can diminish it later
 (setup-lazy '(org-mode) "org-indent"
   ;; proper indentation / folding
@@ -139,28 +141,12 @@
 ;; make clock history persistent
 (setq org-clock-persist 'history)
 
-;; notes file
-(setq org-default-notes-file "~/Documents/spoiler/notes.org")
-(define-key global-map "\C-cC" 'org-capture)
-(setq org-capture-templates
-      '(("l" "Link" plain (file "~/Documents/spoiler/links.org")
-         "- %?\n %x\n")
-        ("n" "note" entry (file "~/Documents/spoiler/notes.org")
-         "* %? %^g\n%U\n%a\n")
-        ("q" "quote" entry (file "~/Documents/spoiler/quotes.org")
-         "* %? \n%x\n%a\n")))
 ;; Todo states
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 ;; priorities
 (setq org-default-priority 67) ;C
-;; spoiler files
-(defadvice org-todo-list (before org-todo-list-reload activate compile)
-  "Scan for org files whenever todo list is loaded."
-                                        ; 'find' is faster and has better control than lisp
-  (setq org-agenda-files (mapcar 'abbreviate-file-name (split-string
-                                                        (shell-command-to-string "find ~/Documents/spoiler -type f -name \"*.org\" | sort")
-                                                        "\n"))))
+
 ;; code block
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -181,12 +167,13 @@
 (setq org-src-fontify-natively t)
 (setq org-confirm-babel-evaluate nil)
 
-(org-defkey org-mode-map "\C-c\C-t" (lambda () (interactive) (org-todo "TODO")))
-(org-defkey org-mode-map "\C-c\C-w" (lambda () (interactive) (org-todo "WAITING")))
-(org-defkey org-mode-map "\C-c\C-d" (lambda () (interactive) (org-todo "DONE")))
+(org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
+(org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
+(org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
 ;; shortcut for C-u C-c C-l
 (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
-(org-defkey org-mode-map "\C-cl" 'org-store-link)
+(org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
+
 
 ;; some templates
 (setcdr (assoc "c" org-structure-template-alist)
