@@ -239,16 +239,19 @@
   ;; we use flycheck to cover errors
   (setq enh-ruby-check-syntax nil)
 
+  ;; better indenting
   (setq ruby-indent-level tab-width)
   (setq enh-ruby-bounce-deep-indent t)
-  (setq enh-ruby-deep-indent-paren nil))
+  (setq enh-ruby-deep-indent-paren nil)
+
+  (add-hook 'enh-ruby-mode-hook 'whitespace-mode))
 
 ;; Rake files are Ruby, too
-(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("\\.rake$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Rakefile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Gemfile$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Capfile$" . enh-ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby"        . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("\\.rake$"    . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Rakefile$"   . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Gemfile$"    . enh-ruby-mode))
+(add-to-list 'auto-mode-alist        '("Capfile$"    . enh-ruby-mode))
 (add-to-list 'auto-mode-alist        '("\\.builder$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist        '("\\.gemspec$" . enh-ruby-mode))
 
