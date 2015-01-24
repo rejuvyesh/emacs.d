@@ -564,8 +564,10 @@ See the variable `align-rules-list' for more details.")
       ad-do-it))
 )
 ;; align current region
-(global-set-key (kbd "C-c =")   'align-region-or-current)
-(global-set-key (kbd "C-c C-=") 'align-repeat)
+(global-set-key (kbd "C-= a")   'align-region-or-current)
+(global-set-key (kbd "C-= SPC") 'align-repeat)
+(global-set-key (kbd "C-= r")   'align-repeat)
+(global-set-key (kbd "C-= w")   'align-whitespace)
 
 ;; diff- mode (better colors)
 (setup-lazy '(diff-mode) "diff-mode-")
