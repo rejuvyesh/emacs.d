@@ -511,6 +511,6 @@
 
   (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace))
 
-
+(setup-lazy '(conf-mode) "conf-mode")
 
 (provide 'setup-major-modes)
