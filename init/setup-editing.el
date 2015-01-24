@@ -833,14 +833,6 @@ See the variable `align-rules-list' for more details.")
 
 (global-set-key (kbd "C-c d") 'insert-date)
 
-;; add current buffer text to `jrnl'
-(defun send-buffer-to-jrnl ()
-  "Sent current buffer content to jrnl"
-  (interactive)
-  (call-process-region (point-min) (point-max) "jrnl")
-  (message "Saved buffer contents to default journal"))
-(global-set-key (kbd "C-c j") 'send-buffer-to-jrnl)
-
 ;; ＿人人人人人人人人＿
 ;; ＞  sudden-death  ＜
 ;; ￣ＹＹＹＹＹＹＹＹ￣
