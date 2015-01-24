@@ -174,6 +174,9 @@
 (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
 (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
 
+(setup "org-journal")
+(setq org-journal-dir "~/Documents/spoiler/logs/")
+(setq org-journal-file-format "%Y-%m-%d")
 
 ;; some templates
 (setcdr (assoc "c" org-structure-template-alist)
