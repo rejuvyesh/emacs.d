@@ -293,7 +293,7 @@
     "C-c C-'" 'web-mode-element-close)
 
   (setup-after "auto-complete"
-    (setup "auto-complete-config"
+    (setup-after "auto-complete-config"
       (setq web-mode-ac-sources-alist
             '(("javascript" . (ac-source-words-in-same-mode-buffers))
               ("php" . (ac-source-words-in-same-mode-buffers))
