@@ -345,7 +345,8 @@
             (lambda ()
               (auto-complete-mode 1)
               (whitespace-mode)
-              )))
+              ))
+  (setq matlab-shell-command-switches (quote ("-nodesktop -nosplash"))))
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
 
 ;; crontab
