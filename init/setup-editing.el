@@ -201,9 +201,11 @@
   (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
 
 ;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
-(setup-after "multiple-cursors-core"
+(setup-after "multiple-cursors"
   (define-key mc/keymap (kbd "<return>") nil)
-  (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode))
+  (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
+  ;; Because regex
+  (defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp))
 
 (setup-lazy '(phi-search phi-search-backward) "phi-search")
 (global-set-key (kbd "C-c C-s") 'phi-search)
