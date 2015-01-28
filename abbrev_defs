@@ -1,5 +1,84 @@
-;; common auto correction like abbrevs
-(define-abbrev-table 'global-abbrev-table '(
+;;-*-coding: utf-8;-*-
+(define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'Info-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'ag-mode-abbrev-table '())
+
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'bibtex-mode-abbrev-table '())
+
+(define-abbrev-table 'bookmark-bmenu-mode-abbrev-table '())
+
+(define-abbrev-table 'bookmark-edit-annotation-mode-abbrev-table '())
+
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'calendar-mode-abbrev-table '())
+
+(define-abbrev-table 'change-log-mode-abbrev-table '())
+
+(define-abbrev-table 'comint-mode-abbrev-table '())
+
+(define-abbrev-table 'completion-list-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-colon-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-javaprop-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-ppd-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-space-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-unix-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-windows-mode-abbrev-table '())
+
+(define-abbrev-table 'conf-xdefaults-mode-abbrev-table '())
+
+(define-abbrev-table 'csv-mode-abbrev-table '())
+
+(define-abbrev-table 'dactyl-mode-abbrev-table '())
+
+(define-abbrev-table 'diff-mode-abbrev-table '())
+
+(define-abbrev-table 'doctex-mode-abbrev-table '())
+
+(define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
+
+(define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
+
+(define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'enh-ruby-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-info-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-list-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
+
+(define-abbrev-table 'free-keys-mode-abbrev-table '())
+
+(define-abbrev-table 'fundamental-mode-abbrev-table '())
+
+(define-abbrev-table 'gfm-mode-abbrev-table '())
+
+(define-abbrev-table 'git-rebase-mode-abbrev-table '())
+
+(define-abbrev-table 'global-abbrev-table
+  '(
     ("10ddate" "" (lambda nil (insert (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time (* 10 86400)))))) 4)
     ("10dfull" "" (lambda nil (insert (format-time-string "%A, %B %d, %Y" (time-add (current-time) (seconds-to-time (* 10 86400)))))) 4)
     ("10dstamp" "" (lambda nil (insert (format-time-string "%Y%m%d" (time-add (current-time) (seconds-to-time (* 10 86400)))))) 4)
@@ -68,7 +147,6 @@
     ("9ddate" "" (lambda nil (insert (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time (* 9 86400)))))) 4)
     ("9dfull" "" (lambda nil (insert (format-time-string "%A, %B %d, %Y" (time-add (current-time) (seconds-to-time (* 9 86400)))))) 5)
     ("9dstamp" "" (lambda nil (insert (format-time-string "%Y%m%d" (time-add (current-time) (seconds-to-time (* 9 86400)))))) 4)
-    ("dstamp" "" (lambda nil (insert (format-time-string "%Y%m%d" (time-add (current-time))))) 4)
     ("9dtdate" "" (lambda nil (insert (format-time-string "%Y-%m-%d %H:%M" (time-add (current-time) (seconds-to-time (* 9 86400)))))) 4)
     ("9dtstamp" "" (lambda nil (insert (format-time-string "%Y%m%d%H%M" (time-add (current-time) (seconds-to-time (* 9 86400)))))) 4)
     ("abbout" "about" nil 0)
@@ -207,6 +285,7 @@
     ("blase" "blase" nil 0)
     ("boxs" "boxes" nil 0)
     ("brodcast" "broadcast" nil 0)
+    ("btw" "by the way" nil 1)
     ("butthe" "but the" nil 0)
     ("bve" "be" nil 0)
     ("cafe" "cafe" nil 0)
@@ -241,7 +320,7 @@
     ("claered" "cleared" nil 0)
     ("claerly" "clearly" nil 0)
     ("cliant" "client" nil 0)
-    ("cliche" "cliche" nil 0)
+    ("cliche" "cliche" nil 2)
     ("cna" "can" nil 0)
     ("colection" "collection" nil 0)
     ("comanies" "companies" nil 0)
@@ -382,10 +461,10 @@
     ("dollers" "dollars" nil 0)
     ("donig" "doing" nil 0)
     ("dont" "don't" nil 0)
-    ("dont" "don't" nil 0)
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
     ("drnik" "drink" nil 0)
+    ("dstamp" "" (lambda nil (insert (format-time-string "%Y%m%d" (time-add (current-time))))) 4)
     ("eclair" "eclair" nil 0)
     ("efel" "feel" nil 0)
     ("effecient" "efficient" nil 0)
@@ -510,8 +589,8 @@
     ("htink" "think" nil 0)
     ("htis" "this" nil 0)
     ("htp:" "http:" nil 0)
-    ("http:\\\\" "http:// class="string">" nil 0)
-    ("httpL" "http: class="string">" nil 0)
+    ("http:\\\\" "http:// class=" string 0)
+    ("httpL" "http: class=" string 0)
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
@@ -565,6 +644,7 @@
     ("ivestigative" "investigative" nil 0)
     ("iwll" "will" nil 0)
     ("iwth" "with" nil 0)
+    ("jkg" "Jayesh Kumar Gupta" nil 0)
     ("jsut" "just" nil 0)
     ("jugment" "judgment" nil 0)
     ("knowldge" "knowledge" nil 0)
@@ -577,6 +657,8 @@
     ("konws" "knows" nil 0)
     ("labratory" "laboratory" nil 0)
     ("languange" "language" nil 0)
+    ("lar1" "⟵" nil 1)
+    ("lar2" "⇐" nil 0)
     ("lastyear" "last year" nil 0)
     ("learnign" "learning" nil 0)
     ("lenght" "length" nil 0)
@@ -618,6 +700,8 @@
     ("mroe" "more" nil 0)
     ("mysefl" "myself" nil 0)
     ("myu" "my" nil 0)
+    ("myurl" "http://rejuvyesh.com/" nil 0)
+    ("nad" "and" nil 1)
     ("naive" "naive" nil 0)
     ("necassarily" "necessarily" nil 0)
     ("necassary" "necessary" nil 0)
@@ -687,6 +771,7 @@
     ("peopel" "people" nil 0)
     ("percentof" "percent of" nil 0)
     ("percentto" "percent to" nil 0)
+    ("perecentage" "percentage" nil 1)
     ("performence" "performance" nil 0)
     ("perhasp" "perhaps" nil 0)
     ("perhpas" "perhaps" nil 0)
@@ -731,6 +816,8 @@
     ("quetion" "question" nil 0)
     ("quetions" "questions" nil 0)
     ("raidus" "RADIUS" nil 0)
+    ("rar1" "⟶" nil 0)
+    ("rar2" "⇒" nil 0)
     ("realyl" "really" nil 0)
     ("reccomend" "recommend" nil 0)
     ("reccommend" "recommend" nil 0)
@@ -866,7 +953,7 @@
     ("talkign" "talking" nil 0)
     ("tath" "that" nil 0)
     ("tecnical" "technical" nil 0)
-    ("teh" "the" nil 0)
+    ("teh" "the" nil 1)
     ("tehy" "they" nil 0)
     ("terminiated" "terminated" nil 0)
     ("termoil" "turmoil" nil 0)
@@ -887,7 +974,6 @@
     ("theyve" "they've" nil 0)
     ("thgat" "that" nil 0)
     ("thge" "the" nil 0)
-    ("thier" "their" nil 0)
     ("thier" "their" nil 0)
     ("thigsn" "things" nil 0)
     ("thisyear" "this year" nil 0)
@@ -928,7 +1014,6 @@
     ("udnerstand" "understand" nil 0)
     ("understnad" "understand" nil 0)
     ("undert he" "under the" nil 0)
-    ("unicode" "Unicode" nil 0)
     ("unicode" "Unicode" nil 0)
     ("unitedstates" "United States" nil 0)
     ("unliek" "unlike" nil 0)
@@ -996,10 +1081,155 @@
     ("ytou" "you" nil 0)
     ("yuo" "you" nil 0)
     ("yuor" "your" nil 0)
-    ("lar1" "⟵")
-    ("lar2" "⇐")
-    ("rar1" "⟶")
-    ("rar2" "⇒")
-    ("myurl" "http://rejuvyesh.com/")
-    ("jkg" "Jayesh Kumar Gupta")
-    ))
+   ))
+
+(define-abbrev-table 'go-mode-abbrev-table '())
+
+(define-abbrev-table 'grep-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-cabal-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-compilation-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-debug-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-error-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-interactive-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-mode-abbrev-table '())
+
+(define-abbrev-table 'haskell-presentation-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-grep-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-moccur-mode-abbrev-table '())
+
+(define-abbrev-table 'help-mode-abbrev-table '())
+
+(define-abbrev-table 'idl-mode-abbrev-table '())
+
+(define-abbrev-table 'image-dired-display-image-mode-abbrev-table '())
+
+(define-abbrev-table 'image-dired-thumbnail-mode-abbrev-table '())
+
+(define-abbrev-table 'inferior-haskell-mode-abbrev-table '())
+
+(define-abbrev-table 'inferior-python-mode-abbrev-table '())
+
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'js-mode-abbrev-table '())
+
+(define-abbrev-table 'json-mode-abbrev-table '())
+
+(define-abbrev-table 'latex-mode-abbrev-table '())
+
+(define-abbrev-table 'lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'literate-haskell-mode-abbrev-table '())
+
+(define-abbrev-table 'log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'lua-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-branch-manager-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-cherry-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-commit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-diff-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-process-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-status-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-wazzup-mode-abbrev-table '())
+
+(define-abbrev-table 'markdown-mode-abbrev-table '())
+
+(define-abbrev-table 'message-mode-abbrev-table '())
+
+(define-abbrev-table 'messages-buffer-mode-abbrev-table '())
+
+(define-abbrev-table 'nix-mode-abbrev-table '())
+
+(define-abbrev-table 'notes-mode-abbrev-table '())
+
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'occur-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'occur-mode-abbrev-table '())
+
+(define-abbrev-table 'org-journal-mode-abbrev-table '())
+
+(define-abbrev-table 'org-mode-abbrev-table '())
+
+(define-abbrev-table 'outline-mode-abbrev-table '())
+
+(define-abbrev-table 'package-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'paradox-commit-list-mode-abbrev-table '())
+
+(define-abbrev-table 'paradox-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'process-menu-mode-abbrev-table '())
+
+(define-abbrev-table 'prog-mode-abbrev-table '())
+
+(define-abbrev-table 'python-mode-abbrev-table '())
+
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+
+(define-abbrev-table 'ruby-mode-abbrev-table '())
+
+(define-abbrev-table 'scss-mode-abbrev-table '())
+
+(define-abbrev-table 'select-tags-table-mode-abbrev-table '())
+
+(define-abbrev-table 'sh-mode-abbrev-table '())
+
+(define-abbrev-table 'shell-mode-abbrev-table '())
+
+(define-abbrev-table 'snippet-mode-abbrev-table '())
+
+(define-abbrev-table 'special-mode-abbrev-table '())
+
+(define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'text-mode-abbrev-table '())
+
+(define-abbrev-table 'url-cookie-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-bzr-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'web-mode-abbrev-table '())
+
+(define-abbrev-table 'yaml-mode-abbrev-table '())
+
