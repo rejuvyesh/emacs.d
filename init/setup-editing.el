@@ -324,7 +324,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (setq ido-case-fold t) ; case insensitive
   (setq ido-enable-last-directory-history t)
   (setq ido-default-buffer-method 'selected-window) ; ignore buffers in different frames
-  (setq ido-max-work-directory-list 30))
+  (setq ido-max-work-directory-list 30)
+  (setq ido-enable-tramp-completion nil))
 (setup-after "ido"
   (setup "ido-ubiquitous"
     (setq ido-everywhere t)))
