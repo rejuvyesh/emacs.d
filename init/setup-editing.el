@@ -396,7 +396,6 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (defun use-tabs () (setq indent-tabs-mode t))
 ;; makefile has its issues
 (add-hook 'makefile-mode-hook 'usetabs)
-(add-hook 'python-mode-hook 'usetabs)
 ;; insert literal tab
 (global-set-key (kbd "<C-tab>") (lambda () (interactive)
                                   (insert "\t")))
