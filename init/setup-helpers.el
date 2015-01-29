@@ -11,6 +11,9 @@
 (setup "rx")
 (setup "ample-regexps")
 
+;; replace obsolete flet
+(setup "noflet")
+
 ;; some generic aliases that make elisp less painful
 (defalias 'first 'cl-first)
 (defalias 'second	'cl-second)
