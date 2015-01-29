@@ -167,7 +167,7 @@
 (setq org-src-fontify-natively t)
 (setq org-confirm-babel-evaluate nil)
 
-(org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
+(org-defkey org-mode-map (kbd "C-c t") (lambda () (interactive) (org-todo "TODO")))
 (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
 (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
 ;; shortcut for C-u C-c C-l
@@ -177,6 +177,9 @@
 (setup "org-journal")
 (setq org-journal-dir "~/Documents/spoiler/logs/")
 (setq org-journal-file-format "%Y-%m-%d")
+(global-set-key (kbd "C-c j") 'org-journal-new-entry)
+
+(setup "org-download")
 
 ;; some templates
 (setcdr (assoc "c" org-structure-template-alist)
