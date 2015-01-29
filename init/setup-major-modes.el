@@ -206,7 +206,6 @@
   (setq python-indent-offset 2)
   (add-hook 'python-mode-hook (lambda () (setq tab-width 2)))
   (unbreak-stupid-map python-mode-map)
-  (add-hook 'python-mode-hook 'jedi:setup)
   (setq
    python-shell-interpreter "ipython"
    python-shell-interpreter-args ""
@@ -487,6 +486,7 @@
 
 (setup-lazy '(dactyl-mode) "dactyl-mode")
 (add-to-list 'auto-mode-alist '("\\.pentadactylrc" . dactyl-mode))
+
 ;; magit
 (setup-lazy '(magit-status) "magit"
   (set-default 'magit-unstage-all-confirm nil)
