@@ -1,7 +1,7 @@
 ;; major modes
 
 ;; default modes
-(setup "org-mode")
+(setup "org")
 (setq initial-major-mode 'org-mode)
 (setup-after "org-mode"
   (setq-default major-mode 'org-mode))
