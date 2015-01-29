@@ -49,6 +49,13 @@
 (setup-lazy '(ace-link) "ace-link")
 (setup-lazy '(ace-window) "ace-window")
 
+(setup-after "ace-jump-mode"
+  ;; use saner keys, and order
+  (setq ace-jump-mode-move-keys
+        (loop for c in (split-string "enaritoschwklgvfudzbpmjyxq" "" t)
+              collect (string-to-char c))))
+
+
 (global-set-key (kbd "M-g M-g") 'goto-line)
 (global-set-key (kbd "M-g l")   'goto-line)
 (global-set-key (kbd "M-g b")   'ace-jump-buffer)
@@ -401,16 +408,13 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
                                   (insert "\t")))
 
 ;; automatically indent on return, except in a few modes that have similar stuff by default
-(electric-indent-mode 1)
-;; TODO should be a generic macro or something
-(defun no-electric-indent-yaml ()
-  (electric-indent-mode -1)
-  (define-key yaml-mode-map [(return)] 'newline-and-indent))
-(add-hook 'yaml-mode-hook 'no-electric-indent-yaml)
-(defun no-electric-indent-python ()
-  (electric-indent-mode -1)
-  (define-key python-mode-map [(return)] 'newline-and-indent))
-(add-hook 'python-mode-hook 'no-electric-indent-python)
+;; automatically indent on return
+(setup "electric"
+  (electric-indent-mode 1)
+  (defadvice electric-indent-post-self-insert-function (around keep-trailing-whitespace activate)
+    (noflet ((delete-horizontal-space (&rest args) t))
+      ad-do-it))
+  )
 
 ;; also indent when yanked
 (defun yank-and-indent ()
