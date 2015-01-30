@@ -14,6 +14,7 @@
         c-electric-pound
         c-electric-semi&comma
         c-electric-slash
+        comment-region
         copy-line
         copy-with-append
         delimit-columns-current
@@ -27,6 +28,8 @@
         enh-ruby-electric-brace
         enh-ruby-find-error
         er/mark-defun
+        ess-indent-or-complete
+        ess-smart-S-assign
         eval-defun
         fold-dwim-toggle
         generalized-shell-command
@@ -61,9 +64,12 @@
         notes-indent-line
         org-beginning-of-line
         org-cycle
+        org-edit-src-save
+        org-end-of-line
         org-force-cycle-archived
         org-force-self-insert
         org-indent-line
+        org-kill-line
         org-return-indent
         org-self-insert-command
         orgtbl-ctrl-c-ctrl-c
@@ -104,5 +110,7 @@
         markdown-exdent-or-delete
         org-open-at-mouse
         phi-search
+        phi-search-backward
         save-buffers-kill-terminal
+        sp-add-to-next-sexp
         ))
