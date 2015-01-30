@@ -12,4 +12,6 @@
 ;; manual paths
 (add-to-list 'load-path (emacs-d "themes")) ; themes
 
-(provide 'load-path)
+(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+
+(provide 'setup-load-path)

@@ -44,5 +44,7 @@
 ;; use automatic file headers
 (setup "setup-auto-insert")
 
+(setup "setup-mail")
+
 ;; others
 (setup "setup-misc")
