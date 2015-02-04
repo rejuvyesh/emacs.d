@@ -7,4 +7,7 @@
 ;; make zsh aliases work
 (setq shell-command-switch "-lc")
 
+;; don't keep asking me about utf8
+(setq safe-local-variable-values '((encoding . utf-8)))
+
 (provide 'setup-misc)
