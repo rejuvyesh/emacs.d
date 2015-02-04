@@ -96,9 +96,31 @@
       ;; (setup-expecting (symbol-name (pop mode))
       ;; (add-to-list 'ac-modes (pop mode))))
       (add-to-list 'ac-modes mode))))
+
 (setup-after "auto-complete-config"
   (setup-after "go-mode"
-    (setup "go-autocomplete")))
+    (setup "go-autocomplete"))
+  (setup "ac-math"
+    (defvar ac-source-math-latex-everywhere
+      '((candidates . ac-math-symbols-latex)
+        (prefix . "\\\\\\(.*\\)")
+        (action . ac-math-action-latex)
+        (symbol . "l"))))
+  (setup-after "ac-math"
+    (defun ac-latex-mode-setup ()         ; add ac-sources to default ac-sources
+      (setq ac-sources
+            (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+                    ac-sources)))
+    (add-hook 'latex-mode-hook 'ac-latex-mode-setup)
+    (add-hook 'org-mode-hook
+              (lambda()
+                (add-to-list 'ac-sources 'ac-source-math-unicode)
+                (add-to-list 'ac-sources 'ac-source-math-latex-everywhere)))
+    (add-hook 'markdown-mode-hook
+              (lambda()
+                (add-to-list 'ac-sources 'ac-source-math-latex-everywhere)))
+    )
+  )
 
 ;; auto correction via abbreviation file
 (setq abbrev-file-name
