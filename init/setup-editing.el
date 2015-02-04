@@ -344,18 +344,11 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
     "C-w" 'subword-backward-kill
     "M-w" 'helm-yank-text-at-point)
   )
-(setup-after "helm"
+(setup-after "helm-config"
   (setup-lazy '(helm-flycheck) "helm-flycheck")
   (setup-keybinds flycheck-mode-map
     "C-x c e" 'helm-flycheck)
-  (global-set-key (kbd "C-x c t")   'helm-cmd-t)
-  (global-set-key (kbd "C-x c g")   'helm-do-grep)
-  (global-set-key (kbd "C-x c o")   'helm-occur)
-  (global-set-key (kbd "M-x")       'helm-M-x)
-  (global-set-key (kbd "M-y")       'helm-show-kill-ring)
-  (global-set-key (kbd "C-x c C-o") 'helm-swoop)
-  (global-set-key (kbd "C-x C-f")   'helm-find-files)
-  (global-set-key (kbd "C-x b")     'helm-mini)
+
   (setq enable-recursive-minibuffers t)
   (setq helm-ff-lynx-style-map nil
         helm-input-idle-delay 0.1
@@ -366,6 +359,23 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (defadvice helm-default-display-buffer
     (before helm-fullscreen-split activate)
     (delete-other-windows))
+  )
+
+(setup-expecting "helm"
+  ;; Too close to exit
+  (global-unset-key (kbd "C-x c"))
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-set-key (kbd "C-c h t")   'helm-cmd-t)
+  (global-set-key (kbd "C-c h g")   'helm-do-grep)
+  (global-set-key (kbd "C-c h o")   'helm-occur)
+  (global-set-key (kbd "M-x")       'helm-M-x)
+  (global-set-key (kbd "M-y")       'helm-show-kill-ring)
+  (global-set-key (kbd "C-c h C-o") 'helm-swoop)
+  (global-set-key (kbd "C-x C-f")   'helm-find-files)
+  (global-set-key (kbd "C-x b")     'helm-mini)
+  (setup-after "winner"
+    (add-to-list 'winner-boring-buffers "*helm M-x*")
+    (add-to-list 'winner-boring-buffers "*helm mini*"))
   )
 
 ;; recent files
