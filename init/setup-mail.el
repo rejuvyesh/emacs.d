@@ -49,7 +49,7 @@
 
 (defalias 'mu 'mu4e)
 
-(setup "smtpmail")
+(setup-after "mu4e" "smtpmail")
 ;; sending mail
 (setq message-send-mail-function 'message-send-mail-with-sendmail
       sendmail-program "/usr/bin/msmtp"
