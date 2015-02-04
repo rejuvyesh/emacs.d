@@ -3,6 +3,10 @@
 
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
+(define-abbrev-table 'TeX-error-overview-mode-abbrev-table '())
+
+(define-abbrev-table 'TeX-output-mode-abbrev-table '())
+
 (define-abbrev-table 'ag-mode-abbrev-table '())
 
 (define-abbrev-table 'awk-mode-abbrev-table
@@ -1107,6 +1111,8 @@
 
 (define-abbrev-table 'help-mode-abbrev-table '())
 
+(define-abbrev-table 'html-mode-abbrev-table '())
+
 (define-abbrev-table 'idl-mode-abbrev-table '())
 
 (define-abbrev-table 'image-dired-display-image-mode-abbrev-table '())
@@ -1175,6 +1181,8 @@
 
 (define-abbrev-table 'occur-mode-abbrev-table '())
 
+(define-abbrev-table 'org-export-stack-mode-abbrev-table '())
+
 (define-abbrev-table 'org-journal-mode-abbrev-table '())
 
 (define-abbrev-table 'org-mode-abbrev-table '())
@@ -1191,6 +1199,8 @@
   '(
    ))
 
+(define-abbrev-table 'plain-tex-mode-abbrev-table '())
+
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
@@ -1205,9 +1215,13 @@
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
+(define-abbrev-table 'sgml-mode-abbrev-table '())
+
 (define-abbrev-table 'sh-mode-abbrev-table '())
 
 (define-abbrev-table 'shell-mode-abbrev-table '())
+
+(define-abbrev-table 'slitex-mode-abbrev-table '())
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 
@@ -1216,6 +1230,10 @@
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'tex-mode-abbrev-table '())
+
+(define-abbrev-table 'tex-shell-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 
