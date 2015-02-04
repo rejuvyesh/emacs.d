@@ -33,7 +33,7 @@
 (setup "setup-editing")
 
 ;; isearch etc
-(setup "setup-isearch")
+(setup "setup-search")
 
 ;; auto-completion, yasnippets etc
 (setup "setup-autocomplete")
