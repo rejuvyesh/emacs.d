@@ -1,0 +1,1 @@
+(define-package "math-symbol-lists" "20150830.1633" "Lists of Unicode math symbols and latex commands" 'nil :stars '(#("13" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/vspinu/math-symbol-lists" :keywords '("unicode" "symbols" "mathematics"))
