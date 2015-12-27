@@ -1,1 +1,0 @@
-(define-package "imenu-anywhere" "20150904.1742" "ido/helm imenu tag selection across all buffers with the same mode" '((cl-lib "0.5")) :stars '("") :url "https://github.com/vitoshka/imenu-anywhere" :keywords '("ido" "imenu" "tags"))

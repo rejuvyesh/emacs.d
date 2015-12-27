@@ -1,0 +1,1 @@
+(define-package "ac-c-headers" "20151021.134" "auto-complete source for C headers" '((auto-complete "1.3.1")) :stars '(#("15" 0 2 (font-lock-face paradox-star-face))) :url "http://hins11.yu-yake.com/")

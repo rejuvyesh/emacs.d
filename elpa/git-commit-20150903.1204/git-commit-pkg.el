@@ -1,1 +1,0 @@
-(define-package "git-commit" "20150903.1204" "Edit Git commit messages" '((emacs "24.4") (dash "2.11.0") (with-editor "20150903")) :stars '(#("1693" 0 4 (font-lock-face paradox-star-face))) :url "https://github.com/magit/magit" :keywords '("git" "tools" "vc"))

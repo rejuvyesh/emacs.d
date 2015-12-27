@@ -1,0 +1,1 @@
+(define-package "omniref" "20151118.21" "Omniref Ruby documentation search engine interface" 'nil :stars '(#("5" 0 1 (font-lock-face paradox-star-face))) :url "http://github.org/dotemacs/omniref.el" :keywords '("docs" "help" "tools"))
