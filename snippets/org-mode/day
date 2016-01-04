@@ -1,0 +1,4 @@
+#name : today's date
+# --
+* `(format-time-string "%Y/%m/%d, %A")`
+$0

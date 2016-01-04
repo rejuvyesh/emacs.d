@@ -1,0 +1,3 @@
+#name: time right now
+# --
+** `(format-time-string "%H:%M")`

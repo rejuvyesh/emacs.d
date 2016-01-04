@@ -1,0 +1,6 @@
+#name : shebang
+# --
+-- Copyright rejuvyesh <mail@rejuvyesh.com>, `(current-year)`
+-- License: GNU GPLv3 (or later) <http://www.gnu.org/copyleft/gpl.html>
+
+$0

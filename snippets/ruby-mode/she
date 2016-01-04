@@ -2,5 +2,7 @@
 # --
 #!/usr/bin/env ruby
 # -*- encoding: utf-8 -*-
-# Copyright rejuvyesh <mail@rejuvyesh.com>, 2014
+# Copyright rejuvyesh <mail@rejuvyesh.com>, `(current-year)`
 # License: GNU GPL 3 <http://www.gnu.org/copyleft/gpl.html>
+
+$0
