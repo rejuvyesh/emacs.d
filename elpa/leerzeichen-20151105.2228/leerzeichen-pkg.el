@@ -1,1 +1,0 @@
-(define-package "leerzeichen" "20151105.2228" "Minor mode to display whitespace characters." 'nil :stars '(#("1" 0 1 (font-lock-face paradox-star-face))) :url "http://github.com/fgeller/leerzeichen.el" :keywords '("whitespace" "characters"))
