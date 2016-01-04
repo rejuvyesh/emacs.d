@@ -1,1 +1,0 @@
-(define-package "latex-extra" "20151116.122" "Adds several useful functionalities to LaTeX-mode." '((auctex "11.86.1") (cl-lib "0.5")) :stars '(#("31" 0 2 (font-lock-face paradox-star-face))) :url "http://github.com/Malabarba/latex-extra" :keywords '("tex"))

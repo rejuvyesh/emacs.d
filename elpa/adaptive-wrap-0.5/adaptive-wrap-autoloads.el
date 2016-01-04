@@ -1,10 +1,10 @@
 ;;; adaptive-wrap-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
+(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads (adaptive-wrap-prefix-mode) "adaptive-wrap" "adaptive-wrap.el"
-;;;;;;  (21421 63952 417049 88000))
+;;;### (autoloads nil "adaptive-wrap" "adaptive-wrap.el" (22154 9245
+;;;;;;  798933 203000))
 ;;; Generated autoloads from adaptive-wrap.el
 
 (autoload 'adaptive-wrap-prefix-mode "adaptive-wrap" "\
@@ -14,16 +14,9 @@ Wrap the buffer text with adaptive filling.
 
 ;;;***
 
-;;;### (autoloads nil nil ("adaptive-wrap-pkg.el") (21421 63952 526889
-;;;;;;  92000))
-
-;;;***
-
-(provide 'adaptive-wrap-autoloads)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; adaptive-wrap-autoloads.el ends here

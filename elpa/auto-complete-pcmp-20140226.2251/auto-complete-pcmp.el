@@ -4,10 +4,10 @@
 
 ;; Author: Hiroaki Otsu <ootsuhiroaki@gmail.com>
 ;; Keywords: completion
+;; Package-Version: 20140226.2251
 ;; URL: https://github.com/aki2o/auto-complete-pcmp
 ;; Package-Requires: ((auto-complete "1.4.0") (log4e "0.2.0") (yaxception "0.1"))
-;; Version: 20140226.2251
-;; X-Original-Version: 0.0.2
+;; Version: 0.0.2
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

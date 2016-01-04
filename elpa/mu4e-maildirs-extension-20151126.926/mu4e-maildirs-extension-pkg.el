@@ -1,1 +1,0 @@
-(define-package "mu4e-maildirs-extension" "20151126.926" "Show mu4e maildirs summary in mu4e-main-view" '((dash "0.0.0")) :stars '(#("37" 0 2 (font-lock-face paradox-star-face))) :url "http://github.com/agpchil/mu4e-maildirs-extension")
