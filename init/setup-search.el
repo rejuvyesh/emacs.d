@@ -1,8 +1,39 @@
-;; use regexp search and selected region (if any) by default
-(defun region-as-string ()
-  (buffer-substring (region-beginning)
-                    (region-end)))
+;; general options
+(setq case-fold-search nil)
 
+(require 'kill-ring-search)
+(global-set-key (kbd "M-C-y") 'kill-ring-search)
+;; cycle in the reverse direction
+(defun yank-pop-reverse ()
+  (interactive)
+  (yank-pop -1))
+(global-set-key (kbd "M-Y") 'yank-pop-reverse)
+
+;; goto and hint-style navigation
+(require 'ace-jump-mode)
+(require 'ace-jump-buffer)
+(setq ace-jump-mode-scope 'window)
+(global-set-key (kbd "M-g M-g") 'goto-line)
+(global-set-key (kbd "M-g l")   'goto-line)
+(global-set-key (kbd "M-g b")   'ace-jump-buffer)
+(global-set-key (kbd "M-g c")   'ace-jump-char-mode)
+(global-set-key (kbd "M-g g")   'ace-jump-mode)
+(global-set-key (kbd "M-g s")   'ace-jump-line-mode)
+
+(require 'phi-search)
+
+(require 'visual-regexp)
+(require 'visual-regexp-steroids)
+(defun vr/query-replace-from-beginning ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (call-interactively 'vr/query-replace)))
+(global-set-key (kbd "C-c r") 'vr/query-replace)
+(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
+
+
+;; use regexp search and selected region (if any) by default
 (defun isearch-forward-use-region ()
   (interactive)
   (when (region-active-p)
@@ -59,8 +90,9 @@
 (add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
-;; search info
-(setup-after "anzu"
-  (global-anzu-mode t))
+;; better grep
+(require 'phi-grep)
+(setq phi-grep-window-height 40)
+(setq phi-grep-make-backup-function nil)
 
-(provide 'setup-isearch)
+(provide 'setup-search)

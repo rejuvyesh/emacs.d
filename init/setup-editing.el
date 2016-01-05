@@ -12,68 +12,24 @@
 
 
 ;; save location inside buffer
-(setup "saveplace"
-  ;; save minibuffer history
-  (savehist-mode 1)
-  (setq history-length         1000)
-  (setq search-ring-max        1000)
-  (setq regexp-search-ring-max 1000)
-  (setq savehist-additional-variables '(search-ring
-                                        regexp-search-ring
-                                        kill-ring
-                                        compile-command))
-  (setq savehist-file   (emacs-d "cache/history"))
-  (setq save-place-file (emacs-d "cache/saveplace"))
-  (setq-default save-place t))
-
+(require 'saveplace)
+;; save minibuffer history
+(savehist-mode 1)
 ;; more useful kill-ring
-(setq kill-ring-max 2000)
-(setup "kill-ring-search"
-  (global-set-key (kbd "M-C-y") 'kill-ring-search))
-;; cycle in the reverse direction
-(defun yank-pop-reverse ()
-  (interactive)
-  (yank-pop -1))
-(global-set-key (kbd "M-Y") 'yank-pop-reverse)
+(setq kill-ring-max          1000)
+(setq history-length         1000)
+(setq search-ring-max        1000)
+(setq regexp-search-ring-max 1000)
+(setq savehist-additional-variables '(search-ring
+                                      regexp-search-ring
+                                      kill-ring
+                                      compile-command))
+(setq savehist-file   (emacs-d "cache/history"))
+(setq save-place-file (emacs-d "cache/saveplace"))
+(setq-default save-place t)
 
-;; don't hard-wrap text, but use nice virtual wrapping
-(setup "adaptive-wrap"
-  (setq-default fill-column 80)
-  (global-visual-line-mode 1)
-  (setq adaptive-wrap-prefix-mode 1)
-  (setq visual-line-fringe-indicators '(nil right-curly-arrow)))
-
-;; goto and hint-style navigation (just like say pentadactyl in firefox)
-(setup-lazy '(ace-jump-mode ace-jump-char-mode ace-jump-line-mode) "ace-jump-mode")
-(setup-lazy '(ace-jump-buffer) "ace-jump-buffer")
-(setup-lazy '(ace-link) "ace-link")
-(setup-lazy '(ace-window) "ace-window")
-
-(setup-after "ace-jump-mode"
-  ;; use saner keys, and order
-  (setq ace-jump-mode-move-keys
-        (loop for c in (split-string "enaritoschwklgvfudzbpmjyxq" "" t)
-              collect (string-to-char c))))
-
-
-(global-set-key (kbd "M-g M-g") 'goto-line)
-(global-set-key (kbd "M-g l")   'goto-line)
-(global-set-key (kbd "M-g b")   'ace-jump-buffer)
-(global-set-key (kbd "M-g c")   'ace-jump-char-mode)
-(global-set-key (kbd "M-g g")   'ace-jump-mode)
-(global-set-key (kbd "M-g s")   'ace-jump-line-mode)
-(global-set-key (kbd "M-g w")   'ace-window)
-
-(setup-after "ace-window"
-  ;; help pages don't have other input, so skip the M-g prefix
-  (setup "info"
-    (define-key Info-mode-map "l" 'ace-link-info))
-  (setup "help-mode"
-    (define-key help-mode-map "l" 'ace-link-help)))
 
 ;; text stuff
-(setup-expecting "org-mode"
-  (setq major-mode 'org-mode))
 (setq undo-limit 1000000)
 (setq sentence-end-double-space nil)
 (column-number-mode t)
@@ -116,143 +72,136 @@
 (global-set-key (kbd "<end>")  'end-of-buffer)
 
 ;; allowed key components
-(setup-lazy '(free-keys) "free-keys"
-  (setq free-keys-keys
-        (concat "abcdefghijklmnopqrstuvwxyz"
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                "1234567890"
-                "!@#$%^&*()-=[]{};'\\:\"|,./<>?`~_+"
-                )))
+(require 'free-keys)
+(setq free-keys-keys
+      (concat "abcdefghijklmnopqrstuvwxyz"
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              "1234567890"
+              "!@#$%^&*()-=[]{};'\\:\"|,./<>?`~_+"
+              ))
 ;; unset unwanted default keys
 (cl-loop for key in `(
-                   (,(kbd "C-x C-z") suspend-frame)
-                   (,(kbd "C-z") suspend-frame)
-                   ([(insert)] overwrite-mode)
-                   ([(insertchar)] overwrite-mode)
-                   (,(kbd "C-]") abort-recursive-edit)
-                   (,(kbd "C-@") set-mark-command)
-                   (,(kbd "<C-down-mouse-1>") mouse-buffer-menu)
-                   (,(kbd "<C-down-mouse-2>") facemenu-menu)
-                   (,(kbd "<S-down-mouse-1>") mouse-appearance-menu)
-                   (,(kbd "C-x C-t") transpose-lines)
-                   (,(kbd "C-x C-q") read-only-mode)
-                   (,(kbd "C-x C-o") delete-blank-lines)
-                   (,(kbd "C-x C-n") set-goal-column)
-                   (,(kbd "C-x TAB") indent-rigidly)
-                   (,(kbd "C-x C-e") eval-last-sexp)
-                   (,(kbd "C-x C-d") list-directory)
-                   (,(kbd "C-x C-@") pop-global-mark)
-                   (,(kbd "C-x SPC") gud-break)
-                   (,(kbd "C-x #") server-edit)
-                   (,(kbd "C-x $") set-selective-display)
-                   (,(kbd "C-x '") expand-abbrev)
-                   (,(kbd "C-x <") scroll-left)
-                   (,(kbd "C-x =") what-cursor-position)
-                   (,(kbd "C-x >") scroll-right)
-                   (,(kbd "C-x [") backward-page)
-                   (,(kbd "C-x ]") forward-page)
-                   (,(kbd "C-x ^") enlarge-window)
-                   (,(kbd "C-x `") next-error)
-                   (,(kbd "C-x l") count-lines-page)
-                   (,(kbd "C-x {") shrink-window-horizontally)
-                   (,(kbd "C-x }") enlarge-window-horizontally)
-                   (,(kbd "C-M-@") mark-sexp)
-                   (,(kbd "C-M-d") down-list)
-                   (,(kbd "C-M-l") reposition-window)
-                   (,(kbd "C-M-n") forward-list)
-                   (,(kbd "C-M-p") backward-list)
-                   (,(kbd "C-M-t") transpose-sexps)
-                   (,(kbd "C-M-u") backward-up-list)
-                   (,(kbd "C-M-v") scroll-other-window)
-                   (,(kbd "C-M-\\") indent-region)
-                   (,(kbd "M-$") ispell-word)
-                   (,(kbd "M-%") query-replace)
-                   (,(kbd "M-'") abbrev-prefix-mark)
-                   (,(kbd "M-(") insert-parentheses)
-                   (,(kbd "M-)") move-past-close-and-reindent)
-                   (,(kbd "M-*") pop-tag-mark)
-                   (,(kbd "M-.") find-tag)
-                   (,(kbd "M-,") tags-loop-continue)
-                   (,(kbd "M-/") dabbrev-expand)
-                   (,(kbd "M-=") count-words-region)
-                   (,(kbd "M-@") mark-word)
-                   (,(kbd "M-\\") delete-horizontal-space)
-                   (,(kbd "M-`") tmm-menubar)
-                   (,(kbd "M-a") backward-sentence)
-                   (,(kbd "M-e") forward-sentence)
-                   (,(kbd "M-m") back-to-indentation)
-                   (,(kbd "M-o") facemenu-keymap)
-                   (,(kbd "M-r") move-to-window-line-top-bottom)
-                   (,(kbd "M-{") backward-paragraph)
-                   (,(kbd "M-}") forward-paragraph)
-                   (,(kbd "M-~") not-modified)
-                   (,(kbd "C-M-S-v") scroll-other-window-down)
-                   (,(kbd "C-M-%") query-replace-regexp)
-                   (,(kbd "C-M-.") find-tag-regexp)
-                   (,(kbd "C-M-/") dabbrev-completion)
-                   )
-      collect (if (eq (key-binding (first key)) (second key))
-                  (global-unset-key (first key))))
+                      (,(kbd "C-x C-z") suspend-frame)
+                      (,(kbd "C-z") suspend-frame)
+                      ([(insert)] overwrite-mode)
+                      ([(insertchar)] overwrite-mode)
+                      (,(kbd "C-]") abort-recursive-edit)
+                      (,(kbd "C-@") set-mark-command)
+                      (,(kbd "<C-down-mouse-1>") mouse-buffer-menu)
+                      (,(kbd "<C-down-mouse-2>") facemenu-menu)
+                      (,(kbd "<S-down-mouse-1>") mouse-appearance-menu)
+                      (,(kbd "C-x C-t") transpose-lines)
+                      (,(kbd "C-x C-q") read-only-mode)
+                      (,(kbd "C-x C-o") delete-blank-lines)
+                      (,(kbd "C-x C-n") set-goal-column)
+                      (,(kbd "C-x TAB") indent-rigidly)
+                      (,(kbd "C-x C-e") eval-last-sexp)
+                      (,(kbd "C-x C-d") list-directory)
+                      (,(kbd "C-x C-@") pop-global-mark)
+                      (,(kbd "C-x SPC") gud-break)
+                      (,(kbd "C-x #") server-edit)
+                      (,(kbd "C-x $") set-selective-display)
+                      (,(kbd "C-x '") expand-abbrev)
+                      (,(kbd "C-x <") scroll-left)
+                      (,(kbd "C-x =") what-cursor-position)
+                      (,(kbd "C-x >") scroll-right)
+                      (,(kbd "C-x [") backward-page)
+                      (,(kbd "C-x ]") forward-page)
+                      (,(kbd "C-x ^") enlarge-window)
+                      (,(kbd "C-x `") next-error)
+                      (,(kbd "C-x l") count-lines-page)
+                      (,(kbd "C-x {") shrink-window-horizontally)
+                      (,(kbd "C-x }") enlarge-window-horizontally)
+                      (,(kbd "C-M-@") mark-sexp)
+                      (,(kbd "C-M-d") down-list)
+                      (,(kbd "C-M-l") reposition-window)
+                      (,(kbd "C-M-n") forward-list)
+                      (,(kbd "C-M-p") backward-list)
+                      (,(kbd "C-M-t") transpose-sexps)
+                      (,(kbd "C-M-u") backward-up-list)
+                      (,(kbd "C-M-v") scroll-other-window)
+                      (,(kbd "C-M-\\") indent-region)
+                      (,(kbd "M-$") ispell-word)
+                      (,(kbd "M-%") query-replace)
+                      (,(kbd "M-'") abbrev-prefix-mark)
+                      (,(kbd "M-(") insert-parentheses)
+                      (,(kbd "M-)") move-past-close-and-reindent)
+                      (,(kbd "M-*") pop-tag-mark)
+                      (,(kbd "M-.") find-tag)
+                      (,(kbd "M-,") tags-loop-continue)
+                      (,(kbd "M-/") dabbrev-expand)
+                      (,(kbd "M-=") count-words-region)
+                      (,(kbd "M-@") mark-word)
+                      (,(kbd "M-\\") delete-horizontal-space)
+                      (,(kbd "M-`") tmm-menubar)
+                      (,(kbd "M-a") backward-sentence)
+                      (,(kbd "M-e") forward-sentence)
+                      (,(kbd "M-m") back-to-indentation)
+                      (,(kbd "M-o") facemenu-keymap)
+                      (,(kbd "M-r") move-to-window-line-top-bottom)
+                      (,(kbd "M-{") backward-paragraph)
+                      (,(kbd "M-}") forward-paragraph)
+                      (,(kbd "M-~") not-modified)
+                      (,(kbd "C-M-S-v") scroll-other-window-down)
+                      (,(kbd "C-M-%") query-replace-regexp)
+                      (,(kbd "C-M-.") find-tag-regexp)
+                      (,(kbd "C-M-/") dabbrev-completion)
+                      )
+         collect (if (eq (key-binding (first key)) (second key))
+                     (global-unset-key (first key))))
 
 ;; multiple cursors
-(setup "multiple-cursors"
-  (global-set-key (kbd "C-c d")         'mc/edit-lines)
-  (global-set-key (kbd "<C-down>")      'mc/mark-next-like-this)
-  (global-set-key (kbd "<C-up>")        'mc/mark-previous-like-this)
-  (global-set-key (kbd "<M-C-down>")    'mc/skip-to-next-like-this)
-  (global-set-key (kbd "<M-C-up>")      'mc/skip-to-previous-like-this)
-  (global-set-key (kbd "C-c C-d")       'mc/mark-all-dwim)
-  (global-set-key (kbd "C-c >")         'mc/mark-more-like-this-extended)
-  (global-set-key (kbd "C-c <")         'mc/mark-more-like-this-extended)
-  (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
-  (global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click))
+(require 'multiple-cursors)
+(require 'mc-extras)
+(require 'mc-jump)
+
+(defun mc/many-to-one-yank ()
+  "Yanks killed lines from multiple cursors into one position. Less messy than yank-rectangle."
+  (interactive)
+  (with-temp-buffer
+    (yank-rectangle)
+    (kill-ring-save (point-min) (point-max)))
+  (yank))
+
+(defun mc/many-to-one-yank-indent ()
+  "Yanks killed lines from multiple cursors into one position, and indents. See 'mc/many-to-one-yank'."
+  (interactive)
+  (mc/many-to-one-yank)
+  (call-interactively 'indent-region))
+
+(global-set-key (kbd "C-c d")            'mc/edit-lines)
+(global-set-key (kbd "<C-down>")         'mc/mark-next-like-this)
+(global-set-key (kbd "<C-up>")           'mc/mark-previous-like-this)
+(global-set-key (kbd "<M-C-down>")       'mc/skip-to-next-like-this)
+(global-set-key (kbd "<M-C-up>")         'mc/skip-to-previous-like-this)
+(global-set-key (kbd "C-c C-d")          'mc/mark-all-dwim)
+(global-set-key (kbd "C-c >")            'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-c <")            'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-S-<mouse-1>")    'mc/add-cursor-on-click)
+(global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click)
 
 ;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
-(setup-after "multiple-cursors"
-  (define-key mc/keymap (kbd "<return>") nil)
-  (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
-  ;; Because regex
-  (defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp))
+(define-key mc/keymap (kbd "<return>") nil)
+(define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
+;; Because regex
+(defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp)
 
-(setup-lazy '(phi-search phi-search-backward) "phi-search")
+
 (global-set-key (kbd "C-c C-s") 'phi-search)
 (global-set-key (kbd "C-c C-r") 'phi-search-backward)
 
-(setup-after "phi-search"
-  (setup "phi-search-mc"
-    (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
-    (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
-    (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)))
 
-;; edit symbol in multiple places simultaneously
-(setup-lazy '(iedit-mode iedit-mode-toggle-on-function) "iedit")
-(global-set-key (kbd "C-c ;") 'iedit-mode)
-(global-set-key (kbd "C-c C-;") 'iedit-mode-toggle-on-function)
+(require 'phi-search-mc)
+(define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
+(define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
+(define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)
 
 ;; undo tree
-(setup "undo-tree"
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps t))
+(require 'undo-tree)
+(global-undo-tree-mode)
+(setq undo-tree-visualizer-timestamps t)
 
-;; nested parentheses are highlighted when inside of them
-(setup "highlight-parentheses"
-  (defun turn-on-highlight-parentheses () (highlight-parentheses-mode 1))
-  (add-hook 'prog-mode-hook 'turn-on-highlight-parentheses)
-  (add-hook 'enh-ruby-mode-hook 'turn-on-highlight-parentheses)
-  (add-hook 'text-mode-hook 'turn-on-highlight-parentheses))
 
-;; better search/replace
-(setup-lazy '(vr/query-replace vr/query-replace-from-beginning) "visual-regexp")
-(setup-after "visual-regexp"
-  (setup "visual-regexp-steroids"))
-  
-(defun vr/query-replace-from-beginning ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (call-interactively 'vr/query-replace)))
-(global-set-key (kbd "C-c r") 'vr/query-replace)
-(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
 
 ;; copy end of line, like C-k
 (defun copy-line ()
@@ -302,13 +251,13 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "C-e") 'smart-end-of-line)
 
 ;; move lines like in org-mode
-(setup-lazy '(md/move-lines-up md/move-lines-down) "move-dup")
+(require 'move-dup)
 (global-set-key (kbd "M-<up>") 'md/move-lines-up)
 (global-set-key (kbd "M-<down>") 'md/move-lines-down)
 
 ;; org-mode has similar behavior built-in, so use it instead
-(setup-after "org-mode"
-  (setq org-special-ctrl-a/e t))
+(load-after 'org-mode
+            (setq org-special-ctrl-a/e t))
 
 (defun insert-file-name (filename &optional args)
   "Insert name of file FILENAME into buffer after point.
@@ -321,88 +270,63 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
          (insert (file-relative-name filename)))))
 (global-set-key (kbd "C-c C-i") 'insert-file-name)
 
-(setup "ido"
-  (ido-mode 1)
-  
-  (setq ido-default-buffer-method 'selected-window)
-  (setq ido-enable-flex-matching t) ; fuzzy matching
-  (setq ido-use-virtual-buffers t)
-  (setq ido-save-directory-list-file (emacs-d "cache/ido.last"))
-  (setq ido-case-fold t) ; case insensitive
-  (setq ido-enable-last-directory-history t)
-  (setq ido-default-buffer-method 'selected-window) ; ignore buffers in different frames
-  (setq ido-max-work-directory-list 30)
-  (setq ido-enable-tramp-completion nil))
-(setup-after "ido"
-  (setup "ido-ubiquitous"
-    (setq ido-everywhere t)))
 
 ;; helm
-(setup "helm-config"
-  (helm-mode t)
-  (setup-keybinds helm-map
-    "C-w" 'subword-backward-kill
-    "M-w" 'helm-yank-text-at-point)
-  )
-(setup-after "helm-config"
-  (setup-lazy '(helm-flycheck) "helm-flycheck")
-  (setup-keybinds flycheck-mode-map
-    "C-x c e" 'helm-flycheck)
+(require 'helm)
+(require 'helm-config)
+(helm-mode t)
+(require 'helm-flycheck)
 
-  (setq enable-recursive-minibuffers t)
-  (setq helm-ff-lynx-style-map nil
-        helm-input-idle-delay 0.1
-        helm-idle-delay 0.1
-        helm-follow-mode-persistent t
-        helm-split-window-default-side 'right)
+(setq enable-recursive-minibuffers t)
+(setq helm-ff-lynx-style-map nil
+      helm-input-idle-delay 0.1
+      helm-idle-delay 0.1
+      helm-follow-mode-persistent t
+      helm-split-window-default-side 'right)
 
-  (defadvice helm-default-display-buffer
+(defadvice helm-default-display-buffer
     (before helm-fullscreen-split activate)
-    (delete-other-windows))
-  )
+  (delete-other-windows))
 
-(setup-expecting "helm"
-  ;; Too close to exit
-  (global-unset-key (kbd "C-x c"))
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
-  (global-set-key (kbd "C-c h t")   'helm-cmd-t)
-  (global-set-key (kbd "C-c h g")   'helm-do-grep)
-  (global-set-key (kbd "C-c h o")   'helm-occur)
-  (global-set-key (kbd "M-x")       'helm-M-x)
-  (global-set-key (kbd "M-y")       'helm-show-kill-ring)
-  (global-set-key (kbd "C-c h C-o") 'helm-swoop)
-  (global-set-key (kbd "C-x C-f")   'helm-find-files)
-  (global-set-key (kbd "C-x b")     'helm-mini)
-  (setup-after "winner"
-    (add-to-list 'winner-boring-buffers "*helm M-x*")
-    (add-to-list 'winner-boring-buffers "*helm mini*"))
-  )
+
+;; Too close to exit
+(global-unset-key (kbd "C-x c"))
+(global-set-key (kbd "C-c h")     'helm-command-prefix)
+(global-set-key (kbd "C-c h t")   'helm-cmd-t)
+(global-set-key (kbd "C-c h g")   'helm-do-grep)
+(global-set-key (kbd "C-c h o")   'helm-occur)
+(global-set-key (kbd "M-x")       'helm-M-x)
+(global-set-key (kbd "M-y")       'helm-show-kill-ring)
+(global-set-key (kbd "C-c h C-o") 'helm-swoop)
+(global-set-key (kbd "C-x C-f")   'helm-find-files)
+(global-set-key (kbd "C-x b")     'helm-mini)
+
+(require 'winner)
+(add-to-list 'winner-boring-buffers "*helm M-x*")
+(add-to-list 'winner-boring-buffers "*helm mini*")
+
 
 ;; recent files
-(setup "recentf"
-  (setq recentf-max-saved-items 1000)
-  (setq recentf-save-file (emacs-d "cache/recentf"))
-  (setq recentf-exclude (append recentf-exclude
-                                '("\.emacs\.d/cache"
-                                  "\.emacs\.d/elpa")))
-  (setq recentf-keep '(file-remote-p file-readable-p)))
-  (recentf-mode 1)
-;; file completion
-(setup-after "recentf" "ido"
-  (defun recentf-ido-find-file ()
-    "Find a recent file using Ido."
-    (interactive)
-    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-      (when file
-        (find-file file))))
-  (global-set-key (kbd "C-x C-r") 'recentf-ido-find-file))
+(require 'recentf)
+(setq recentf-max-saved-items 1000)
+(setq recentf-save-file (emacs-d "cache/recentf"))
+(setq recentf-exclude (append recentf-exclude
+                              '("\.emacs\.d/cache"
+                                "\.emacs\.d/elpa")))
+(setq recentf-keep '(file-remote-p file-readable-p))
+(recentf-mode 1)
+
+;; clean up buffers every once in a while
+(require 'midnight)
+(midnight-delay-set 'midnight-delay 0)
+
 
 ;; unique names
-(setup "uniquify"
-  (setq uniquify-buffer-name-style 'reverse)
-  (setq uniquify-separator "/")
-  (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-  (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
 ;; indentation
 (setq-default tab-width 2)
@@ -419,12 +343,12 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; automatically indent on return, except in a few modes that have similar stuff by default
 ;; automatically indent on return
-(setup "electric"
-  (electric-indent-mode 1)
-  (defadvice electric-indent-post-self-insert-function (around keep-trailing-whitespace activate)
-    (noflet ((delete-horizontal-space (&rest args) t))
-      ad-do-it))
-  )
+(require 'electric)
+(electric-indent-mode 1)
+(defadvice electric-indent-post-self-insert-function (around keep-trailing-whitespace activate)
+  (noflet ((delete-horizontal-space (&rest args) t))
+    ad-do-it))
+
 
 ;; also indent when yanked
 (defun yank-and-indent ()
@@ -453,132 +377,132 @@ Deletes whitespace at join."
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
 ;; delete all space before point up to beginning of line or non-whitespace char
-(setup "hungry-delete"
-  (global-hungry-delete-mode)
-  (defun literal-delete-char (&optional arg)
-    (interactive "P")
-    (delete-char 1))
-  (defun literal-delete-backward-char (&optional arg)
-    (interactive "P")
-    (delete-backward-char 1))
-  (global-set-key (kbd "C-d") 'literal-delete-char)
-  (global-set-key (kbd "M-d") 'literal-delete-backward-char))
+(require 'hungry-delete)
+(global-hungry-delete-mode)
+(defun literal-delete-char (&optional arg)
+  (interactive "P")
+  (delete-char 1))
+(defun literal-delete-backward-char (&optional arg)
+  (interactive "P")
+  (delete-backward-char 1))
+(global-set-key (kbd "C-d") 'literal-delete-char)
+(global-set-key (kbd "M-d") 'literal-delete-backward-char)
 
-(setup "wcheck-mode"
-  (setq ispell-really-hunspell t)
-  (setq wcheck-timer-idle .2)
-  (define-key global-map (kbd "C-c s") 'wcheck-actions)
-  (setq-default
-   wcheck-language "English"
-   wcheck-language-data '(("English"
-                           (program . "/usr/bin/enchant")
-                           (args . ("-l" "-d" "en_US"))
-                           (action-program . "/usr/bin/enchant")
-                           (action-args "-a" "-d" "en_US")
-                           (action-parser . enchant-suggestions-menu))
-                          ))
+(require 'wcheck-mode)
+(setq ispell-really-hunspell t)
+(setq wcheck-timer-idle .2)
+(define-key global-map (kbd "C-c s") 'wcheck-actions)
+(setq-default
+ wcheck-language "English"
+ wcheck-language-data '(("English"
+                         (program . "/usr/bin/enchant")
+                         (args . ("-l" "-d" "en_US"))
+                         (action-program . "/usr/bin/enchant")
+                         (action-args "-a" "-d" "en_US")
+                         (action-parser . enchant-suggestions-menu))
+                        ))
 
-  ;; add to dictionary functionality
-  (defun enchant-suggestions-menu (marked-text)
-    (cons (cons "[Add]" 'enchant-add-to-dictionary)
-          (wcheck-parser-ispell-suggestions)))
+;; add to dictionary functionality
+(defun enchant-suggestions-menu (marked-text)
+  (cons (cons "[Add]" 'enchant-add-to-dictionary)
+        (wcheck-parser-ispell-suggestions)))
 
-  (defvar enchant-dictionaries-dir "~/.config/enchant")
+(defvar enchant-dictionaries-dir "~/.config/enchant")
 
-  (defun enchant-add-to-dictionary (marked-text)
-    (let* ((word (aref marked-text 0))
-           (language (aref marked-text 4))
-           (file (let ((code (nth 1 (member "-d" (wcheck-query-language-data
-                                                  language 'action-args)))))
-                   (when (stringp code)
-                     (concat (file-name-as-directory enchant-dictionaries-dir)
-                             code ".dic")))))
+(defun enchant-add-to-dictionary (marked-text)
+  (let* ((word (aref marked-text 0))
+         (language (aref marked-text 4))
+         (file (let ((code (nth 1 (member "-d" (wcheck-query-language-data
+                                                language 'action-args)))))
+                 (when (stringp code)
+                   (concat (file-name-as-directory enchant-dictionaries-dir)
+                           code ".dic")))))
 
-      (when (and file (file-writable-p file))
-        (with-temp-buffer
-          (insert word) (newline)
-          (append-to-file (point-min) (point-max) file)
-          (message "Added word \"%s\" to the %s dictionary"
-                   word language)))))
+    (when (and file (file-writable-p file))
+      (with-temp-buffer
+        (insert word) (newline)
+        (append-to-file (point-min) (point-max) file)
+        (message "Added word \"%s\" to the %s dictionary"
+                 word language)))))
 
-  ;; enable spell-check in certain modes
-  (defun turn-on-spell-check ()
-    (wcheck-mode 1))
-  (add-hook 'text-mode-hook 'turn-on-spell-check)
-  (add-hook 'markdown-mode-hook 'turn-on-spell-check)
-  (add-hook 'org-mode-hook 'turn-on-spell-check)
-  )
+;; enable spell-check in certain modes
+(defun turn-on-spell-check ()
+  (wcheck-mode 1))
+(add-hook 'text-mode-hook 'turn-on-spell-check)
+(add-hook 'markdown-mode-hook 'turn-on-spell-check)
+(add-hook 'org-mode-hook 'turn-on-spell-check)
+
 
 ;; align
-(setup "align"
-  ;; definitions for ruby code
-  ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
-  (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
-  (defconst align-ruby-modes '(enh-ruby-mode)
-    "align-perl-modes is a variable defined in `align.el'.")
-  (defconst ruby-align-rules-list
-    '((ruby-comma-delimiter
-       (regexp . ",\\(\\s-*\\)[^/ \t\n]")
-       (modes . '(enh-ruby-mode))
-       (repeat . t))
-      (ruby-string-after-func
-       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
-       (modes . '(enh-ruby-mode))
-       (repeat . t))
-      (ruby-symbol-after-func
-       (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
-       (modes . '(enh-ruby-mode))))
-    "Alignment rules specific to the ruby mode.
+(require 'align)
+;; definitions for ruby code
+;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
+(setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
+(defconst align-ruby-modes '(enh-ruby-mode)
+  "align-perl-modes is a variable defined in `align.el'.")
+(defconst ruby-align-rules-list
+  '((ruby-comma-delimiter
+     (regexp . ",\\(\\s-*\\)[^/ \t\n]")
+     (modes . '(enh-ruby-mode))
+     (repeat . t))
+    (ruby-string-after-func
+     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
+     (modes . '(enh-ruby-mode))
+     (repeat . t))
+    (ruby-symbol-after-func
+     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
+     (modes . '(enh-ruby-mode))))
+  "Alignment rules specific to the ruby mode.
 See the variable `align-rules-list' for more details.")
-  (add-to-list 'align-perl-modes         'enh-ruby-mode)
-  (add-to-list 'align-dq-string-modes    'enh-ruby-mode)
-  (add-to-list 'align-sq-string-modes    'enh-ruby-mode)
-  (add-to-list 'align-open-comment-modes 'enh-ruby-mode)
-  (dolist (it ruby-align-rules-list)
-    (add-to-list 'align-rules-list it))
-  ;; haskell alignments
-  (add-to-list 'align-rules-list
-               '(haskell-types
-                 (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-assignment
-                 (regexp . "\\(\\s-+\\)=\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-arrows
-                 (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
-  (add-to-list 'align-rules-list
-               '(haskell-left-arrows
-                 (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                 (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-perl-modes         'enh-ruby-mode)
+(add-to-list 'align-dq-string-modes    'enh-ruby-mode)
+(add-to-list 'align-sq-string-modes    'enh-ruby-mode)
+(add-to-list 'align-open-comment-modes 'enh-ruby-mode)
+(dolist (it ruby-align-rules-list)
+  (add-to-list 'align-rules-list it))
+;; haskell alignments
+(add-to-list 'align-rules-list
+             '(haskell-types
+               (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-assignment
+               (regexp . "\\(\\s-+\\)=\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-arrows
+               (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
+(add-to-list 'align-rules-list
+             '(haskell-left-arrows
+               (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+               (modes quote (haskell-mode literate-haskell-mode))))
 
-  (defun align-region-or-current ()
-    "Align current selected region or implied region if nothing is selected."
-    (interactive)
-    (if (and mark-active
-             (/= (point) (mark)))
-        (align (point) (mark))
-      (align-current)))
+(defun align-region-or-current ()
+  "Align current selected region or implied region if nothing is selected."
+  (interactive)
+  (if (and mark-active
+           (/= (point) (mark)))
+      (align (point) (mark))
+    (align-current)))
 
 ;; repeat regex (teh fuck ain't that the default?!)
-  (defun align-repeat (start end regexp)
-    "Repeat alignment with respect to the given regular expression."
-    (interactive "r\nsAlign regexp: ")
-    (align-regexp start end
-                  (concat "\\(\\s-*\\)" regexp) 1 1 t))
+(defun align-repeat (start end regexp)
+  "Repeat alignment with respect to the given regular expression."
+  (interactive "r\nsAlign regexp: ")
+  (align-regexp start end
+                (concat "\\(\\s-*\\)" regexp) 1 1 t))
 
-  (defun align-whitespace (start end)
-    "Align region by whitespace."
-    (interactive "r")
-    (align-regexp start end (concat "\\(\\s-*\\)" "\\s-") 1 0 t))
+(defun align-whitespace (start end)
+  "Align region by whitespace."
+  (interactive "r")
+  (align-regexp start end (concat "\\(\\s-*\\)" "\\s-") 1 0 t))
 
-  ;; align should always indent with spaces
-  (defadvice align-areas (around fix-tab-indent activate)
-    (let ((indent-tabs-mode nil))
-      ad-do-it))
-)
+;; align should always indent with spaces
+(defadvice align-areas (around fix-tab-indent activate)
+  (let ((indent-tabs-mode nil))
+    ad-do-it))
+
 ;; align current region
 (global-set-key (kbd "C-= a")   'align-region-or-current)
 (global-set-key (kbd "C-= SPC") 'align-repeat)
@@ -586,203 +510,163 @@ See the variable `align-rules-list' for more details.")
 (global-set-key (kbd "C-= w")   'align-whitespace)
 
 ;; diff- mode (better colors)
-(setup-lazy '(diff-mode) "diff-mode-")
+(require 'diff-mode-)
 ;; a slightly saner diff command
-(setup-lazy '(ediff-mode) "ediff"
-  (setq ediff-diff-options "-w"))
+(require 'ediff)
+(setq ediff-diff-options "-w")
 
 ;; if no region is active, act on current line
-(setup "whole-line-or-region"
-  (setq whole-line-or-region-extensions-alist
-        '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
-          (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
-          (kill-region whole-line-or-region-kill-region nil)
-          (kill-ring-save whole-line-or-region-kill-ring-save nil)
-          (yank whole-line-or-region-yank nil)
-          ))
-  (whole-line-or-region-mode 1))
+(require 'whole-line-or-region)
+(setq whole-line-or-region-extensions-alist
+      '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
+        (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+        (kill-region whole-line-or-region-kill-region nil)
+        (kill-ring-save whole-line-or-region-kill-ring-save nil)
+        (yank whole-line-or-region-yank nil)
+        ))
+(whole-line-or-region-mode 1)
 
 ;; tramp
-(setup-after "tramp"
-  (setq tramp-default-method "ssh")
-  (setq tramp-persistency-file-name (emacs-d "cache/tramp"))
-  ;; cookies
-  (setq url-cookie-file (emacs-d "cache/url/cookies")))
+(load-after 'tramp
+            (setq tramp-default-method "ssh")
+            (setq tramp-persistency-file-name (emacs-d "cache/tramp")))
+;; cookies
+(setq url-cookie-file (emacs-d "cache/url/cookies"))
 
 ;; normal bookmarks
 (setq bookmark-default-file (emacs-d "cache/bookmarks"))
 
 ;; undo window changes
-(setup "winner"
-  (winner-mode 1))
+(require 'winner)
+(winner-mode 1)
 
 ;; number windows, i.e. M-1 .. M-0 to jump to window
-(setup "window-numbering"
-  (window-numbering-mode 1))
+(require 'window-numbering)
+(window-numbering-mode 1)
 
 ;; expand-region
-(setup-lazy '(er/expand-region er/contract-region) "expand-region")
+(require 'expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; make zsh aliases work
-(setup "shell-command"
-  (setq shell-command-switch "-lc")
-  (shell-command-completion-mode))
+(require 'shell-command)
+(setq shell-command-switch "-lc")
+(shell-command-completion-mode)
 
 ;; scratchpad buffers
-(setup-lazy '(scratch) "scratch")
+(require 'scratch-ext)
 (global-set-key (kbd "C-c b") 'scratch)
-
-;; highlight some whitespace
-(setup-lazy '(whitespace-mode global-whitespace-mode) "whitespace"
-  (setq whitespace-style (quote (face tabs tab-mark))))
-
 ;; don't spam *Scratch*
 (setq initial-scratch-message nil)
 
 ;; oh pretty!
-(setup "pretty-lambdada"
-  (global-pretty-lambda-mode))
-
-;; rotate / toggle text
-(setup-lazy '(rotate-text) "rotate-text"
-  (add-to-list 'rotate-text-words '("true" "false"))
-  (add-to-list 'rotate-text-words '("yes" "no"))
-  (add-to-list 'rotate-text-words '("t" "nil"))
-  (add-to-list 'rotate-text-words '("if" "unless"))
-  (add-to-list 'rotate-text-words '("map" "each"))
-  (add-to-list 'rotate-text-words '("select" "reject"))
-  (add-to-list 'rotate-text-symbols '("?" "!")))
-(global-set-key (kbd "C-c C-t") 'rotate-text)
+(require 'pretty-lambdada)
+(global-pretty-lambda-mode)
 
 ;; handle camelcase better
 (global-subword-mode 1)
 
-;; folding
-(setup "hideshow"
-  (add-hook 'enh-ruby-hook   'hs-minor-mode))
-(setup-after "hideshow"
-(setup-lazy '(hs-minor-mode) "hideshowvis"
-  (add-hook 'enh-ruby-hook   'hs-minor-mode))
-(setup-lazy '(hs-minor-mode) "fold-dwim"
-  (define-key global-map (kbd "C-c C-f") 'fold-dwim-toggle)
-  (define-key global-map (kbd "C-c f")   'fold-dwim-hide-all)
-  (define-key global-map (kbd "C-c F")   'fold-dwim-show-all)))
 
 ;; fast navigation
-(setup "imenu"
-  (set-default 'imenu-auto-rescan t)
-  ;; recentering
-  (setq recenter-positions '(2 middle))
-  (add-hook 'imenu-after-jump-hook 'recenter-top-bottom))
-(setup-after "imenu"
-  (setup "idomenu"
-    (define-key global-map (kbd "C-c [") 'idomenu)
-    (define-key global-map (kbd "C-c C-[") 'idomenu))
-  (setup "imenu-anywhere"
-    (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
-    (define-key global-map (kbd "C-c C-]") 'imenu-anywhere)))
-
+(require 'imenu)
+(set-default 'imenu-auto-rescan t)
 ;; recentering
 (setq recenter-positions '(2 middle))
 (add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
-
-;; Guide Key
-(setup "guide-key"
-  (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +" "C-x c"))
-  (guide-key-mode 1)
-  (setq guide-key/recursive-key-sequence-flag t)
-  (setq guide-key/popup-window-position 'bottom))
+(require 'idomenu)
+(define-key global-map (kbd "C-c [") 'idomenu)
+(define-key global-map (kbd "C-c C-[") 'idomenu)
+(require 'imenu-anywhere)
+(define-key global-map (kbd "C-c ]") 'imenu-anywhere)
+(define-key global-map (kbd "C-c C-]") 'imenu-anywhere)
 
 ;; smartarens
-(setup "smartparens-config"
-  (smartparens-global-mode t)
-  (show-smartparens-global-mode t)
-  (setq sp-highlight-pair-overlay nil)
-  (show-smartparens-global-mode t)
-  (setq blink-matching-paren-distance nil)
-  (setq show-paren-style 'parenthesis)
-  (setq show-paren-delay 0)
-  ;; sp keys
-  (define-key sp-keymap (kbd "C-M-f")         'sp-forward-sexp)
-  (define-key sp-keymap (kbd "C-M-b")         'sp-backward-sexp)
-  (define-key sp-keymap (kbd "M-f")           'sp-forward-symbol)
-  (define-key sp-keymap (kbd "M-b")           'sp-backward-symbol)
-  (define-key sp-keymap (kbd "C-S-a")         'sp-beginning-of-sexp)
-  (define-key sp-keymap (kbd "C-S-d")         'sp-end-of-sexp)
-  (define-key sp-keymap (kbd "C-M-k")         'sp-kill-sexp)
-  (define-key sp-keymap (kbd "C-M-w")         'sp-copy-sexp)
-  (define-key sp-keymap (kbd "C-<left>")      'sp-add-to-next-sexp)
-  (define-key sp-keymap (kbd "C-<right>")     'sp-add-to-previous-sexp)
-  (define-key sp-keymap (kbd "M-<delete>")    'sp-unwrap-sexp)
-  (define-key sp-keymap (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
-  (define-key sp-keymap (kbd "C-c k")         'sp-splice-sexp)
-  (define-key sp-keymap (kbd "C-c C-k")       'sp-rewrap-sexp)
-  (define-key sp-keymap (kbd "S-<left>")      'sp-select-previous-thing)
-  (define-key sp-keymap (kbd "S-<right>")     'sp-select-next-thing)
-  (define-key sp-keymap (kbd "C-c |")         'sp-split-sexp)
-  (define-key sp-keymap (kbd "C-c C-|")       'sp-join-sexp)
-  )
+(require 'smartparens-config)
+(smartparens-global-mode t)
+(show-smartparens-global-mode t)
+(setq sp-highlight-pair-overlay nil)
+(show-smartparens-global-mode t)
+(setq blink-matching-paren-distance nil)
+(setq show-paren-style 'parenthesis)
+(setq show-paren-delay 0)
+;; sp keys
+(define-key smartparens-mode-map (kbd "C-M-f")         'sp-forward-sexp)
+(define-key smartparens-mode-map (kbd "C-M-b")         'sp-backward-sexp)
+(define-key smartparens-mode-map (kbd "M-f")           'sp-forward-symbol)
+(define-key smartparens-mode-map (kbd "M-b")           'sp-backward-symbol)
+(define-key smartparens-mode-map (kbd "C-S-a")         'sp-beginning-of-sexp)
+(define-key smartparens-mode-map (kbd "C-S-d")         'sp-end-of-sexp)
+(define-key smartparens-mode-map (kbd "C-M-k")         'sp-kill-sexp)
+(define-key smartparens-mode-map (kbd "C-M-w")         'sp-copy-sexp)
+(define-key smartparens-mode-map (kbd "C-<left>")      'sp-add-to-next-sexp)
+(define-key smartparens-mode-map (kbd "C-<right>")     'sp-add-to-previous-sexp)
+(define-key smartparens-mode-map (kbd "M-<delete>")    'sp-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "C-c k")         'sp-splice-sexp)
+(define-key smartparens-mode-map (kbd "C-c C-k")       'sp-rewrap-sexp)
+(define-key smartparens-mode-map (kbd "S-<left>")      'sp-select-previous-thing)
+(define-key smartparens-mode-map (kbd "S-<right>")     'sp-select-next-thing)
+(define-key smartparens-mode-map (kbd "C-c |")         'sp-split-sexp)
+(define-key smartparens-mode-map (kbd "C-c C-|")       'sp-join-sexp)
 
-(setup-after "smartparens"
-  ;; markdown-mode
-  (setup-expecting "markdown-mode" 
-    (sp-with-modes '(markdown-mode)
-      (sp-local-pair "*" "*" :actions '(wrap autoskip))
-      (sp-local-tag "2" "**" "**")
-      (sp-local-tag "m" "$" "$") ; math
-      (sp-local-pair "$$" "$$")
-      (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags)))
-  (setup-expecting "org-mode" 
-    (sp-with-modes '(org-mode)
-      (sp-local-pair "$" "$" :actions '(wrap autoskip))
-      (sp-local-pair "$$" "$$" :actions '(wrap autoskip))))
-  ;; html-mode
-  (setup-expecting "html-mode" "sgml-mode"
-    (sp-with-modes '(html-mode sgml-mode)
-      (sp-local-pair "<" ">"))
 
-  ;; move to beginning of text on line
-  (defun sp-kill-to-end-of-sexp ()
-    "Kill everything in the sexp without unbalancing it."
-    (interactive)
-    (save-excursion
-      (set-mark (point))
-      (sp-end-of-sexp)
-      (kill-region (mark) (point))))
-  ;; move to beginning of text on line
-  (defun sp-kill-to-beginning-of-sexp ()
-    "Kill everything in the sexp without unbalancing it."
-    (interactive)
-    (save-excursion
-      (set-mark (point))
-      (sp-beginning-of-sexp)
-      (kill-region (mark) (point))))
-  ;; move to beginning of text on line
-  (defun sp-copy-to-end-of-sexp ()
-    "Copy everything in the sexp without unbalancing it."
-    (interactive)
-    (save-excursion
-      (set-mark (point))
-      (sp-end-of-sexp)
-      (kill-ring-save (mark) (point))))
-  ;; move to beginning of text on line
-  (defun sp-copy-to-beginning-of-sexp ()
-    "copy everything in the sexp without unbalancing it."
-    (interactive)
-    (save-excursion
-      (set-mark (point))
-      (sp-beginning-of-sexp)
-      (kill-ring-save (mark) (point))))
-  (define-key sp-keymap (kbd "C-c a")   'sp-beginning-of-sexp)
-  (define-key sp-keymap (kbd "C-c e")   'sp-end-of-sexp)
-  (define-key sp-keymap (kbd "C-c C-a") 'sp-kill-to-beginning-of-sexp)
-  (define-key sp-keymap (kbd "C-c C-e") 'sp-kill-to-end-of-sexp)
-  (define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
-  (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)))
+;; markdown-mode
 
-(setup-lazy '(toggle-quotes) "toggle-quotes")
+(sp-with-modes '(markdown-mode)
+  (sp-local-pair "*" "*" :actions '(wrap))
+  (sp-local-pair "_" "_" :actions '(wrap))
+  (sp-local-tag "m" "$" "$") ; math
+  (sp-local-pair "$$" "$$")
+  (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
+
+(sp-with-modes '(org-mode)
+  (sp-local-pair "$" "$" :actions '(wrap autoskip))
+  (sp-local-pair "$$" "$$" :actions '(wrap autoskip)))
+;; html-mode
+(sp-with-modes '(html-mode sgml-mode)
+  (sp-local-pair "<" ">"))
+
+;; move to beginning of text on line
+(defun sp-kill-to-end-of-sexp ()
+  "Kill everything in the sexp without unbalancing it."
+  (interactive)
+  (save-excursion
+    (set-mark (point))
+    (sp-end-of-sexp)
+    (kill-region (mark) (point))))
+;; move to beginning of text on line
+(defun sp-kill-to-beginning-of-sexp ()
+  "Kill everything in the sexp without unbalancing it."
+  (interactive)
+  (save-excursion
+    (set-mark (point))
+    (sp-beginning-of-sexp)
+    (kill-region (mark) (point))))
+;; move to beginning of text on line
+(defun sp-copy-to-end-of-sexp ()
+  "Copy everything in the sexp without unbalancing it."
+  (interactive)
+  (save-excursion
+    (set-mark (point))
+    (sp-end-of-sexp)
+    (kill-ring-save (mark) (point))))
+;; move to beginning of text on line
+(defun sp-copy-to-beginning-of-sexp ()
+  "copy everything in the sexp without unbalancing it."
+  (interactive)
+  (save-excursion
+    (set-mark (point))
+    (sp-beginning-of-sexp)
+    (kill-ring-save (mark) (point))))
+(define-key sp-keymap (kbd "C-c a")   'sp-beginning-of-sexp)
+(define-key sp-keymap (kbd "C-c e")   'sp-end-of-sexp)
+(define-key sp-keymap (kbd "C-c C-a") 'sp-kill-to-beginning-of-sexp)
+(define-key sp-keymap (kbd "C-c C-e") 'sp-kill-to-end-of-sexp)
+(define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
+(define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)
+
+(load-lazy '(toggle-quotes) "toggle-quotes")
 (global-set-key (kbd "C-'") 'toggle-quotes)
 ;; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
 (setq shift-select-mode nil)
@@ -808,27 +692,13 @@ See the variable `align-rules-list' for more details.")
         (make-directory dir)))))
 
 ;; gist
-(setup-after "gist"
-  (setq gist-view-gist t))
-
-;; More emacs rocks: Join current line with the next
-(global-set-key (kbd "M-j")
-                (lambda ()
-                  (interactive)
-                  (join-line -1)))
+(require 'gist)
+(setq gist-view-gist t)
 
 ;; go to last change
 ;; http://www.emacswiki.org/emacs/GotoChg
-(setup-lazy '(goto-last-change) "goto-chg")
+(require 'goto-last-change)
 (global-set-key [f8] 'goto-last-change)
-
-;; Find init file
-(defun find-user-init-file ()
-  "Edit the `user-init-file', in another window."
-  (interactive)
-  (find-file-other-window user-init-file))
-
-(global-set-key (kbd "C-c I") 'find-user-init-file)
 
 ;; Some saner clipboard
 (setq x-select-enable-clipboard t
@@ -837,26 +707,15 @@ See the variable `align-rules-list' for more details.")
       apropos-do-all t
       mouse-yank-at-point t)
 
-;; add current date
-(defun insert-date (prefix)
-  "Insert the current date. With prefix-argument, use ISO format. With
-   two prefix arguments, write out the day and month name."
-  (interactive "P")
-  (let ((format (cond
-                 ((not prefix) "%d %B, %Y")
-                 ((equal prefix '(4)) "%Y-%m-%d")
-                 ((equal prefix '(16)) "%A, %d %B, %Y")))
-        (system-time-locale "en_US"))
-    (insert (format-time-string format))))
 
-(global-set-key (kbd "C-c d") 'insert-date)
+(require 'keyfreq)
+(keyfreq-mode 1)
+(setq keyfreq-file (emacs-d "keyfreq"))
+(setq keyfreq-file-lock (emacs-d "keyfreq.lock"))
+(defadvice keyfreq-mode (after always-autosave activate)
+  (keyfreq-autosave-mode 1))
 
-;; ＿人人人人人人人人＿
-;; ＞  sudden-death  ＜
-;; ￣ＹＹＹＹＹＹＹＹ￣
 
-(setup-lazy '(sudden-death) "sudden-death")
-
-(setup-lazy '(keyboard-cat-mode) "keyboard-cat-mode")
+(require 'keyboard-cat-mode)
 
 (provide 'setup-editing)

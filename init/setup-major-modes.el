@@ -1,9 +1,9 @@
 ;; major modes
 
 ;; default modes
-(setup "org")
+(require 'org)
 (setq initial-major-mode 'org-mode)
-(setup-after "org-mode"
+(load-after 'org
   (setq-default major-mode 'org-mode))
 
 ;; load raw text in a basic mode (for performance reasons)
@@ -14,11 +14,11 @@
   (define-key stupid-map (kbd "C-c") nil))
 
 ;; Flycheck for code linting
-(setup "flycheck"
+(require 'flycheck)
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (unbreak-stupid-map flycheck-mode-map)
   (define-key flycheck-mode-map (kbd "C-c C-n") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error))
+  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error)
 
 ;; C coding style
 (setq c-default-style "linux"
@@ -26,17 +26,17 @@
       c-block-comment-prefix "* ")
 (global-set-key (kbd "M-RET") 'c-indent-new-comment-line)
 
-(setup-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
+(load-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
   (setq c-eldoc-buffer-regenerate-time 15))
-(setup-after "cc-mode"
+(load-after 'cc-mode
   (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
   (add-hook 'c-mode-hook   'c-turn-on-eldoc-mode))
 
 ;; show what function we're in
-(setup "which-func"
-  (which-function-mode 1))
+(require 'which-func)
+(which-function-mode 1)
 
-(setup-after "auto-complete-config"
+(load-after 'auto-complete-config
   (add-hook 'c-mode-hook
             (lambda ()
               (add-to-list 'ac-sources 'ac-source-c-headers)
@@ -45,11 +45,11 @@
 ;; load ESS for R
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
 (add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)
-(setup-lazy '(R R-mode julia-mode) "ess-site"
+(load-lazy '(R R-mode julia-mode) "ess-site"
   (setq inferior-julia-program-name "julia")))
 
 ;; auctex
-(setup-lazy '(latex-mode LaTeX-mode) "latex"
+(load-lazy '(latex-mode LaTeX-mode) "latex"
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
@@ -69,13 +69,13 @@
             (mode-io-correlate "%n:1:%b ")
             "%o"))))
   (setq TeX-view-program-selection '((output-pdf "zathura")))
-  (setup-after "auto-complete"
+  (load-after 'auto-complete
       (push 'LaTeX-mode ac-modes)  ; make auto-complete aware of `latex-mode`
       )
   )
 
 ;; markdown
-(setup-lazy '(markdown-mode) "markdown-mode"
+(load-lazy '(markdown-mode) "markdown-mode"
   (setq markdown-command "pandoc --smart -f markdown -t html")
   (setq markdown-css-path (expand-file-name "markdown.css" "~/.pandoc/css/markdown.css"))
   (setq markdown-enable-math t)
@@ -91,12 +91,12 @@
 (add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
 
 ;; yaml
-(setup-lazy '(yaml-mode) "yaml-mode")
+(load-lazy '(yaml-mode) "yaml-mode")
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; muflax-notes
-(setup-lazy '(notes-mode) "notes-mode")
+(load-lazy '(notes-mode) "notes-mode")
 
 ;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -104,7 +104,7 @@
 (add-to-list 'auto-mode-alist '("\\.page$" . org-mode))
 
 ;; loaded so that we can diminish it later
-(setup-lazy '(org-mode) "org-indent"
+(load-lazy '(org-mode) "org-indent"
   ;; proper indentation / folding
   (setq org-startup-indented t)
   (setq org-hide-leading-stars t)
@@ -152,12 +152,12 @@
 (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
 (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
 
-(setup "org-journal")
+(require 'org-journal)
 (setq org-journal-dir "~/Documents/spoiler/logs/")
 (setq org-journal-file-format "%Y-%m-%d")
 (global-set-key (kbd "C-c j") 'org-journal-new-entry)
 
-(setup "org-download")
+(require 'org-download)
 
 ;; some templates
 (setcdr (assoc "c" org-structure-template-alist)
@@ -180,7 +180,7 @@
 
 ;; python 
 
-(setup-lazy '(python-mode) "python"
+(load-lazy '(python-mode) "python"
   (setq python-indent-offset 2)
   (add-hook 'python-mode-hook (lambda () (setq tab-width 2)))
   (unbreak-stupid-map python-mode-map)
@@ -189,7 +189,7 @@
    python-shell-interpreter-args ""
    python-shell-prompt-regexp "In \\[[0-9]+\\]: "
    python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-   python-shell-completion-setup-code
+   python-shell-completion-require-code
    "from IPython.core.completerlib import module_completion"
    python-shell-completion-module-string-code
    "';'.join(module_completion('''%s'''))\n"
@@ -198,16 +198,14 @@
   )
 
 ;; haskell mode
-(setup-lazy '(haskell-mode) "haskell-mode")
-(setup-after "haskell-mode"
-  (setup "haskell-doc"
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode))
-  (setup "haskell-indentation"
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
-  (setup "inf-haskell"
-    (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion))
-  (setup-after "flycheck"
-    (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+(load-lazy '(haskell-mode) "haskell-mode")
+(load-after 'haskell-mode
+  (require 'haskell-doc)
+    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  (require 'inf-haskell)
+    (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
+
   (setq haskell-process-suggest-remove-import-lines t)
   (setq haskell-process-log t)
   (define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
@@ -217,7 +215,7 @@
 ;; replace normal ruby mode
 (defalias 'ruby-mode 'enh-ruby-mode)
 ;; enhanced ruby mode
-(setup-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
+(load-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
 
   ;; we use flycheck to cover errors
@@ -239,26 +237,26 @@
 (add-to-list 'auto-mode-alist        '("\\.builder$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist        '("\\.gemspec$" . enh-ruby-mode))
 
-(setup-after "enh-ruby-mode"
+(load-after 'enh-ruby-mode
   ;; misc stuff
   ;; ri documentation tool
-  (setup "yari"
-    (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)) 
-  (setup "ruby-block" ; show what block an end belongs to
+  (require 'yari)
+    (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)
+  (require 'ruby-block) ; show what block an end belongs to
     (ruby-block-mode t)
     (setq ruby-block-highlight-toggle t))
-  )
+  
 
 ;; lua
-(setup-lazy '(lua-mode) "lua-mode"
+(load-lazy '(lua-mode) "lua-mode"
   (setq lua-indent-level 2))
 
 ;; (s)css
-(setup-lazy '(scss-mode) "scss-mode"
+(load-lazy '(scss-mode) "scss-mode"
   (setq scss-compile-at-save nil))
 
 ;; web-mode
-(setup-lazy '(web-mode) "web-mode"
+(load-lazy '(web-mode) "web-mode"
   :prepare (push (! `(,(format "\\.%s$"
                                (regexp-opt
                                 '("phtml" "tpl" "php" "gsp" "jsp"
@@ -272,12 +270,12 @@
         web-mode-script-padding 2
         web-mode-block-padding 2)
 
-  (setup-keybinds web-mode-map
+  (require-keybinds web-mode-map
     [remap comment-dwim] 'web-mode-comment-or-uncomment
     "C-c C-'" 'web-mode-element-close)
 
-  (setup-after "auto-complete"
-    (setup-after "auto-complete-config"
+  (load-after 'auto-complete
+    (load-after 'auto-complete-config
       (setq web-mode-ac-sources-alist
             '(("javascript" . (ac-source-words-in-same-mode-buffers))
               ("php" . (ac-source-words-in-same-mode-buffers))
@@ -285,46 +283,46 @@
               ("html" . (ac-source-words-in-same-mode-buffers))))
       (push 'web-mode ac-modes)))
 
-  (setup-after "smart-compile"
+  (load-after 'smart-compile
     (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
   )
 
 ;; eldoc, ie function signatures in the minibuffer
-(setup-lazy '(turn-on-eldoc-mode) "eldoc"
+(load-lazy '(turn-on-eldoc-mode) "eldoc"
   (setq eldoc-idle-delay 0.1
         eldoc-echo-area-use-multiline-p nil))
-(setup-after "lisp-mode"
+(load-after 'lisp-mode
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
 
 
 ;; go
-(setup-lazy '(go-mode) "go-mode"
+(load-lazy '(go-mode) "go-mode"
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports")
   (define-key go-mode-map (kbd "M-t") 'godef-jump)
   (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window))
-(setup-after "go-mode"
-  (setup "go-eldoc"
-    (add-hook 'go-mode-hook 'go-eldoc-setup)))
+(load-after 'go-mode
+  (require 'go-eldoc)
+    (add-hook 'go-mode-hook 'go-eldoc-require))
 (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
 
 ;; csv
-(setup-lazy '(csv-mode) "csv-mode"
-  (setup "csv-nav")
+(load-lazy '(csv-mode) "csv-mode"
+  (require 'csv-nav)
   (setq csv-separators '("," ";" "|" " ")))
 (add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
 
 ;; json
-(setup-lazy '(json-mode) "json-mode")
+(load-lazy '(json-mode) "json-mode")
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 ;; shell stuff
-(setup-lazy '(sh-mode) "sh-script"
+(load-lazy '(sh-mode) "sh-script"
   (setq sh-basic-offset tab-width)
   (add-hook 'sh-mode-hook 'whitespace-mode))
 
 ;; matlab
-(setup-lazy '(matlab-mode) "matlab-load"
+(load-lazy '(matlab-mode) "matlab-load"
   (add-hook 'matlab-mode
             (lambda ()
               (auto-complete-mode 1)
@@ -334,34 +332,34 @@
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
 
 ;; crontab
-(setup-lazy '(crontab-mode) "crontab-mode")
+(load-lazy '(crontab-mode) "crontab-mode")
 (add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
 
 ;; mark stuff like FIXME
-(setup-lazy '(fic-mode) "fic-mode")
+(load-lazy '(fic-mode) "fic-mode")
 (add-hook 'prog-mode-hook     'fic-mode)
 (add-hook 'enh-ruby-mode-hook 'fic-mode)
 (add-hook 'js2-mode-hook      'fic-mode)
 
 ;; emacs-lisp
-(setup "bytecomp"
+(require 'bytecomp)
   (defun byte-compile-current-buffer ()
     "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
     (interactive)
     (when (and (eq major-mode 'emacs-lisp-mode)
                (file-exists-p (byte-compile-dest-file buffer-file-name)))
       (byte-compile-file buffer-file-name)))
-  (add-hook 'after-save-hook 'byte-compile-current-buffer))
+  (add-hook 'after-save-hook 'byte-compile-current-buffer)
 
 ;; dired
-(setup-lazy '(dired-jump) "dired"
+(load-lazy '(dired-jump) "dired"
   ;; move files between split pans
   (setq dired-dwim-target t))
-(setup-after "dired" 
-  (setup "wdired")
-  (setup "dired-details")
-  (setup "dired-details+")
-  (setup "dired-open")
+(load-after 'dired
+  (require 'wdired)
+  (require 'dired-details)
+  (require 'dired-details+)
+  (require 'dired-open)
   ;; reload dired after making changes
   (--each '(dired-do-rename
             dired-do-copy
@@ -428,11 +426,11 @@
 (add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
 
 ;; ag search
-(setup-lazy '(ag) "ag"
+(load-lazy '(ag) "ag"
   (setq ag-highlight-search t))
 
 ;; smart-compile
-(setup-lazy '(smart-compile) "smart-compile"
+(load-lazy '(smart-compile) "smart-compile"
   (setq smart-compile-alist
         '( (emacs-lisp-mode  . (emacs-lisp-byte-compile))
            (html-mode        . (browse-url-of-buffer))
@@ -449,42 +447,41 @@
         ))
 (global-set-key (kbd "C-S-c") 'smart-compile)
 
-(setup-lazy '(conf-mode) "conf-mode")
+(load-lazy '(conf-mode) "conf-mode")
 
-(setup-lazy '(paradox-list-packages) "paradox"
+(load-lazy '(paradox-list-packages) "paradox"
   (setq paradox-github-token t))
 
-(setup-lazy '(nix-mode) "nix-mode"
+(load-lazy '(nix-mode) "nix-mode"
   (add-hook 'nix-mode-hook 'whitespace-mode))
 (add-to-list 'auto-mode-alist '("\\.nix" . nix-mode))
 
-(setup-lazy '(hledger-mode) "hledger-mode"
+(load-lazy '(hledger-mode) "hledger-mode"
   (add-hook 'hledger-mode 'whitespace-mode))
 (add-to-list 'auto-mode-alist '("\\.hledger\\.journal" . hledger-mode))
 
-(setup-lazy '(dactyl-mode) "dactyl-mode")
+(load-lazy '(dactyl-mode) "dactyl-mode")
 (add-to-list 'auto-mode-alist '("\\.pentadactylrc" . dactyl-mode))
 
 ;; magit
-(setup-lazy '(magit-status) "magit"
+(load-lazy '(magit-status) "magit"
   (set-default 'magit-unstage-all-confirm nil)
   (setq magit-log-cutoff-length 1000)
+  (setq magit-diff-auto-show '())
+  (setq magit-push-always-verify nil)
 
   ;; full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
     ad-do-it
     (delete-other-windows))
+  
   (defun magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
     (kill-buffer)
     (jump-to-register :magit-fullscreen))
-  )
-
-(global-set-key (kbd "C-x g") 'magit-status)
-
-(setup-after "magit"
+  
   (defun magit-toggle-whitespace ()
     (interactive)
     (if (member "-w" magit-diff-options)
@@ -502,7 +499,9 @@
     (magit-refresh))
 
   (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace))
+(global-set-key (kbd "C-x g") 'magit-status)
 
-(setup-lazy '(conf-mode) "conf-mode")
+
+(load-lazy '(conf-mode) "conf-mode")
 
 (provide 'setup-major-modes)

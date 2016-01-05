@@ -12,6 +12,34 @@
 ;; manual paths
 (add-to-list 'load-path (emacs-d "themes")) ; themes
 
-(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+;; (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+;; convenience functions for loading libraries
+(if (fboundp 'with-eval-after-load)
+    (defalias 'load-after 'with-eval-after-load)
+  (defmacro load-after (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+       '(progn ,@body))))
+
+(defmacro load-lazy (triggers file &rest body)
+  "Load FEATURE when calling any of TRIGGERS. When loaded, eval BODY."
+  (declare (indent defun))
+  (let ((triggers (eval triggers)))
+    `(progn
+       ,@(mapcar (lambda (trigger)
+                   `(autoload ',trigger ,file nil t))
+                 triggers)
+       (load-after ,file
+                   (progn ,@body)))))
+
+(eval-after-load "lisp-mode"
+  '(font-lock-add-keywords
+    'emacs-lisp-mode
+    '(("(\\(load\\(?:-\\(?:after\\|lazy\\)\\)?\\)\\_>"
+       1 font-lock-keyword-face)
+      )))
+
+
 
 (provide 'setup-load-path)

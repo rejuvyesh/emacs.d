@@ -1,8 +1,8 @@
 ;;; local packages
 ;; elpa package-repositories
-(setup "package"
+(require 'package)
 
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
   (defun package-disabled-packages ()
     (let (disabled-packages)

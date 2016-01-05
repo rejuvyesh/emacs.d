@@ -1,4 +1,4 @@
-;; looks 
+;; looks
 
 ;; prettier defaults
 (setq inhibit-splash-screen t)
@@ -38,16 +38,10 @@
 ;; color themes
 (add-to-list 'custom-theme-load-path (emacs-d "themes/"))
 
+(require 'moe-theme-switcher)
 
-(setup "moe-theme-switcher")
 
-;; highlight current line
-(defface hl-line '((t (:background nil)))
-  "Face to use for `hl-line-face'." :group 'hl-line)
-
-(setup "hl-line"
-  (setq hl-line-face 'hl-line)
-  (global-hl-line-mode t))
+(require 'hl-line)
 
 ;; fonts
 (defvar small-font  "Fantasque Sans Mono 8")
@@ -84,29 +78,21 @@
 ;; move pointer to the farthest possible position
 (setq scroll-error-top-bottom t)
 ;; smooth scrolling with margin
-(setup "smooth-scrolling"
-  (setq smooth-scroll-margin 5)
-  (setq scroll-margin 0)
-  (setq scroll-conservatively 10000)
-  ;; necessary or scrolling is really slow
-  (setq-default bidi-display-reordering nil)
-  (setq auto-window-vscroll nil))
+;; necessary or scrolling is really slow
+(setq-default bidi-display-reordering nil)
+(setq auto-window-vscroll nil)
+(setq scroll-margin 5)
+(setq scroll-conservatively 10000)
 
 ;; yascroll
-(global-yascroll-bar-mode 1)
-
-;; try to keep windows within a max margin
-(setup "automargin"
-  (setq automargin-target-width 120)
-  (when (pretty-load?)
-    (automargin-mode)))
+;; (global-yascroll-bar-mode 1)
 
 ;; smart-mode line
 ;; fix mode line with colors
-(setup "smart-mode-line"
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/theme 'respectful)
-  (sml/setup))
+(require 'smart-mode-line)
+(setq sml/no-confirm-load-theme t)
+(setq sml/theme 'respectful)
+(sml/setup)
 
 ;; optical stuff
 ;; Stop cursor blinking
@@ -115,8 +101,9 @@
 
 ;; undo highlighting
 ;; highlight changes made by undo
-(setup "volatile-highlights"
-  (volatile-highlights-mode t))
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
 
 ;; show keystrokes in progress
 (setq echo-keystrokes 0.1)
@@ -127,52 +114,79 @@
 (setq split-width-threshold 90)
 
 ;; show #colors in matching color
-(setup-lazy '(rainbow-mode) "rainbow-mode")
+(require 'rainbow-mode)
+(defadvice rainbow-mode (after rainbow-mode-refresh activate)
+  (font-lock-fontify-buffer))
+
 
 ;; highlight some whitespace
-(setup "whitespace"
-  (setq whitespace-style '(face tabs tab-mark))
-  (setq whitespace-display-mappings
-        `(
-          (space-mark ?\s [?\u00B7]	[?.])	; space - centered dot
-          (space-mark ?\xA0	[?\u00A4]	[?_])	; hard space - currency
-          (newline-mark	?\n [?$ ?\n])	; eol - dollar sign
-          ;; consistent spacing of tab
-          (tab-mark	?\t ; tab - bar
-                    [?\|	,@(make-list (1- tab-width) ?\s)]
-                    [?\|	,@(make-list (1- tab-width) ?\s)])
-          )))
+(require 'leerzeichen)
+(add-hook 'prog-mode-hook          	'leerzeichen-mode)
+(add-hook 'text-mode-hook          	'leerzeichen-mode)
+(add-hook 'dired-mode-hook         	'leerzeichen-mode)
+
+;; parenthesis highlighting behavior
+(require 'paren)
+(setq blink-matching-paren-distance nil)
+(setq show-paren-style 'expression)
+(setq show-paren-delay 0.05) ; don't start highlighting when just scrolling past
+(show-paren-mode 1)
+
+;; don't hard-wrap text, but use nice virtual wrapping
+(require 'adaptive-wrap)
+(setq-default fill-column 80)
+;; (global-adaptive-wrap-prefix-mode 1)
+(setq visual-line-fringe-indicators '(nil right-curly-arrow))
+;; don't wrap lines by default
+(setq-default truncate-lines t)
+(setq truncate-partial-width-windows nil)
+
+;; make regexpes a bit more readable by default
+(defun fontify-glyph (item glyph)
+  `((,item
+     (0 font-lock-preprocessor-face t)
+     (0 (prog1
+            (compose-region (match-beginning 0)
+                            (match-end 0)
+                            ,glyph) nil)))))
+
+(font-lock-add-keywords 'emacs-lisp-mode (fontify-glyph "\\\\\\\\" "\\"))
 
 ;; diminish
 ;; hide information about minor modes from mode-line
-(setup "diminish"
-  (setup-after "abbrev"                (diminish 'abbrev-mode))
-  (setup-after "anzu"                  (diminish 'anzu-mode))
-  (setup-after "auto-complete"         (diminish 'auto-complete-mode "↝"))
-  (setup-after "auto-revert-mode"      (diminish 'auto-revert-mode))
-  (setup-after "eldoc"                 (diminish 'eldoc-mode))
-  (setup-after "fic-mode"              (diminish 'fic-mode))
-  (setup-after "guide-key"             (diminish 'guide-key-mode))
-  (setup-after "haskell-doc"           (diminish 'haskell-doc-mode))
-  (setup-after "haskell-indentation"   (diminish 'haskell-indentation-mode))
-  (setup-after "highlight-parentheses" (diminish 'highlight-parentheses-mode))
-  (setup-after "hs-minor-mode"         (diminish 'hs-minor-mode))
-  (setup-after "smartparens"           (diminish 'smartparens-mode))
-  (setup-after "undo-tree"             (diminish 'undo-tree-mode "↺"))
-  (setup-after "visual-line-mode"      (diminish 'visual-line-mode))
-  (setup-after "volatile-highlights"   (diminish 'volatile-highlights-mode))
-  (setup-after "whitespace"            (diminish 'global-whitespace-mode "WS")
-                                       (diminish 'whitespace-mode "|"))
-  (setup-after "whole-line-or-region"  (diminish 'whole-line-or-region-mode))
-  (setup-after "yasnippet"             (diminish 'yas-minor-mode)))
-
+;; clean up modeline and hide standard minor modes
+(defmacro diminish-minor-mode (package mode &optional short-name)
+  `(load-after ,package
+               (when (fboundp ,mode)
+                 (diminish ,mode ,(or short-name "")))))
 ;; clean up way-too-long major modes
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq mode-name "EL")))
-(setup-after "ruby-mode"
-  (add-hook 'ruby-mode-hook (lambda () (setq mode-name "RB"))))
-(setup-after "enh-ruby-mode"
-  (add-hook 'enh-ruby-mode-hook (lambda () (setq mode-name "RB+"))))
-(add-hook 'sh-mode-hook (lambda () (setq mode-name "sh")))
+(defmacro diminish-major-mode (package-name mode new-name)
+  `(load-after ,package-name
+               '(defadvice ,mode (after diminish-major-mode activate)
+                  (setq mode-name ,new-name))))
+
+
+(require 'diminish)
+(diminish-minor-mode 'abbrev               'abbrev-mode)
+(diminish-minor-mode 'auto-complete        'auto-complete-mode "↝")
+(diminish-minor-mode 'auto-revert-mode     'auto-revert-mode)
+(diminish-minor-mode 'eldoc                'eldoc-mode)
+(diminish-minor-mode 'fic-mode             'fic-mode)
+(diminish-minor-mode 'haskell-doc          'haskell-doc-mode)
+(diminish-minor-mode 'hs-minor-mode        'hs-minor-mode)
+(diminish-minor-mode 'leerzeichen          'leerzeichen-mode)
+(diminish-minor-mode 'magit                'magit-auto-revert-mode)
+(diminish-minor-mode 'smartparens          'smartparens-mode)
+(diminish-minor-mode 'undo-tree            'undo-tree-mode     "↺")
+(diminish-minor-mode 'visual-line-mode     'visual-line-mode)
+(diminish-minor-mode 'volatile-highlights  'volatile-highlights-mode)
+(diminish-minor-mode 'whole-line-or-region 'whole-line-or-region-mode)
+(diminish-minor-mode 'yasnippet            'yas-minor-mode)
+
+(diminish-major-mode	'lisp-mode    	emacs-lisp-mode	"EL" 	)
+(diminish-major-mode	'sh-script    	sh-mode        	"sh" 	)
+(diminish-major-mode	'ruby-mode    	ruby-mode      	"RB" 	)
+(diminish-major-mode	'enh-ruby-mode	enh-ruby-mode  	"RB+"	)
 
 (provide 'setup-look)
 ;;; setup-look ends here
