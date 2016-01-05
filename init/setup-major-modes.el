@@ -484,18 +484,18 @@
   
   (defun magit-toggle-whitespace ()
     (interactive)
-    (if (member "-w" magit-diff-options)
+    (if (member "--ignore-space-change" magit-diff-section-arguments)
         (magit-dont-ignore-whitespace)
       (magit-ignore-whitespace)))
 
   (defun magit-ignore-whitespace ()
     (interactive)
-    (add-to-list 'magit-diff-options "-w")
+    (add-to-list 'magit-diff-section-arguments "--ignore-space-change")
     (magit-refresh))
 
   (defun magit-dont-ignore-whitespace ()
     (interactive)
-    (setq magit-diff-options (remove "-w" magit-diff-options))
+    (setq magit-diff-options (remove "--ignore-space-change" magit-diff-section-arguments))
     (magit-refresh))
 
   (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace))
