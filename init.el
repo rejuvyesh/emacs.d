@@ -1,5 +1,3 @@
-;; rejuvyesh's Emacs config
-
 ;; Set User credentials
 (setq user-full-name    "rejuvyesh")
 (setq user-mail-address "mail@rejuvyesh.com")
@@ -15,36 +13,33 @@
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
 (load (emacs-d "init/setup-load-path.el"))
 
-;; init `setup.el' by @zk-phi for loads of optimization for init startup
-(require 'setup)
-(setq setup-environ-warning-alist '((emacs-version)))
-(setup-initialize)
 
 ;; packages
-(setup "setup-packages")
+(require 'setup-packages)
 
 ;; helpers
-(setup "setup-helpers")
+(require 'setup-helpers)
 
 ;; theme , fonts etc
-(setup "setup-look")
+(require 'setup-look)
 
 ;; editing etc
-(setup "setup-editing")
+(require 'setup-editing)
+(require 'setup-folding)
 
 ;; isearch etc
-(setup "setup-search")
+(require 'setup-search)
 
 ;; auto-completion, yasnippets etc
-(setup "setup-autocomplete")
+(require 'setup-autocomplete)
 
 ;; modes etc
-(setup "setup-major-modes")
+(require 'setup-major-modes)
 
 ;; use automatic file headers
-(setup "setup-auto-insert")
+(require 'setup-auto-insert)
 
 (setup "setup-mail")
 
 ;; others
-(setup "setup-misc")
+(require 'setup-misc)
