@@ -710,8 +710,8 @@ See the variable `align-rules-list' for more details.")
 
 (require 'keyfreq)
 (keyfreq-mode 1)
-(setq keyfreq-file (emacs-d "keyfreq"))
-(setq keyfreq-file-lock (emacs-d "keyfreq.lock"))
+(setq keyfreq-file (emacs-d "cache/keyfreq"))
+(setq keyfreq-file-lock (emacs-d "cache/keyfreq.lock"))
 (defadvice keyfreq-mode (after always-autosave activate)
   (keyfreq-autosave-mode 1))
 
