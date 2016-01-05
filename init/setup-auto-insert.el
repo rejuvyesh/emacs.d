@@ -90,6 +90,9 @@
   (rejuvyesh/auto-replace-date-time)
   )
 
+(defun current-year ()
+  (format-time-string "%Y"))
+
 (provide 'setup-auto-insert)
 ;;; setup-auto-insert.el ends here
 
