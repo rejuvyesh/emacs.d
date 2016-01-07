@@ -153,7 +153,6 @@
 ;; highlight some whitespace
 (require 'leerzeichen)
 (add-hook 'prog-mode-hook          	'leerzeichen-mode)
-(add-hook 'text-mode-hook          	'leerzeichen-mode)
 (add-hook 'dired-mode-hook         	'leerzeichen-mode)
 
 ;; parenthesis highlighting behavior
