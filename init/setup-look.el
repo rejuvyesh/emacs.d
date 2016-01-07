@@ -163,14 +163,6 @@
 (setq show-paren-delay 0.05) ; don't start highlighting when just scrolling past
 (show-paren-mode 1)
 
-;; don't hard-wrap text, but use nice virtual wrapping
-(require 'adaptive-wrap)
-(setq-default fill-column 80)
-;; (global-adaptive-wrap-prefix-mode 1)
-(setq visual-line-fringe-indicators '(nil right-curly-arrow))
-;; don't wrap lines by default
-(setq-default truncate-lines t)
-(setq truncate-partial-width-windows nil)
 
 ;; make regexpes a bit more readable by default
 (defun fontify-glyph (item glyph)
@@ -182,6 +174,16 @@
                             ,glyph) nil)))))
 
 (font-lock-add-keywords 'emacs-lisp-mode (fontify-glyph "\\\\\\\\" "\\"))
+
+;; don't hard-wrap text, but use nice virtual wrapping
+(require 'adaptive-wrap)
+(setq-default fill-column 80)
+(global-adaptive-wrap-prefix-mode 1)
+(setq visual-line-fringe-indicators '(nil right-curly-arrow))
+;; don't wrap lines by default
+(setq-default truncate-lines t)
+(setq truncate-partial-width-windows nil)
+
 
 ;; diminish
 ;; hide information about minor modes from mode-line
