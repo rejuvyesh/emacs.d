@@ -170,6 +170,10 @@
              '("p"
                "#+BEGIN_SRC python\n?\n#+END_SRC"
                "<src lang=\"python\">\n\n</src>"))
+(add-to-list 'org-structure-template-alist
+             '("b"
+               "#+BEGIN_SRC bib\n?\n#+END_SRC"
+               "<src lang=\"bib\">\n\n</src>"))
 
 
 ;; reload file when it changed (and the buffer has no changes)
