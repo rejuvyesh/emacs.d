@@ -154,7 +154,7 @@
 
 (require 'org-journal)
 (setq org-journal-dir "~/Documents/spoiler/logs/")
-(setq org-journal-file-format "%Y-%m-%d")
+(setq org-journal-file-format "%Y-%m-%d.org")
 (global-set-key (kbd "C-c j") 'org-journal-new-entry)
 
 (require 'org-download)
