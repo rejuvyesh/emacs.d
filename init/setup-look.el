@@ -41,12 +41,7 @@
 (defvar bright-theme	'leuven              	"Bright theme to use")
 (defvar dark-theme  	'twilight-anti-bright	"Dark theme to use")
 
-(defvar use-bright-theme t "Whether to use the bright or dark theme")
-
-;; force-load the theme here so we have all faces set up
-(require (intern (format "%s-theme" (if use-bright-theme
-                                        bright-theme
-                                      dark-theme))))
+(defvar use-bright-theme nil "Whether to use the bright or dark theme")
 
 (defun load-correct-theme ()
   "Loads appropriate theme."
@@ -55,6 +50,7 @@
     (load-theme dark-theme t)))
 
 (when (pretty-load?)
+  (setq use-bright-theme t)
   (load-correct-theme))
 
 (defun toggle-bright-theme ()
