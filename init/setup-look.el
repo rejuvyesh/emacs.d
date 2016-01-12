@@ -43,15 +43,42 @@
 
 (defvar use-bright-theme nil "Whether to use the bright or dark theme")
 
+
 (defun load-correct-theme ()
   "Loads appropriate theme."
   (interactive)
   (if use-bright-theme (load-theme bright-theme t)
     (load-theme dark-theme t)))
 
+(defun load-theme-as-time()
+  "Check time and change theme setting"
+  (let*
+      ((now (current-time))
+       
+       (today-times    (sunrise-sunset-times (today)))
+       (tomorrow-times (sunrise-sunset-times (tomorrow)))
+       
+       (sunrise-today (first today-times))
+       (sunset-today (second today-times))
+       (sunrise-tomorrow (first tomorrow-times)))
+    (if (daytime-p sunrise-today sunset-today)
+	(progn
+	  (setq use-bright-theme t)
+          (disable-theme dark-theme)
+          (load-correct-theme)
+	  (run-at-time (+second sunset-today) nil
+		       'load-theme-as-time))
+      (setq use-bright-theme nil)
+      (disable-theme bright-theme)
+      (load-correct-theme)
+      (if (time-less-p now sunrise-today)
+	  (run-at-time (+second sunrise-today) nil
+		       'load-theme-as-time)
+	(run-at-time (+second sunrise-tomorrow) nil
+		     'load-theme-as-time)))))
+
 (when (pretty-load?)
-  (setq use-bright-theme t)
-  (load-correct-theme))
+  (load-theme-as-time))
 
 (defun toggle-bright-theme ()
   "toggles between bright and dark theme"
@@ -65,7 +92,12 @@
       (disable-theme dark-theme)
       (load-theme bright-theme t))))
 
-
+;; smart-mode line
+;; fix mode line with colors
+;; (require 'smart-mode-line)
+;; (setq sml/no-confirm-load-themee t)
+;; (setq sml/theme 'respectful)
+;; (sml/setup)
 
 
 (require 'hl-line)
@@ -114,12 +146,6 @@
 ;; yascroll
 ;; (global-yascroll-bar-mode 1)
 
-;; smart-mode line
-;; fix mode line with colors
-(require 'smart-mode-line)
-(setq sml/no-confirm-load-theme t)
-(setq sml/theme 'respectful)
-(sml/setup)
 
 ;; optical stuff
 ;; Stop cursor blinking
