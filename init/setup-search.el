@@ -14,11 +14,10 @@
 (require 'ace-jump-buffer)
 (setq ace-jump-mode-scope 'window)
 (global-set-key (kbd "M-g M-g") 'goto-line)
-(global-set-key (kbd "M-g l")   'goto-line)
 (global-set-key (kbd "M-g b")   'ace-jump-buffer)
 (global-set-key (kbd "M-g c")   'ace-jump-char-mode)
 (global-set-key (kbd "M-g g")   'ace-jump-mode)
-(global-set-key (kbd "M-g s")   'ace-jump-line-mode)
+(global-set-key (kbd "M-g l")   'ace-jump-line-mode)
 
 (require 'phi-search)
 
