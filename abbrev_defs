@@ -648,7 +648,6 @@
     ("ivestigative" "investigative" nil 0)
     ("iwll" "will" nil 0)
     ("iwth" "with" nil 0)
-    ("jkg" "Jayesh Kumar Gupta" nil 0)
     ("jsut" "just" nil 0)
     ("jugment" "judgment" nil 0)
     ("knowldge" "knowledge" nil 0)
