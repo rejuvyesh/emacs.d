@@ -92,14 +92,6 @@
       (disable-theme dark-theme)
       (load-theme bright-theme t))))
 
-;; smart-mode line
-;; fix mode line with colors
-;; (require 'smart-mode-line)
-;; (setq sml/no-confirm-load-themee t)
-;; (setq sml/theme 'respectful)
-;; (sml/setup)
-
-
 (require 'hl-line)
 
 ;; fonts
