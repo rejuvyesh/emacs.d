@@ -528,6 +528,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; tramp
 (load-after 'tramp
+            (setq password-cache-expiry nil)
             (setq tramp-default-method "ssh")
             (setq tramp-persistency-file-name (emacs-d "cache/tramp")))
 ;; cookies
