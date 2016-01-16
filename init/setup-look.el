@@ -92,7 +92,7 @@
       (disable-theme dark-theme)
       (load-theme bright-theme t))))
 
-(require 'hl-line)
+(use-package hl-line)
 
 ;; fonts
 (defvar small-font  "Fantasque Sans Mono 8")
@@ -146,7 +146,7 @@
 
 ;; undo highlighting
 ;; highlight changes made by undo
-(require 'volatile-highlights)
+(use-package volatile-highlights)
 (volatile-highlights-mode t)
 
 
@@ -159,18 +159,18 @@
 (setq split-width-threshold 90)
 
 ;; show #colors in matching color
-(require 'rainbow-mode)
+(use-package rainbow-mode)
 (defadvice rainbow-mode (after rainbow-mode-refresh activate)
   (font-lock-fontify-buffer))
 
 
 ;; highlight some whitespace
-(require 'leerzeichen)
+(use-package leerzeichen)
 (add-hook 'prog-mode-hook          	'leerzeichen-mode)
 (add-hook 'dired-mode-hook         	'leerzeichen-mode)
 
 ;; parenthesis highlighting behavior
-(require 'paren)
+(use-package paren)
 (setq blink-matching-paren-distance nil)
 (setq show-paren-style 'expression)
 (setq show-paren-delay 0.05) ; don't start highlighting when just scrolling past
@@ -189,7 +189,7 @@
 (font-lock-add-keywords 'emacs-lisp-mode (fontify-glyph "\\\\\\\\" "\\"))
 
 ;; don't hard-wrap text, but use nice virtual wrapping
-(require 'adaptive-wrap)
+(use-package adaptive-wrap)
 (setq-default fill-column 80)
 (global-adaptive-wrap-prefix-mode 1)
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
@@ -212,7 +212,7 @@
                   (setq mode-name ,new-name))))
 
 
-(require 'diminish)
+(use-package diminish)
 (diminish-minor-mode 'abbrev               'abbrev-mode)
 (diminish-minor-mode 'auto-complete        'auto-complete-mode "↝")
 (diminish-minor-mode 'auto-revert-mode     'auto-revert-mode)

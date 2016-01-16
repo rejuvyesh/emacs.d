@@ -12,7 +12,7 @@
 
 
 ;; save location inside buffer
-(require 'saveplace)
+(use-package saveplace)
 ;; save minibuffer history
 (savehist-mode 1)
 ;; more useful kill-ring
@@ -72,7 +72,7 @@
 (global-set-key (kbd "<end>")  'end-of-buffer)
 
 ;; allowed key components
-(require 'free-keys)
+(use-package free-keys)
 (setq free-keys-keys
       (concat "abcdefghijklmnopqrstuvwxyz"
               "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -151,9 +151,9 @@
                      (global-unset-key (first key))))
 
 ;; multiple cursors
-(require 'multiple-cursors)
-(require 'mc-extras)
-(require 'mc-jump)
+(use-package multiple-cursors)
+(use-package mc-extras)
+(use-package mc-jump)
 
 (defun mc/many-to-one-yank ()
   "Yanks killed lines from multiple cursors into one position. Less messy than yank-rectangle."
@@ -191,13 +191,13 @@
 (global-set-key (kbd "C-c C-r") 'phi-search-backward)
 
 
-(require 'phi-search-mc)
+(use-package phi-search-mc)
 (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
 (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
 (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)
 
 ;; undo tree
-(require 'undo-tree)
+(use-package undo-tree)
 (global-undo-tree-mode)
 (setq undo-tree-visualizer-timestamps t)
 
@@ -251,7 +251,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
 (global-set-key (kbd "C-e") 'smart-end-of-line)
 
 ;; move lines like in org-mode
-(require 'move-dup)
+(use-package move-dup)
 (global-set-key (kbd "M-<up>") 'md/move-lines-up)
 (global-set-key (kbd "M-<down>") 'md/move-lines-down)
 
@@ -272,10 +272,10 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 
 ;; helm
-(require 'helm)
-(require 'helm-config)
+(use-package helm)
+(use-package helm-config)
 (helm-mode t)
-(require 'helm-flycheck)
+(use-package helm-flycheck)
 
 (setq enable-recursive-minibuffers t)
 (setq helm-ff-lynx-style-map nil
@@ -301,13 +301,13 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (global-set-key (kbd "C-x C-f")   'helm-find-files)
 (global-set-key (kbd "C-x b")     'helm-mini)
 
-(require 'winner)
+(use-package winner)
 (add-to-list 'winner-boring-buffers "*helm M-x*")
 (add-to-list 'winner-boring-buffers "*helm mini*")
 
 
 ;; recent files
-(require 'recentf)
+(use-package recentf)
 (setq recentf-max-saved-items 1000)
 (setq recentf-save-file (emacs-d "cache/recentf"))
 (setq recentf-exclude (append recentf-exclude
@@ -317,12 +317,12 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (recentf-mode 1)
 
 ;; clean up buffers every once in a while
-(require 'midnight)
+(use-package midnight)
 (midnight-delay-set 'midnight-delay 0)
 
 
 ;; unique names
-(require 'uniquify)
+(use-package uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 (setq uniquify-separator "/")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
@@ -343,7 +343,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; automatically indent on return, except in a few modes that have similar stuff by default
 ;; automatically indent on return
-(require 'electric)
+(use-package electric)
 (electric-indent-mode 1)
 (defadvice electric-indent-post-self-insert-function (around keep-trailing-whitespace activate)
   (noflet ((delete-horizontal-space (&rest args) t))
@@ -377,7 +377,7 @@ Deletes whitespace at join."
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
 ;; delete all space before point up to beginning of line or non-whitespace char
-(require 'hungry-delete)
+(use-package hungry-delete)
 (global-hungry-delete-mode)
 (defun literal-delete-char (&optional arg)
   (interactive "P")
@@ -388,7 +388,7 @@ Deletes whitespace at join."
 (global-set-key (kbd "C-d") 'literal-delete-char)
 (global-set-key (kbd "M-d") 'literal-delete-backward-char)
 
-(require 'wcheck-mode)
+(use-package wcheck-mode)
 (setq ispell-really-hunspell t)
 (setq wcheck-timer-idle .2)
 (define-key global-map (kbd "C-c s") 'wcheck-actions)
@@ -434,7 +434,7 @@ Deletes whitespace at join."
 
 
 ;; align
-(require 'align)
+(use-package align)
 ;; definitions for ruby code
 ;; fixes the most egregious mistake in detecting regions (hashes), but should be properly generalized at some point
 (setq align-region-separate "\\(^\\s-*[{}]?\\s-*$\\)\\|\\(=\\s-*[][{}()]\\s-*$\\)")
@@ -510,13 +510,13 @@ See the variable `align-rules-list' for more details.")
 (global-set-key (kbd "C-= w")   'align-whitespace)
 
 ;; diff- mode (better colors)
-(require 'diff-mode-)
+(use-package diff-mode-)
 ;; a slightly saner diff command
-(require 'ediff)
+(use-package ediff)
 (setq ediff-diff-options "-w")
 
 ;; if no region is active, act on current line
-(require 'whole-line-or-region)
+(use-package whole-line-or-region)
 (setq whole-line-or-region-extensions-alist
       '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
         (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
@@ -538,31 +538,31 @@ See the variable `align-rules-list' for more details.")
 (setq bookmark-default-file (emacs-d "cache/bookmarks"))
 
 ;; undo window changes
-(require 'winner)
+(use-package winner)
 (winner-mode 1)
 
 ;; number windows, i.e. M-1 .. M-0 to jump to window
-(require 'window-numbering)
+(use-package window-numbering)
 (window-numbering-mode 1)
 
 ;; expand-region
-(require 'expand-region)
+(use-package expand-region)
 (global-set-key (kbd "<C-prior>") 'er/expand-region)
 (global-set-key (kbd "<C-next>") 'er/contract-region)
 
 ;; make zsh aliases work
-(require 'shell-command)
+(use-package shell-command)
 (setq shell-command-switch "-lc")
 (shell-command-completion-mode)
 
 ;; scratchpad buffers
-(require 'scratch-ext)
+(use-package scratch-ext)
 (global-set-key (kbd "C-c b") 'scratch)
 ;; don't spam *Scratch*
 (setq initial-scratch-message nil)
 
 ;; oh pretty!
-(require 'pretty-lambdada)
+(use-package pretty-lambdada)
 (global-pretty-lambda-mode)
 
 ;; handle camelcase better
@@ -570,20 +570,20 @@ See the variable `align-rules-list' for more details.")
 
 
 ;; fast navigation
-(require 'imenu)
+(use-package imenu)
 (set-default 'imenu-auto-rescan t)
 ;; recentering
 (setq recenter-positions '(2 middle))
 (add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
-(require 'idomenu)
+(use-package idomenu)
 (define-key global-map (kbd "C-c [") 'idomenu)
 (define-key global-map (kbd "C-c C-[") 'idomenu)
-(require 'imenu-anywhere)
+(use-package imenu-anywhere)
 (define-key global-map (kbd "C-c ]") 'imenu-anywhere)
 (define-key global-map (kbd "C-c C-]") 'imenu-anywhere)
 
 ;; smartarens
-(require 'smartparens-config)
+(use-package smartparens-config)
 (smartparens-global-mode t)
 (show-smartparens-global-mode t)
 (setq sp-highlight-pair-overlay nil)
@@ -693,12 +693,12 @@ See the variable `align-rules-list' for more details.")
         (make-directory dir)))))
 
 ;; gist
-(require 'gist)
+(use-package gist)
 (setq gist-view-gist t)
 
 ;; go to last change
 ;; http://www.emacswiki.org/emacs/GotoChg
-(require 'goto-last-change)
+(use-package goto-last-change)
 (global-set-key [f8] 'goto-last-change)
 
 ;; Some saner clipboard
@@ -709,7 +709,7 @@ See the variable `align-rules-list' for more details.")
       mouse-yank-at-point t)
 
 
-(require 'keyfreq)
+(use-package keyfreq)
 (keyfreq-mode 1)
 (setq keyfreq-file (emacs-d "cache/keyfreq"))
 (setq keyfreq-file-lock (emacs-d "cache/keyfreq.lock"))
@@ -717,6 +717,6 @@ See the variable `align-rules-list' for more details.")
   (keyfreq-autosave-mode 1))
 
 
-(require 'keyboard-cat-mode)
+(use-package keyboard-cat-mode)
 
 (provide 'setup-editing)

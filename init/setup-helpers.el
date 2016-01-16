@@ -1,21 +1,21 @@
 ;; misc helper functions
 
 ;; common lisp stuff
-(require 'cl-lib)
+(use-package cl-lib)
 
 ;; better convenience functions for strings and map/reduce/loop
-(require 'dash)
-(require 's)
+(use-package dash)
+(use-package s)
 
 ;; sane regexes
-(require 'rx)
-(require 'ample-regexps)
+(use-package rx)
+(use-package ample-regexps)
 
 ;; replace obsolete flet
-(require 'noflet)
+(use-package noflet)
 
 ;; For time based theme setup
-(require 'solar)
+(use-package solar)
 
 ;; some generic aliases that make elisp less painful
 (defalias 'first  'cl-first)

@@ -1,7 +1,7 @@
 ;; general options
 (setq case-fold-search nil)
 
-(require 'kill-ring-search)
+(use-package kill-ring-search)
 (global-set-key (kbd "M-C-y") 'kill-ring-search)
 ;; cycle in the reverse direction
 (defun yank-pop-reverse ()
@@ -10,8 +10,8 @@
 (global-set-key (kbd "M-Y") 'yank-pop-reverse)
 
 ;; goto and hint-style navigation
-(require 'ace-jump-mode)
-(require 'ace-jump-buffer)
+(use-package ace-jump-mode)
+(use-package ace-jump-buffer)
 (setq ace-jump-mode-scope 'window)
 (global-set-key (kbd "M-g M-g") 'goto-line)
 (global-set-key (kbd "M-g b")   'ace-jump-buffer)
@@ -19,10 +19,10 @@
 (global-set-key (kbd "M-g g")   'ace-jump-mode)
 (global-set-key (kbd "M-g l")   'ace-jump-line-mode)
 
-(require 'phi-search)
+(use-package phi-search)
 
-(require 'visual-regexp)
-(require 'visual-regexp-steroids)
+(use-package visual-regexp)
+(use-package visual-regexp-steroids)
 (defun vr/query-replace-from-beginning ()
   (interactive)
   (save-excursion
@@ -90,7 +90,7 @@
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
 ;; better grep
-(require 'phi-grep)
+(use-package phi-grep)
 (setq phi-grep-window-height 40)
 (setq phi-grep-make-backup-function nil)
 

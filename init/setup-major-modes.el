@@ -1,7 +1,7 @@
 ;; major modes
 
 ;; default modes
-(require 'org)
+(use-package org)
 (setq initial-major-mode 'org-mode)
 (load-after 'org
   (setq-default major-mode 'org-mode))
@@ -14,7 +14,7 @@
   (define-key stupid-map (kbd "C-c") nil))
 
 ;; Flycheck for code linting
-(require 'flycheck)
+(use-package flycheck)
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (unbreak-stupid-map flycheck-mode-map)
   (define-key flycheck-mode-map (kbd "C-c C-n") 'flycheck-next-error)
@@ -33,7 +33,7 @@
   (add-hook 'c-mode-hook   'c-turn-on-eldoc-mode))
 
 ;; show what function we're in
-(require 'which-func)
+(use-package which-func)
 (which-function-mode 1)
 
 (load-after 'auto-complete-config
@@ -153,12 +153,12 @@
 (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
 (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
 
-(require 'org-journal)
+(use-package org-journal)
 (setq org-journal-dir "~/Documents/spoiler/logs/")
 (setq org-journal-file-format "%Y-%m-%d.org")
 (global-set-key (kbd "C-c j") 'org-journal-new-entry)
 
-(require 'org-download)
+(use-package org-download)
 
 ;; some templates
 (setcdr (assoc "c" org-structure-template-alist)
@@ -281,10 +281,10 @@
 ;; haskell mode
 (load-lazy '(haskell-mode) "haskell-mode")
 (load-after 'haskell-mode
-  (require 'haskell-doc)
+  (use-package haskell-doc)
     (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-  (require 'inf-haskell)
+  (use-package inf-haskell)
     (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
 
   (setq haskell-process-suggest-remove-import-lines t)
@@ -320,7 +320,7 @@
 
 (load-after 'enh-ruby-mode
   ;; misc stuff
-  (require 'ruby-block) ; show what block an end belongs to
+  (use-package ruby-block) ; show what block an end belongs to
     (ruby-block-mode t)
     (setq ruby-block-highlight-toggle t))
   
@@ -380,13 +380,13 @@
   (define-key go-mode-map (kbd "M-t") 'godef-jump)
   (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window))
 (load-after 'go-mode
-  (require 'go-eldoc)
+  (use-package go-eldoc)
     (add-hook 'go-mode-hook 'go-eldoc-require))
 (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
 
 ;; csv
 (load-lazy '(csv-mode) "csv-mode"
-  (require 'csv-nav)
+  (use-package csv-nav)
   (setq csv-separators '("," ";" "|" " ")))
 (add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
 
@@ -420,7 +420,7 @@
 (add-hook 'js2-mode-hook      'fic-mode)
 
 ;; emacs-lisp
-(require 'bytecomp)
+(use-package bytecomp)
   (defun byte-compile-current-buffer ()
     "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
     (interactive)
@@ -434,10 +434,10 @@
   ;; move files between split pans
   (setq dired-dwim-target t))
 (load-after 'dired
-  (require 'wdired)
-  (require 'dired-details)
-  (require 'dired-details+)
-  (require 'dired-open)
+  (use-package wdired)
+  (use-package dired-details)
+  (use-package dired-details+)
+  (use-package dired-open)
   ;; reload dired after making changes
   (--each '(dired-do-rename
             dired-do-copy

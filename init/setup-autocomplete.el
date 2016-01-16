@@ -1,7 +1,7 @@
 ;; auto completion setup
 
 ;; snippets
-(require 'yasnippet)
+(use-package yasnippet)
   ;; set snippet directory
 (setq yas-snippet-dirs (emacs-d "snippets"))
 
@@ -44,14 +44,14 @@
 ;; auto-yasnippet
 ;; hybrid of keyboard macro and yasnippet
 
-(require 'auto-yasnippet)
+(use-package auto-yasnippet)
 (global-set-key (kbd "C-c ~") 'aya-create)
 (global-set-key (kbd "C-c C-~") 'aya-expand)
 
 ;; auto completion
-;;(require 'fuzzy)
+;;(use-package fuzzy)
 
-(require 'auto-complete-config)
+(use-package auto-complete-config)
     ;; set sources to look into
 (setq ac-sources '(ac-source-abbrev
                    ac-source-dictionary
@@ -95,9 +95,9 @@
   (add-to-list 'ac-modes mode))
 
 (load-after 'go-mode
-  (require 'go-autocomplete))
+  (use-package go-autocomplete))
 
-(require 'ac-math)
+(use-package ac-math)
 (defvar ac-source-math-latex-everywhere
   '((candidates . ac-math-symbols-latex)
     (prefix . "\\\\\\(.*\\)")

@@ -1,5 +1,5 @@
 ;;(auto-insert-mode)
-(require 'autoinsert)
+(use-package autoinsert)
 (add-hook 'find-file-hooks 'auto-insert)
 (setq auto-insert-directory (emacs-d "templates/"))
 (setq auto-insert 'other)
