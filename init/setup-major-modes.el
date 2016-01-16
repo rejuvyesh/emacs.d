@@ -124,7 +124,8 @@
       '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
 ;; priorities
 (setq org-default-priority 67) ;C
-
+;; highlight math
+(setf org-highlight-latex-and-related '(latex entities))
 ;; code block
 (org-babel-do-load-languages
  'org-babel-load-languages
