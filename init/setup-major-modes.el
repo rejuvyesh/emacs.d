@@ -319,9 +319,6 @@
 
 (load-after 'enh-ruby-mode
   ;; misc stuff
-  ;; ri documentation tool
-  (require 'yari)
-    (define-key enh-ruby-mode-map (kbd "C-c ?") 'yari)
   (require 'ruby-block) ; show what block an end belongs to
     (ruby-block-mode t)
     (setq ruby-block-highlight-toggle t))
