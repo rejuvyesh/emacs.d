@@ -87,6 +87,7 @@
         sp-backward-symbol
         sp-beginning-of-sexp
         sp-end-of-sexp
+        sp-forward-sexp
         sp-remove-active-pair-overlay
         sp-unwrap-sexp
         toggle-title-case
