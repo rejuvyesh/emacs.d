@@ -37,10 +37,83 @@
   )
 
 ;; default modes
-(use-package org)
-(setq initial-major-mode 'org-mode)
-(load-after 'org
-  (setq-default major-mode 'org-mode))
+(use-package org
+  :ensure t
+  :mode ("\\\.org\\\'" . org-mode)
+  :init
+  (setq initial-major-mode 'org-mode)
+  (setq org-startup-indented t)
+  (setq org-hide-leading-stars t)
+  (setq org-indent-indentation-per-level 2)
+  (setq org-startup-folded 'content)
+  :config
+  (setq-default major-mode 'org-mode)
+  (setq org-blank-before-new-entry '((heading . nil)
+                                     (plain-list-item . auto)))
+  ;; tag column
+  (setq org-tags-column -70)
+  ;; dependencies
+  (setq org-enforce-todo-dependencies t)
+  ;; make clock history persistent
+  (setq org-clock-persist 'history)
+  ;; Todo states
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+  ;; priorities
+  (setq org-default-priority 67) ;C
+  ;; highlight math
+  (setf org-highlight-latex-and-related '(latex entities))
+  ;; code block
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (C          . t)
+     (R          . t)
+     (matlab     . t)
+     (sh         . t)
+     (ruby       . t)
+     (python     . t)
+     (haskell    . t)))
+  (add-to-list 'org-src-lang-modes '("c" . c))
+  (add-to-list 'org-src-lang-modes '("r" . ess-mode))
+  (add-to-list 'org-src-lang-modes '("h" . haskell))
+  (add-to-list 'org-src-lang-modes '("s" . sh))
+  (add-to-list 'org-src-lang-modes '("p" . python))
+  (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
+  (setq org-src-fontify-natively t)
+  (setq org-confirm-babel-evaluate nil)
+
+  (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
+  (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
+  (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
+  ;; shortcut for C-u C-c C-l
+  (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
+  (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
+  
+  ;; some templates
+  (setcdr (assoc "c" org-structure-template-alist)
+          '("#+BEGIN_COMMENT\n?\n#+END_COMMENT"))
+  (add-to-list 'org-structure-template-alist
+               '("r"
+                 "#+BEGIN_SRC ruby\n?\n#+END_SRC"
+                 "<src lang=\"ruby\">\n\n</src>"))
+  (add-to-list 'org-structure-template-alist
+               '("p"
+                 "#+BEGIN_SRC python\n?\n#+END_SRC"
+                 "<src lang=\"python\">\n\n</src>"))
+  (add-to-list 'org-structure-template-alist
+               '("b"
+                 "#+BEGIN_SRC bib\n?\n#+END_SRC"
+                 "<src lang=\"bib\">\n\n</src>"))
+  
+  ;; (use-package org-journal)
+  ;; (setq org-journal-dir "~/Documents/spoiler/logs/")
+  ;; (setq org-journal-file-format "%Y-%m-%d.org")
+  ;; (global-set-key (kbd "C-c j") 'org-journal-new-entry)
+
+  ;; (use-package org-download)
+  )
+
 
 ;; load raw text in a basic mode (for performance reasons)
 (add-to-list 'auto-mode-alist '("\\.log$" . fundamental-mode))
@@ -134,83 +207,7 @@
 ;; muflax-notes
 (load-lazy '(notes-mode) "notes-mode")
 
-;; org-mode
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.page$" . org-mode))
 
-;; loaded so that we can diminish it later
-(load-lazy '(org-mode) "org-indent"
-  ;; proper indentation / folding
-  (setq org-startup-indented t)
-  (setq org-hide-leading-stars t)
-  (setq org-indent-indentation-per-level 2)
-  (setq org-startup-folded 'content)
-  (setq org-blank-before-new-entry '((heading . nil)
-                                     (plain-list-item . auto))))
-;; tag column
-(setq org-tags-column -70)
-;; dependencies
-(setq org-enforce-todo-dependencies t)
-;; make clock history persistent
-(setq org-clock-persist 'history)
-
-;; Todo states
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
-;; priorities
-(setq org-default-priority 67) ;C
-;; highlight math
-(setf org-highlight-latex-and-related '(latex entities))
-;; code block
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (C          . t)
-   (R          . t)
-   (matlab     . t)
-   (sh         . t)
-   (ruby       . t)
-   (python     . t)
-   (haskell    . t)))
-(add-to-list 'org-src-lang-modes '("c" . c))
-(add-to-list 'org-src-lang-modes '("r" . ess-mode))
-(add-to-list 'org-src-lang-modes '("h" . haskell))
-(add-to-list 'org-src-lang-modes '("s" . sh))
-(add-to-list 'org-src-lang-modes '("p" . python))
-(add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
-(setq org-src-fontify-natively t)
-(setq org-confirm-babel-evaluate nil)
-
-(org-defkey org-mode-map (kbd "C-c t") (lambda () (interactive) (org-todo "TODO")))
-(org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
-(org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
-;; shortcut for C-u C-c C-l
-(defun org-insert-file-link () (interactive) (org-insert-link '(4)))
-(org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
-
-(use-package org-journal)
-(setq org-journal-dir "~/Documents/spoiler/logs/")
-(setq org-journal-file-format "%Y-%m-%d.org")
-(global-set-key (kbd "C-c j") 'org-journal-new-entry)
-
-(use-package org-download)
-
-;; some templates
-(setcdr (assoc "c" org-structure-template-alist)
-        '("#+BEGIN_COMMENT\n?\n#+END_COMMENT"))
-(add-to-list 'org-structure-template-alist
-             '("r"
-               "#+BEGIN_SRC ruby\n?\n#+END_SRC"
-               "<src lang=\"ruby\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-             '("p"
-               "#+BEGIN_SRC python\n?\n#+END_SRC"
-               "<src lang=\"python\">\n\n</src>"))
-(add-to-list 'org-structure-template-alist
-             '("b"
-               "#+BEGIN_SRC bib\n?\n#+END_SRC"
-               "<src lang=\"bib\">\n\n</src>"))
 
 ;; Automatic Math preview toggle in org-mode
 ;; Source: http://goo.gl/WLYzxp
