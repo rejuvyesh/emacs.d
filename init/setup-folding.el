@@ -86,4 +86,16 @@
      map) t)
   (message "<right> to fold more, <left> to fold less, SPC to reset."))
 
+(bind-keys :prefix-map visual-prefix-map
+           :prefix "C-:"
+           ("C-f" . fold-dwim-toggle)
+           ("SPC" . hs-show-block)
+           ("f" . hs-fold-levels)
+           ("F" . fold-dwim-show-all)
+           ("h" . hl-line-mode)
+           ("l" . toggle-line-wrap)
+           ("s" . whitespace-fold-levels)
+           ("S" . whitespace-fold-reset)
+           ("w" . leerzeichen-mode))
+
 (provide 'setup-folding)
