@@ -1,18 +1,24 @@
 ;; misc helper functions
 
 ;; common lisp stuff
-(use-package cl-lib)
+(use-package cl-lib
+             :ensure t)
 
 ;; better convenience functions for strings and map/reduce/loop
-(use-package dash)
-(use-package s)
+(use-package dash
+             :ensure t)
+(use-package s
+             :ensure t)
 
 ;; sane regexes
-(use-package rx)
-(use-package ample-regexps)
+(use-package rx
+             :ensure t)
+(use-package ample-regexps
+             :ensure t)
 
 ;; replace obsolete flet
-(use-package noflet)
+(use-package noflet
+             :ensure t)
 
 ;; For time based theme setup
 (use-package solar)
