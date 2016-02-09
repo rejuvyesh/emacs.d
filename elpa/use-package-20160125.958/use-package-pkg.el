@@ -1,1 +1,0 @@
-(define-package "use-package" "20160125.958" "A use-package declaration for simplifying your .emacs" '((bind-key "1.0") (diminish "0.44")) :stars '(#("856" 0 3 (font-lock-face paradox-star-face))) :url "https://github.com/jwiegley/use-package" :keywords '("dotemacs" "startup" "speed" "config" "package"))

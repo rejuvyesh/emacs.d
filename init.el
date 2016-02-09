@@ -36,6 +36,9 @@
 ;; modes etc
 (require 'setup-major-modes)
 
+;; project management
+(require 'setup-project)
+
 ;; use automatic file headers
 (require 'setup-auto-insert)
 

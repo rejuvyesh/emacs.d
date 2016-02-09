@@ -1,1 +1,0 @@
-(define-package "helm-themes" "20151008.2321" "Color theme selection with helm interface" '((helm-core "1.7.7")) :stars '(#("13" 0 2 (font-lock-face paradox-star-face))) :url "https://github.com/syohex/emacs-helm-themes")

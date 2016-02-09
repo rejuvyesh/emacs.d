@@ -1,1 +1,0 @@
-(define-package "ghci-completion" "20151125.457" "Completion for GHCi commands in inferior-haskell buffers" '((emacs "24.1") (cl-lib "0.5")) :stars '(#("5" 0 1 (font-lock-face paradox-star-face))) :keywords '("convenience"))
