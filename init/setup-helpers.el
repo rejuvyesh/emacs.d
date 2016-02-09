@@ -28,6 +28,8 @@
 (defalias 'head   'cl-first)
 (defalias 'hd     'cl-first)
 (defalias 'second 'cl-second)
+(defalias 'third  'cl-third)
+(defalias 'ninth  'cl-ninth)
 (defalias 'tail   'cl-rest)
 (defalias 'tl     'cl-rest)
 (defalias 'fn     'lambda)
@@ -98,7 +100,7 @@
   (let*
       ((l (solar-sunrise-sunset date))
        (sunrise-time (hour-fraction-to-time date (caar l)))
-       (sunset-time (hour-fraction-to-time date (caadr l))))
+       (sunset-time (hour-fraction-to-time date (cl-caadr l))))
     (list sunrise-time sunset-time)))
 
 (defun daytime-p (sunrise-time sunset-time)
