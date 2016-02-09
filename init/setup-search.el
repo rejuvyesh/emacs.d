@@ -1,8 +1,10 @@
 ;; general options
 (setq case-fold-search nil)
 
-(use-package kill-ring-search)
-(global-set-key (kbd "M-C-y") 'kill-ring-search)
+(use-package kill-ring-search
+  :ensure t
+  :bind (("M-C-y" . kill-ring-search)))
+
 ;; cycle in the reverse direction
 (defun yank-pop-reverse ()
   (interactive)
@@ -10,8 +12,10 @@
 (global-set-key (kbd "M-Y") 'yank-pop-reverse)
 
 ;; goto and hint-style navigation
-(use-package ace-jump-mode)
-(use-package ace-jump-buffer)
+(use-package ace-jump-mode
+  :ensure t)
+(use-package ace-jump-buffer
+  :ensure t)
 (setq ace-jump-mode-scope 'window)
 (global-set-key (kbd "M-g M-g") 'goto-line)
 (global-set-key (kbd "M-g b")   'ace-jump-buffer)
@@ -19,7 +23,8 @@
 (global-set-key (kbd "M-g g")   'ace-jump-mode)
 (global-set-key (kbd "M-g l")   'ace-jump-line-mode)
 
-(use-package phi-search)
+(use-package phi-search
+  :ensure t)
 
 (use-package visual-regexp)
 (use-package visual-regexp-steroids)
@@ -90,8 +95,10 @@
 (global-set-key (kbd "C-c *") 'isearch-word-at-point)
 
 ;; better grep
-(use-package phi-grep)
-(setq phi-grep-window-height 40)
-(setq phi-grep-make-backup-function nil)
+(use-package phi-grep
+  :ensure t
+  :config
+  (setq phi-grep-window-height 40)
+  (setq phi-grep-make-backup-function nil))
 
 (provide 'setup-search)
