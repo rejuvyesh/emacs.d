@@ -278,38 +278,43 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 
 ;; helm
-(use-package helm)
-(use-package helm-config)
-(helm-mode t)
-(use-package helm-flycheck)
+(use-package helm
+ :ensure t
+ :config
+ (require 'helm-config)
+ (setq helm-candidate-number-limit 100)
+ (setq helm-idle-delay 0.0
+       helm-input-idle-delay 0.01
+       helm-yas-display-key-on-candidate t
+       helm-quick-update t
+       helm-M-x-requires-pattern nil
+       helm-ff-skip-boring-files t
+       helm-split-window-default-side 'right
+       helm-ff-lynx-style-map nil
+       helm-follow-mode-persistent t
+       helm-M-x-fuzzy-match t)
+ (setq enable-recursive-minibuffers t)
+ (helm-mode t)
+ ;; Too close to exit
+ (global-unset-key (kbd "C-x c"))
+ (global-set-key (kbd "C-c h")     'helm-command-prefix)
+ (global-set-key (kbd "C-c h t")   'helm-cmd-t)
+ (global-set-key (kbd "C-c h g")   'helm-do-grep)
+ (global-set-key (kbd "C-c h o")   'helm-occur)
+ (global-set-key (kbd "M-x")       'helm-M-x)
+ (global-set-key (kbd "M-y")       'helm-show-kill-ring)
+ (global-set-key (kbd "C-c h C-o") 'helm-swoop)
+ (global-set-key (kbd "C-x C-f")   'helm-find-files)
+ (global-set-key (kbd "C-x b")     'helm-mini))
 
-(setq enable-recursive-minibuffers t)
-(setq helm-ff-lynx-style-map nil
-      helm-input-idle-delay 0.1
-      helm-idle-delay 0.1
-      helm-follow-mode-persistent t
-      helm-split-window-default-side 'right)
+(use-package helm-flycheck
+  :ensure t
+  :after (helm flycheck))
 
 (defadvice helm-default-display-buffer
     (before helm-fullscreen-split activate)
   (delete-other-windows))
 
-
-;; Too close to exit
-(global-unset-key (kbd "C-x c"))
-(global-set-key (kbd "C-c h")     'helm-command-prefix)
-(global-set-key (kbd "C-c h t")   'helm-cmd-t)
-(global-set-key (kbd "C-c h g")   'helm-do-grep)
-(global-set-key (kbd "C-c h o")   'helm-occur)
-(global-set-key (kbd "M-x")       'helm-M-x)
-(global-set-key (kbd "M-y")       'helm-show-kill-ring)
-(global-set-key (kbd "C-c h C-o") 'helm-swoop)
-(global-set-key (kbd "C-x C-f")   'helm-find-files)
-(global-set-key (kbd "C-x b")     'helm-mini)
-
-(use-package winner)
-(add-to-list 'winner-boring-buffers "*helm M-x*")
-(add-to-list 'winner-boring-buffers "*helm mini*")
 (use-package winner
   :config
   (add-to-list 'winner-boring-buffers "*helm M-x*")
