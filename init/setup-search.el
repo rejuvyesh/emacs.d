@@ -12,16 +12,14 @@
 (global-set-key (kbd "M-Y") 'yank-pop-reverse)
 
 ;; goto and hint-style navigation
-(use-package ace-jump-mode
-  :ensure t)
-(use-package ace-jump-buffer
-  :ensure t)
-(setq ace-jump-mode-scope 'window)
+(use-package avy
+  :ensure t
+  :bind (("M-g l" . avy-goto-line)
+         ("M-g c" . avy-goto-char)
+         ("M-g w" . avy-goto-word-or-subword-1)))
 (global-set-key (kbd "M-g M-g") 'goto-line)
-(global-set-key (kbd "M-g b")   'ace-jump-buffer)
-(global-set-key (kbd "M-g c")   'ace-jump-char-mode)
-(global-set-key (kbd "M-g g")   'ace-jump-mode)
-(global-set-key (kbd "M-g l")   'ace-jump-line-mode)
+(global-set-key (kbd "M-g g") 'goto-line)
+
 
 (use-package phi-search
   :ensure t)
