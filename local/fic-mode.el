@@ -33,7 +33,7 @@
 ;; NOTE: If you manually turn on fic-mode, you you might need to force re-fontification initially
 ;; M-x font-lock-fontify-buffer
 
-(defcustom fic-highlighted-words '("FIXME" "TODO" "BUG" "KLUDGE")
+(defcustom fic-highlighted-words '("FIXME" "TODO" "BUG" "KLUDGE" "XXX")
   "Words to highlight"
   :group 'fic-mode)
 
