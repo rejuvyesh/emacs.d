@@ -220,6 +220,14 @@
    `(circe-server-face ((,class (:foreground "#99CAE5"))))
    `(comint-highlight-input ((,class (:weight bold :foreground "#0000FF"))))
    `(comint-highlight-prompt ((,class (:weight bold :foreground "black" :background "gold"))))
+   `(company-preview-common ((,class (:foreground "#C0C0C0" :background "#F6FECD")))) ; same background as `highlight-line'
+   `(company-scrollbar-bg ((,class (:background "#F0F0F0"))))
+   `(company-scrollbar-fg ((,class (:background "#C0C0C0"))))
+   `(company-tooltip ((,class (:weight bold :foreground "#171D28" :background "#E6E6E6"))))
+   `(company-tooltip-annotation ((,class (:weight normal :foreground "#378FC1" :background "#E6E6E6"))))
+   `(company-tooltip-common ((,class (:weight normal :foreground "#5B6367" :inherit company-tooltip))))
+   `(company-tooltip-common-selection ((,class (:weight normal :inherit company-tooltip-selection))))
+   `(company-tooltip-selection ((,class (:weight bold :background "#93B0D8"))))
    `(compare-windows ((,class (:background "#FFFF00"))))
    `(compilation-error ((,class (:weight bold :foreground "red"))))
    `(compilation-info ((,class (:weight bold :foreground "#2A489E")))) ; used for grep
