@@ -2,7 +2,8 @@
 (use-package hideshowvis)
 (use-package fold-dwim)
 
-(add-hook 'prog-mode-hook 	'hs-minor-mode)
+(add-hook 'prog-mode-hook  #'hs-minor-mode)
+
 
 (setq hs-isearch-open t)
 
