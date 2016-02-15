@@ -1,9 +1,19 @@
 ;; auto completion setup
 
 ;; snippets
-(use-package yasnippet)
+(use-package yasnippet
+  :ensure t
+  :init
   ;; set snippet directory
-(setq yas-snippet-dirs (emacs-d "snippets"))
+  (setq yas-snippet-dirs (emacs-d "snippets"))
+  ;; turn on yasnippet everywhere
+  (yas-global-mode 1)
+  (yas-reload-all)
+  :config
+  ;; options
+  (setq yas-indent-line 'fixed)
+  (setq yas-verbosity 1)
+  (setq yas-wrap-around-region t))
 
 (defun my-yas/goto-end-of-active-field ()
   (interactive)
@@ -21,7 +31,7 @@
         (move-beginning-of-line 1)
       (goto-char position))))
 
-  
+
 (define-key yas-keymap (kbd "C-a") 'my-yas/goto-start-of-active-field)
 (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
 (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
@@ -32,21 +42,15 @@
 (define-key yas-keymap (kbd "C-T") 'yas-next-field)
 (define-key yas-minor-mode-map (kbd "C-c C-t") 'yas-reload-all)
 
-;; options
-(setq yas-indent-line 'fixed)
-(setq yas-verbosity 1)
-(setq yas-wrap-around-region t)
 
-;; turn on yasnippet everywhere
-(yas-global-mode 1)
-(yas-reload-all)
 
 ;; auto-yasnippet
 ;; hybrid of keyboard macro and yasnippet
+(use-package auto-yasnippet
+  :ensure t
+  :bind (("C-c ~" . aya-create)
+         ("C-c C-~" . aya-expand)))
 
-(use-package auto-yasnippet)
-(global-set-key (kbd "C-c ~") 'aya-create)
-(global-set-key (kbd "C-c C-~") 'aya-expand)
 
 ;; auto completion
 ;;(use-package fuzzy)
