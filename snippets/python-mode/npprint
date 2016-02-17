@@ -1,0 +1,5 @@
+# name: np.printoptions
+# key: npprint
+# --
+np.set_printoptions(suppress=True, precision=5, linewidth=1000)
+$0

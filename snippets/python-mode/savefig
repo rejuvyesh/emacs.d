@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: savefig
+# key: savefig
+# group: numpy
+# --
+plt.savefig('$1', transparent=True, bbox_inches='tight')
