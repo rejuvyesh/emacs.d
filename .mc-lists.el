@@ -70,8 +70,10 @@
         org-force-self-insert
         org-indent-line
         org-kill-line
+        org-return
         org-return-indent
         org-self-insert-command
+        org-yank
         orgtbl-ctrl-c-ctrl-c
         orgtbl-self-insert-command
         package-menu-mark-unmark
@@ -85,6 +87,7 @@
         sp--self-insert-command
         sp-add-to-previous-sexp
         sp-backward-symbol
+        sp-backward-unwrap-sexp
         sp-beginning-of-sexp
         sp-end-of-sexp
         sp-forward-sexp
@@ -92,6 +95,7 @@
         sp-unwrap-sexp
         toggle-title-case
         toggle-upcase
+        wdired-finish-edit
         wdired-previous-line
         whole-line-or-region-comment-dwim-2
         whole-line-or-region-kill-region
