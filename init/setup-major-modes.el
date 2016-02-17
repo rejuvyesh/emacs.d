@@ -670,10 +670,10 @@ are referenced by its edges, but functions for these tasks need region."
 
   ;; open by extension
   (setq dired-open-extensions '(
-                                ("pdf"  . "zathura")
                                 ("djvu" . "zathura")
                                 ("mkv"  . "rmpv")
                                 ("mp4"  . "rmpv")
+                                ("mp3"  . "rmpv -a")
                                 ))
   ;; sort number naturally
   (setq dired-listing-switches "--group-directories-first -v -al")
