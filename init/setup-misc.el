@@ -1,5 +1,10 @@
 ;; a bit more relaxed garbage collection
-(setq gc-cons-threshold 20000000)
+(defun my-minibuffer-setup-hook()
+  (setq gc-cons-threshold most-positive-fixnum))
+(defun my-minibuffer-exit-hook()
+  (setq gc-cons-threshold 800000))
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
 ;; use y/n instead of yes/no
 (fset 'yes-or-no-p 'y-or-n-p)
