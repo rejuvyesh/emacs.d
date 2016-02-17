@@ -3,6 +3,7 @@
 ;; snippets
 (use-package yasnippet
   :ensure t
+  :commands (yas-expand yas-reload-all)
   :init
   ;; set snippet directory
   (setq yas-snippet-dirs (emacs-d "snippets"))
