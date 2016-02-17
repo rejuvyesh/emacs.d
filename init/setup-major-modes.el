@@ -445,6 +445,27 @@ are referenced by its edges, but functions for these tasks need region."
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   (use-package inf-haskell)
     (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
+  :bind (("C-S-c" . python-execute-file)
+         ("C-c C-f" . python-shell-send-defun)
+         ("C-c C-r" . python-shell-send-region)
+         ("C->"     . python-indent-shift-right)
+         ("C-<"     . python-indent-shift-left)))
+
+
+(use-package cython-mode
+  :ensure t
+  :defer t)
+
+(use-package ein
+  :ensure t
+  :defer t
+  :init
+  ;; (unbind-key "C-<up>" ein:notebook-mode-map)
+  ;; (unbind-key "C-<down>" ein:notebook-mode-map)
+  :config
+  (bind-keys :map ein:notebook-mode-map
+             ("M-<up>" . ein:worksheet-goto-prev-input)
+             ("M-<down>" . ein:worksheet-goto-next-input)))
 
   (setq haskell-process-suggest-remove-import-lines t)
   (setq haskell-process-log t)
