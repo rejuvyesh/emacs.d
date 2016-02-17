@@ -437,14 +437,6 @@ are referenced by its edges, but functions for these tasks need region."
     (add-hook 'python-mode-hook 'anaconda-mode)
     (add-hook 'python-mode-hook 'eldoc-mode))
 
-;; haskell mode
-(load-lazy '(haskell-mode) "haskell-mode")
-(load-after 'haskell-mode
-  (use-package haskell-doc)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-  (use-package inf-haskell)
-    (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
   :bind (("C-S-c" . python-execute-file)
          ("C-c C-f" . python-shell-send-defun)
          ("C-c C-r" . python-shell-send-region)
@@ -467,10 +459,20 @@ are referenced by its edges, but functions for these tasks need region."
              ("M-<up>" . ein:worksheet-goto-prev-input)
              ("M-<down>" . ein:worksheet-goto-next-input)))
 
+;; haskell mode
+(use-package haskell-mode
+  :ensure t
+  :mode ("\\.hs$" . haskell-mode)
+  :config
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  (add-hook 'inferior-haskell-mode-hook 'turn-on-ghci-completion)
   (setq haskell-process-suggest-remove-import-lines t)
   (setq haskell-process-log t)
   (define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info))
+  (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info)
+  (use-package haskell-doc)
+  (use-package inf-haskell))
 
 ;; ruby ;;
 ;; replace normal ruby mode
