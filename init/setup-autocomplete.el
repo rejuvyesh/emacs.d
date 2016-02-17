@@ -86,17 +86,17 @@
 
 
 ;; auto correction via abbreviation file
-(load-after 'abbrev
-            (setq abbrev-file-name
-                  (emacs-d "abbrev_defs"))
-            (setq save-abbrevs 'silently)
-            (when (file-exists-p abbrev-file-name)
-              (quietly-read-abbrev-file))
-            )
-
-(if (file-exists-p abbrev-file-name)
+(use-package abbrev
+  :config
+  (setq abbrev-file-name
+        (emacs-d "abbrev_defs"))
+  (setq save-abbrevs 'silently)
+  (when (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
-(setq-default abbrev-mode t)
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file))
+  (setq-default abbrev-mode t))
+
 
 (provide 'setup-autocomplete)
 ;;; setup-autocomplete.el ends here
