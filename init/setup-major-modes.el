@@ -36,6 +36,7 @@
             (get-buffer-window buffer))))
   )
 
+
 ;; default modes
 (use-package org
   :ensure t
@@ -127,39 +128,48 @@
   (define-key stupid-map (kbd "C-c") nil))
 
 ;; Flycheck for code linting
-(use-package flycheck)
+(use-package flycheck
+  :ensure t
+  :init
   (add-hook 'after-init-hook #'global-flycheck-mode)
+  :config
   (unbreak-stupid-map flycheck-mode-map)
   (define-key flycheck-mode-map (kbd "C-c C-n") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error)
+  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error))
 
-;; C coding style
-(setq c-default-style "linux"
-      c-basic-offset tab-width
-      c-block-comment-prefix "* ")
-(global-set-key (kbd "M-RET") 'c-indent-new-comment-line)
 
-(load-lazy '(c-turn-on-eldoc-mode) "c-eldoc"
-  (setq c-eldoc-buffer-regenerate-time 15))
-(load-after 'cc-mode
+
+(use-package c-eldoc
+  :commands (c-turn-on-eldoc-mode)
+  :config
+  (setq c-eldoc-buffer-regenerate-time 15)
+  )
+
+(use-package cc-mode
+  :bind ("M-RET" . c-indent-new-comment-line)
+  :config
   (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
-  (add-hook 'c-mode-hook   'c-turn-on-eldoc-mode))
+  (add-hook 'c-mode-hook   'c-turn-on-eldoc-mode)
+  ;; C coding style
+  (setq c-default-style "linux"
+        c-basic-offset tab-width
+        c-block-comment-prefix "* "))
 
 ;; show what function we're in
-(use-package which-func)
-(which-function-mode 1)
-
-(load-after 'auto-complete-config
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (add-to-list 'ac-sources 'ac-source-c-headers)
-              (add-to-list 'ac-sources 'ac-source-c-header-symbols t))))
+(use-package which-func
+  :ensure t
+  :init
+  (which-function-mode 1))
 
 ;; load ESS for R
 ;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-(add-to-list 'auto-mode-alist '("\\.jl$" . julia-mode)
-(load-lazy '(R R-mode julia-mode) "ess-site"
-  (setq inferior-julia-program-name "julia")))
+(use-package ess-site
+  :mode (("\\.jl$" . julia-mode)
+         ("\\.R$"  . R-mode))
+  :commands (R R-mode julia-mode)
+  :config
+  (setq inferior-julia-program-name "julia")
+  )
 
 ;; auctex
 (use-package auctex
@@ -277,36 +287,37 @@ are referenced by its edges, but functions for these tasks need region."
   )
 
 ;; markdown
-(load-lazy '(markdown-mode) "markdown-mode"
+(use-package markdown-mode
+  :ensure t
+  :mode (("\\.md$"        . markdown-mode)
+         ("\\.mkd$"       . markdown-mode)
+         ("\\.pdc$"       . markdown-mode)
+         ("\\.markdown$"  . markdown-mode)
+         ("\\bREADME$$"   . markdown-mode))
+  :config
   (setq markdown-command "pandoc --smart -f markdown -t html")
   (setq markdown-css-paths `(,(expand-file-name "markdown.css" "~/.pandoc/css/markdown.css")))
   (setq markdown-enable-math t)
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
-  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
-  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
-  )
-(add-to-list 'auto-mode-alist '("\\.pdc$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mkd$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\bREADME$" . markdown-mode))
+  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
 
 ;; yaml
-(load-lazy '(yaml-mode) "yaml-mode")
-(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(use-package yaml-mode
+  :ensure t
+  :mode (("\\.yaml$" . yaml-mode)
+         ("\\.yml$" . yaml-mode)))
 
 ;; muflax-notes
-(load-lazy '(notes-mode) "notes-mode")
-
+(use-package notes-mode
+  :mode "\\.notes$")
 
 
 ;; Automatic Math preview toggle in org-mode
 ;; Source: http://goo.gl/WLYzxp
 (defvar org-latex-fragment-last nil
   "Holds last fragment/environment you were on.")
-
+;; FIXME Pretty janky right now
 (defun org-latex-fragment-toggle ()
   "Toggle a latex fragment image "
   (and (eq 'org-mode major-mode)
@@ -475,77 +486,76 @@ are referenced by its edges, but functions for these tasks need region."
   (use-package inf-haskell))
 
 ;; ruby ;;
-;; replace normal ruby mode
-(defalias 'ruby-mode 'enh-ruby-mode)
 ;; enhanced ruby mode
-(load-lazy '(ruby-mode enh-ruby-mode) "enh-ruby-mode"
+(use-package enh-ruby-mode
+  :ensure t
+  :commands (ruby-mode enh-ruby-mode)
+  :init
+  ;; replace normal ruby mode  
+  (defalias 'ruby-mode 'enh-ruby-mode)
+  :mode (("\\.rake$"    . enh-ruby-mode)
+         ("Rakefile$"  . enh-ruby-mode)
+         ("Gemfile$"   . enh-ruby-mode)
+         ("Capfile$"   . enh-ruby-mode)
+         ("\\.builder$" . enh-ruby-mode)
+         ("\\.gemspec$" . enh-ruby-mode))
+  :interpreter ("ruby" . enh-ruby-mode)
+  :config
   (setq enh-ruby-program "~/.rbenv/shims/ruby")
-
   ;; we use flycheck to cover errors
   (setq enh-ruby-check-syntax nil)
-
   ;; better indenting
   (setq ruby-indent-level tab-width)
   (setq enh-ruby-bounce-deep-indent t)
   (setq enh-ruby-deep-indent-paren nil)
+  (add-hook 'enh-ruby-mode-hook 'leerzeichen-mode))
 
-  (add-hook 'enh-ruby-mode-hook 'whitespace-mode))
 
-;; Rake files are Ruby, too
-(add-to-list 'interpreter-mode-alist '("ruby"        . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("\\.rake$"    . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Rakefile$"   . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Gemfile$"    . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("Capfile$"    . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("\\.builder$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist        '("\\.gemspec$" . enh-ruby-mode))
-
-(load-after 'enh-ruby-mode
-  ;; misc stuff
-  (use-package ruby-block) ; show what block an end belongs to
-    (ruby-block-mode t)
-    (setq ruby-block-highlight-toggle t))
-  
+(use-package ruby-block ; show what block an end belongs to
+  :ensure t
+  :after (enh-ruby-mode)
+  :config
+  (ruby-block-mode t)
+  (setq ruby-block-highlight-toggle t))
 
 ;; lua
-(load-lazy '(lua-mode) "lua-mode"
+(use-package lua-mode
+  :ensure t
+  :mode ("\\.lua$" . lua-mode)
+  :config
   (setq lua-indent-level 2))
 
 ;; (s)css
-(load-lazy '(scss-mode) "scss-mode"
+(use-package scss-mode
+  :ensure t
+  :mode ("\\.scss$" . scss-mode)
+  :config
   (setq scss-compile-at-save nil))
 
 ;; web-mode
-(load-lazy '(web-mode) "web-mode"
-  :prepare (push (! `(,(format "\\.%s$"
-                               (regexp-opt
-                                '("phtml" "tpl" "php" "gsp" "jsp"
-                                  "aspx" "ascx" "erb" "mustache" "djhtml"
-                                  "html" "js" "jsx" "css" "xml")))
-                      . web-mode)) auto-mode-alist)
+(use-package web-mode
+  :ensure t
+  :mode (("\\.html$" . web-mode)
+         ("\\.php$"  . web-mode)
+         ("\\.jsp$"  . web-mode)
+         ("\\.jsx$"  . web-mode)
+         ("\\.js$"   . web-mode)
+         ("\\.xml$"  . web-mode)
+         ("\\.aspx$" . web-mode))
+  
+  :config
   (setq web-mode-markup-indent-offset 2
         web-mode-code-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-style-padding 2
         web-mode-script-padding 2
         web-mode-block-padding 2)
-
   (require-keybinds web-mode-map
-    [remap comment-dwim] 'web-mode-comment-or-uncomment
-    "C-c C-'" 'web-mode-element-close)
+                    [remap comment-dwim] 'web-mode-comment-or-uncomment
+                    "C-c C-'" 'web-mode-element-close))
 
-  (load-after 'auto-complete
-    (load-after 'auto-complete-config
-      (setq web-mode-ac-sources-alist
-            '(("javascript" . (ac-source-words-in-same-mode-buffers))
-              ("php" . (ac-source-words-in-same-mode-buffers))
-              ("css" . (ac-source-css-property ac-source-words-in-same-mode-buffers))
-              ("html" . (ac-source-words-in-same-mode-buffers))))
-      (push 'web-mode ac-modes)))
-
-  (load-after 'smart-compile
-    (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
-  )
+(load-after 'smart-compile
+  (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
 
 ;; eldoc, ie function signatures in the minibuffer
 (load-lazy '(turn-on-eldoc-mode) "eldoc"
@@ -556,70 +566,160 @@ are referenced by its edges, but functions for these tasks need region."
 
 
 ;; go
-(load-lazy '(go-mode) "go-mode"
+(use-package go-mode
+  :ensure t
+  :mode ("\\.go$" . go-mode)
+  :config
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports")
   (define-key go-mode-map (kbd "M-t") 'godef-jump)
-  (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window))
-(load-after 'go-mode
+  (define-key go-mode-map (kbd "M-T") 'godef-jump-other-window)
   (use-package go-eldoc)
-    (add-hook 'go-mode-hook 'go-eldoc-require))
-(add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+  (add-hook 'go-mode-hook 'go-eldoc-require))
 
 ;; csv
-(load-lazy '(csv-mode) "csv-mode"
+(use-package csv-mode
+  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
+  :config
   (use-package csv-nav)
-  (setq csv-separators '("," ";" "|" " ")))
-(add-to-list 'auto-mode-alist 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+  (setq csv-separators '("," ";" "|" " "))
+  )
 
 ;; json
-(load-lazy '(json-mode) "json-mode")
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+(use-package json-mode
+  :ensure t
+  :mode ("\\.json$" . json-mode))
 
 ;; shell stuff
-(load-lazy '(sh-mode) "sh-script"
-  (setq sh-basic-offset tab-width)
-  (add-hook 'sh-mode-hook 'whitespace-mode))
+(use-package sh-script
+  :commands (sh-mode)
+  :config
+  (setq sh-basic-offset tab-width))
 
 ;; matlab
-(load-lazy '(matlab-mode) "matlab-load"
-  (add-hook 'matlab-mode
-            (lambda ()
-              (auto-complete-mode 1)
-              (whitespace-mode)
-              ))
-  (setq matlab-shell-command-switches (quote ("-nodesktop -nosplash"))))
-(add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+(use-package matlab-mode
+  :mode ("\\.m$" . matlab-mode)
+  :init
+  (load-library "matlab-load")
+  :config
+  (add-to-list 'company-backends 'company-matlab)
+  (setq matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
+  (eval-after-load 'flycheck
+    '(require 'flycheck-matlab-mlint)))
+
 
 ;; crontab
-(load-lazy '(crontab-mode) "crontab-mode")
-(add-to-list 'auto-mode-alist '( "\\.?cron\\(tab\\)?\\'" . crontab-mode))
+(use-package crontab-mode
+  :ensure t
+  :mode ("\\.?cron\\(tab\\)?\\'" . crontab-mode))
+
+(use-package pkgbuild-mode
+  :ensure t
+  :mode "/PKGBUILD\\'")
+
+(use-package dockerfile-mode
+  :ensure t
+  :mode "/Dockerfile\\'")
+
+(use-package graphviz-dot-mode
+  :ensure t
+  :mode "\\.dot\\'")
+
+(use-package systemd
+  :ensure t
+  :mode ("\\.automount\\'\\|\\.busname\\'\\|\\.mount\\'\\|\\.service\\'\\|\\.slice\\'\\|\\.socket\\'\\|\\.target\\'\\|\\.timer\\'\\|\\.link\\'\\|\\.netdev\\'\\|\\.network\\'\\|\\.override\\.conf.*\\'" . systemd-mode))
 
 ;; mark stuff like FIXME
-(load-lazy '(fic-mode) "fic-mode")
+(use-package fic-mode
+  :commands (fic-mode))
 (add-hook 'prog-mode-hook     'fic-mode)
 (add-hook 'enh-ruby-mode-hook 'fic-mode)
 (add-hook 'js2-mode-hook      'fic-mode)
 
+
+;; mutt
+;; mail support.
+(setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
+(add-hook 'mail-mode-hook 'turn-on-auto-fill)
+(add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
+
+
+(use-package conf-mode
+  :commands (conf-mode))
+
+(use-package paradox
+  :commands (paradox-list-packages)
+  :config
+  (setq paradox-github-token t))
+
+(use-package nix-mode
+  :mode ("\\.nix" . nix-mode)
+  :commands (nix-mode)
+  :config
+  (add-hook 'nix-mode-hook 'leerzeichen-mode)
+  )
+
+(use-package hledger-mode
+  :mode ("\\.hledger\\.journal" . hledger-mode)
+  :config
+  (add-hook 'hledger-mode 'leerzeichen-mode)
+  )
+
+(use-package dactyl-mode
+  :mode ("\\.pentadactylrc$" . dactyl-mode)
+  :commands (dactyl-mode))
+
+;; ag search
+(use-package ag
+  :ensure t
+  :commands (ag)
+  :config
+  (setq ag-highlight-search t)
+  )
+
+;; smart-compile
+(use-package smart-compile
+  :bind (("C-S-c" . smart-compile))
+  :config
+  (setq smart-compile-alist
+        '( (emacs-lisp-mode  . (emacs-lisp-byte-compile))
+           (html-mode        . (browse-url-of-buffer))
+           (nxhtml-mode      . (browse-url-of-buffer))
+           (html-helper-mode . (browse-url-of-buffer))
+           (octave-mode      . (run-octave))
+           (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
+           (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
+           (if (f-exists? ".cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d")
+               (haskell-mode . "ghc -package-db=.cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d -Wall -fwarn-missing-import-lists %f")
+             (haskell-mode   . "ghc -Wall -fwarn-missing-import-lists %f"))
+           )
+        ))
+
 ;; emacs-lisp
-(use-package bytecomp)
+(use-package bytecomp
+  :config
   (defun byte-compile-current-buffer ()
     "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
     (interactive)
     (when (and (eq major-mode 'emacs-lisp-mode)
                (file-exists-p (byte-compile-dest-file buffer-file-name)))
       (byte-compile-file buffer-file-name)))
-  (add-hook 'after-save-hook 'byte-compile-current-buffer)
+  (add-hook 'after-save-hook 'byte-compile-current-buffer))
 
 ;; dired
-(load-lazy '(dired-jump) "dired"
-  ;; move files between split pans
-  (setq dired-dwim-target t))
-(load-after 'dired
-  (use-package wdired)
-  (use-package dired-details)
-  (use-package dired-details+)
-  (use-package dired-open)
+(use-package dired
+  :commands (dired-jump)
+  :bind ("C-x C-j" . dired-jump)
+  :config
+  (setq dired-dwim-target t)
+  (use-package wdired
+    :ensure t)
+  (use-package dired-details
+    :ensure t)
+  (use-package dired-details+
+    :ensure t)
+  (use-package dired-open
+    :ensure t)
   ;; reload dired after making changes
   (--each '(dired-do-rename
             dired-do-copy
@@ -627,7 +727,6 @@ are referenced by its edges, but functions for these tasks need region."
             wdired-abort-changes)
     (eval `(defadvice ,it (after revert-buffer activate)
              (revert-buffer))))
-  (global-set-key (kbd "C-c C-j") 'dired-jump)
   (define-key dired-mode-map (kbd "C-c C-c") 'wdired-change-to-wdired-mode)
   (define-key dired-mode-map (kbd "<insert>") 'dired-mark)
   ;; C-a goes to filename
@@ -652,7 +751,6 @@ are referenced by its edges, but functions for these tasks need region."
   (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
   (define-key dired-mode-map (vector 'remap 'smart-down) 'dired-jump-to-bottom)
   (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
-
   (defun dired-dotfiles-toggle ()
     "Show/hide dot-files"
     (interactive)
@@ -665,9 +763,7 @@ are referenced by its edges, but functions for these tasks need region."
             (dired-do-kill-lines))
         (progn (revert-buffer) ; otherwise just revert to re-show
                (set (make-local-variable 'dired-dotfiles-show-p) t)))))
-
   (define-key dired-mode-map (kbd ".") 'dired-dotfiles-toggle)
-
   ;; open by extension
   (setq dired-open-extensions '(
                                 ("djvu" . "zathura")
@@ -676,92 +772,8 @@ are referenced by its edges, but functions for these tasks need region."
                                 ("mp3"  . "rmpv -a")
                                 ))
   ;; sort number naturally
-  (setq dired-listing-switches "--group-directories-first -v -al")
-  )
-
-;; mutt
-;; mail support.
-(setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
-(add-hook 'mail-mode-hook 'turn-on-auto-fill)
-(add-hook 'mail-mode-hook (lambda () (setq fill-column 72)))
-
-;; ag search
-(load-lazy '(ag) "ag"
-  (setq ag-highlight-search t))
-
-;; smart-compile
-(load-lazy '(smart-compile) "smart-compile"
-  (setq smart-compile-alist
-        '( (emacs-lisp-mode  . (emacs-lisp-byte-compile))
-           (html-mode        . (browse-url-of-buffer))
-           (nxhtml-mode      . (browse-url-of-buffer))
-           (html-helper-mode . (browse-url-of-buffer))
-           (octave-mode      . (run-octave))
-           (c-mode           . "gcc -c99 -pedantic -Wall -W -Wextra -Wunreachable-code %f")
-           (java-mode        . "javac -Xlint:all -encoding UTF-8 %f")
-           (if (f-exists? ".cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d")
-               (haskell-mode . "ghc -package-db=.cabal-sandbox/x86_64-linux-ghc-7.8.3-packages.conf.d -Wall -fwarn-missing-import-lists %f")
-             (haskell-mode   . "ghc -Wall -fwarn-missing-import-lists %f")
-             )
-           )
-        ))
-(global-set-key (kbd "C-S-c") 'smart-compile)
-
-(load-lazy '(conf-mode) "conf-mode")
-
-(load-lazy '(paradox-list-packages) "paradox"
-  (setq paradox-github-token t))
-
-(load-lazy '(nix-mode) "nix-mode"
-  (add-hook 'nix-mode-hook 'whitespace-mode))
-(add-to-list 'auto-mode-alist '("\\.nix" . nix-mode))
-
-(load-lazy '(hledger-mode) "hledger-mode"
-  (add-hook 'hledger-mode 'whitespace-mode))
-(add-to-list 'auto-mode-alist '("\\.hledger\\.journal" . hledger-mode))
-
-(load-lazy '(dactyl-mode) "dactyl-mode")
-(add-to-list 'auto-mode-alist '("\\.pentadactylrc" . dactyl-mode))
-
-;; magit
-(load-lazy '(magit-status) "magit"
-  (set-default 'magit-unstage-all-confirm nil)
-  (setq magit-log-cutoff-length 1000)
-  (setq magit-diff-auto-show '())
-  (setq magit-push-always-verify nil)
-
-  ;; full screen magit-status
-  (defadvice magit-status (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
-  
-  (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
-    (interactive)
-    (kill-buffer)
-    (jump-to-register :magit-fullscreen))
-  
-  (defun magit-toggle-whitespace ()
-    (interactive)
-    (if (member "--ignore-space-change" magit-diff-section-arguments)
-        (magit-dont-ignore-whitespace)
-      (magit-ignore-whitespace)))
-
-  (defun magit-ignore-whitespace ()
-    (interactive)
-    (add-to-list 'magit-diff-section-arguments "--ignore-space-change")
-    (magit-refresh))
-
-  (defun magit-dont-ignore-whitespace ()
-    (interactive)
-    (setq magit-diff-options (remove "--ignore-space-change" magit-diff-section-arguments))
-    (magit-refresh))
-
-  (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace))
-(global-set-key (kbd "C-x g") 'magit-status)
+  (setq dired-listing-switches "--group-directories-first -v -al"))
 
 
-(load-lazy '(conf-mode) "conf-mode")
 
 (provide 'setup-major-modes)
