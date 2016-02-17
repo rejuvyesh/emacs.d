@@ -162,29 +162,42 @@
   (setq inferior-julia-program-name "julia")))
 
 ;; auctex
-(load-lazy '(latex-mode LaTeX-mode) "latex"
-  (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
-  (add-hook 'LaTeX-mode-hook 'TeX-fold-mode)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-  (add-hook 'LaTeX-mode-hook #'latex-extra-mode)
+(use-package auctex
+  :ensure t
+  :mode ("\\.tex$" . LaTeX-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :init
+  (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)  
+  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)  
+  (setq TeX-auto-save t
+        TeX-parse-self t
+        TeX-save-query nil
+        TeX-PDF-mode t)
   (setq TeX-source-correlate-method 'synctex)
-  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq TeX-save-query nil)
-  (setq TeX-newline-function 'reindent-then-newline-and-indent)
-  (setq-default TeX-PDF-mode t)
-  (setq-default TeX-engine 'xetex)      ; use xelatex by default
-  (setq TeX-view-program-list
-        '(("zathura"
-           ("zathura" (mode-io-correlate "-sync.sh")
-            " "
-            (mode-io-correlate "%n:1:%b ")
-            "%o"))))
-  (setq TeX-view-program-selection '((output-pdf "zathura")))
-  (load-after 'auto-complete
-      (push 'LaTeX-mode ac-modes)  ; make auto-complete aware of `latex-mode`
-      )
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-source-correlate-start-server t)
+  :config
+  ;; Compilation command  
+  (add-hook 'LaTeX-mode-hook (lambda () (setq compile-command "latexmk -pdf")))
+  (use-package latex-extra
+    :ensure t
+    :init
+    (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
+
+(use-package preview
+  :commands LaTeX-preview-setup
+  :init
+  (setq-default preview-scale 1.4
+                preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale))))
+
+(use-package bibtex
+  :mode ("\\.bib$" . bibtex-mode)
+  :init
+  (setq bibtex-align-at-equal-sign t)
+  (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
   )
 
 ;; markdown
