@@ -120,7 +120,9 @@
    `(ecb-default-highlight-face ((((type graphic)) (:foreground ,red-1 :background ,red-1bg))))
    `(ecb-method-face ((((type graphic)) (:foreground ,red-1 :background ,red-1bg))))
    `(ecb-tag-header-face ((((type graphic)) (:background ,blue-2bg))))
-
+   
+   `(which-func ((((type graphic)) (:weight bold :foreground "gray-3"))))
+   
    ;; org-mode
    `(org-date ((((type graphic)) (:foreground ,purple-1 :background ,purple-1bg))))
    `(org-done ((((type graphic)) (:foreground ,green-1 :background ,green-1bg))))
