@@ -318,7 +318,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (use-package winner
   :config
   (add-to-list 'winner-boring-buffers "*helm M-x*")
-  (add-to-list 'winner-boring-buffers "*helm mini*"))
+  (add-to-list 'winner-boring-buffers "*helm mini*")
+  (winner-mode 1))
 
 
 ;; recent files
@@ -362,10 +363,10 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 (use-package electric
   :config
   (electric-indent-mode 1))
+
 (defadvice electric-indent-post-self-insert-function (around keep-trailing-whitespace activate)
   (noflet ((delete-horizontal-space (&rest args) t))
     ad-do-it))
-
 
 ;; also indent when yanked
 (defun yank-and-indent ()
@@ -398,6 +399,7 @@ Deletes whitespace at join."
   :ensure t
   :init
   (global-hungry-delete-mode))
+
 (defun literal-delete-char (&optional arg)
   (interactive "P")
   (delete-char 1))
@@ -448,9 +450,9 @@ Deletes whitespace at join."
 ;; enable spell-check in certain modes
 (defun turn-on-spell-check ()
   (wcheck-mode 1))
-(add-hook 'text-mode-hook 'turn-on-spell-check)
+(add-hook 'text-mode-hook     'turn-on-spell-check)
 (add-hook 'markdown-mode-hook 'turn-on-spell-check)
-(add-hook 'org-mode-hook 'turn-on-spell-check)
+(add-hook 'org-mode-hook      'turn-on-spell-check)
 
 
 ;; align
@@ -567,6 +569,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; number windows, i.e. M-1 .. M-0 to jump to window
 (use-package window-numbering
+  :ensure t
   :config
   (window-numbering-mode 1))
 
@@ -578,6 +581,7 @@ See the variable `align-rules-list' for more details.")
 
 ;; make zsh aliases work
 (use-package shell-command
+  :ensure t
   :config
   (setq shell-command-switch "-lc")
   (shell-command-completion-mode))
@@ -588,6 +592,7 @@ See the variable `align-rules-list' for more details.")
   :bind ("C-c b" . scratch)
   :config
   (setq scratch-ext-log-directory (emacs-d "scratch/")))
+
 ;; don't spam *Scratch*
 (setq initial-scratch-message nil)
 
@@ -599,20 +604,17 @@ See the variable `align-rules-list' for more details.")
 ;; handle camelcase better
 (global-subword-mode 1)
 
-
 ;; fast navigation
 (use-package imenu
   :config
   (set-default 'imenu-auto-rescan t)
   ;; recentering
   (setq recenter-positions '(2 middle)))
+
 (add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
-(use-package idomenu)
-(define-key global-map (kbd "C-c [") 'idomenu)
-(define-key global-map (kbd "C-c C-[") 'idomenu)
-(use-package imenu-anywhere)
-(define-key global-map (kbd "C-c ]") 'imenu-anywhere)
-(define-key global-map (kbd "C-c C-]") 'imenu-anywhere)
+;; (use-package idomenu
+;;   :bind (("C-c [" . idomenu)
+;;          ("C-c C-[" . idomenu)))
 
 ;; smartparens
 (use-package smartparens
@@ -704,6 +706,7 @@ See the variable `align-rules-list' for more details.")
 (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)
 
 (use-package toggle-quotes
+  :ensure t
   :commands (toggle-quotes)
   :bind ("C-'" . toggle-quotes))
 
@@ -737,6 +740,7 @@ See the variable `align-rules-list' for more details.")
   :config
   (setq gist-view-gist t))
 
+
 ;; go to last change
 ;; http://www.emacswiki.org/emacs/GotoChg
 (use-package goto-last-change
@@ -752,6 +756,7 @@ See the variable `align-rules-list' for more details.")
 
 
 (use-package keyfreq
+  :ensure t
   :config
   (keyfreq-mode 1)
   (setq keyfreq-file (emacs-d "cache/keyfreq"))
