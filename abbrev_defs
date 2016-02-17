@@ -1,6 +1,8 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'Custom-mode-abbrev-table '())
+
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'TeX-error-overview-mode-abbrev-table '())
@@ -8,6 +10,8 @@
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
 (define-abbrev-table 'ag-mode-abbrev-table '())
+
+(define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
@@ -26,6 +30,8 @@
 (define-abbrev-table 'c-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
@@ -57,6 +63,8 @@
 
 (define-abbrev-table 'doctex-mode-abbrev-table '())
 
+(define-abbrev-table 'edebug-eval-mode-abbrev-table '())
+
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
@@ -70,6 +78,8 @@
 (define-abbrev-table 'epa-key-list-mode-abbrev-table '())
 
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'eshell-mode-abbrev-table '())
 
 (define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
 
@@ -488,6 +498,8 @@
     ("especally" "especially" nil 0)
     ("especialyl" "especially" nil 0)
     ("espesially" "especially" nil 0)
+    ("estiamte" "estimate" nil 3)
+    ("estiamting" "estimating" nil 1)
     ("excellant" "excellent" nil 0)
     ("excercise" "exercise" nil 0)
     ("exchagne" "exchange" nil 0)
@@ -956,7 +968,7 @@
     ("talkign" "talking" nil 0)
     ("tath" "that" nil 0)
     ("tecnical" "technical" nil 0)
-    ("teh" "the" nil 1)
+    ("teh" "the" nil 2)
     ("tehy" "they" nil 0)
     ("terminiated" "terminated" nil 0)
     ("termoil" "turmoil" nil 0)
@@ -1086,6 +1098,8 @@
     ("yuor" "your" nil 0)
    ))
 
+(define-abbrev-table 'gnus-group-mode-abbrev-table '())
+
 (define-abbrev-table 'go-mode-abbrev-table '())
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
@@ -1111,6 +1125,8 @@
 (define-abbrev-table 'help-mode-abbrev-table '())
 
 (define-abbrev-table 'html-mode-abbrev-table '())
+
+(define-abbrev-table 'ibuffer-mode-abbrev-table '())
 
 (define-abbrev-table 'idl-mode-abbrev-table '())
 
@@ -1152,11 +1168,25 @@
 
 (define-abbrev-table 'magit-log-mode-abbrev-table '())
 
+(define-abbrev-table 'magit-log-select-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-merge-preview-mode-abbrev-table '())
+
 (define-abbrev-table 'magit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-popup-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-process-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-refs-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-revision-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stash-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stashes-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
 
@@ -1194,6 +1224,12 @@
 
 (define-abbrev-table 'paradox-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'pdf-annot-list-mode-abbrev-table '())
+
+(define-abbrev-table 'pdf-occur-buffer-mode-abbrev-table '())
+
+(define-abbrev-table 'pdf-outline-buffer-mode-abbrev-table '())
+
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
    ))
@@ -1206,7 +1242,9 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'ruby-mode-abbrev-table '())
 
@@ -1228,7 +1266,11 @@
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
+(define-abbrev-table 'tablist-mode-abbrev-table '())
+
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'tar-mode-abbrev-table '())
 
 (define-abbrev-table 'tex-mode-abbrev-table '())
 
