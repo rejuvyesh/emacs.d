@@ -53,6 +53,36 @@
          ("C-c C-~" . aya-expand)))
 
 
+(use-package company
+  :ensure t
+  :init
+  (setq company-idle-delay 0)
+  (setq company-tooltip-align-annotations t)
+  (global-company-mode)
+  :config
+  (use-package company-quickhelp
+    :ensure t
+    :init
+    (company-quickhelp-mode 1))
+  ;; math
+  (use-package company-math
+    :ensure t
+    :config
+    (add-to-list 'company-backends '(company-math-symbols-latex company-latex-commands)))
+  ;; sort complections by usage statistics
+  (use-package company-statistics
+    :ensure t
+    :init
+    (setq company-statistics-file (emacs-d "cache/company-statistics"))
+    :config
+    (company-statistics-mode)))
+
+
+(use-package company-anaconda
+  :after (company anaconda-mode)
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-anaconda))
 
 
 ;; auto correction via abbreviation file
