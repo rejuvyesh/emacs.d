@@ -198,6 +198,82 @@
   :init
   (setq bibtex-align-at-equal-sign t)
   (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
+
+(use-package pdf-tools
+  :mode ("\\.pdf$" . pdf-view-mode)
+  :config
+  (pdf-tools-install)
+  (bind-keys :map pdf-view-mode-map
+             ("j" . pdf-view-next-line-or-next-page)
+             ("k" . pdf-view-previous-line-or-previous-page))
+  (add-hook 'pdf-view-mode-hook
+            (lambda ()
+              (pdf-misc-size-indication-minor-mode)
+              (pdf-links-minor-mode)
+              (pdf-isearch-minor-mode)))
+  (defun my-pdf-multi-extract (sources)
+    "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
+and links back to page of highlight."
+    (let ((output ""))
+      (dolist (thispdf sources)
+        (setq output (concat output (pdf-annot-markups-as-org-text thispdf nil level ))))
+      (princ output))
+    )
+  ;; this is stolen from https://github.com/pinguim06/pdf-tools/commit/22629c746878f4e554d4e530306f3433d594a654
+  (defun pdf-annot-edges-to-region (edges)
+    "Attempt to get 4-entry region \(LEFT TOP RIGHT BOTTOM\) from several edges.
+We need this to import annotations and to get marked-up text, because annotations
+are referenced by its edges, but functions for these tasks need region."
+    (let ((left0 (nth 0 (car edges)))
+          (top0 (nth 1 (car edges)))
+          (bottom0 (nth 3 (car edges)))
+          (top1 (nth 1 (car (last edges))))
+          (right1 (nth 2 (car (last edges))))
+          (bottom1 (nth 3 (car (last edges))))
+          (n (safe-length edges)))
+      ;; we try to guess the line height to move
+      ;; the region away from the boundary and
+      ;; avoid double lines
+      (list left0
+            (+ top0 (/ (- bottom0 top0) 2))
+            right1
+            (- bottom1 (/ (- bottom1 top1) 2 )))))
+  (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
+    "Acquire highligh annotations as text, and return as org-heading"
+    (interactive "fPath to PDF: ")  
+    (let* ((outputstring "") ;; the text to be returned
+           (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
+           (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
+           (levelstring (make-string level ?*)) ;; set headline to proper level
+           (annots (sort (pdf-info-getannots nil pdfpath)  ;; get and sort all annots
+                         'pdf-annot-compare-annotations))
+           )
+      ;; create the header
+      (setq outputstring (concat levelstring " Quotes From " title "\n\n")) ;; create heading
+
+      ;; extract text
+      (mapc
+       (lambda (annot) ;; traverse all annotations
+         (if (eq 'highlight (assoc-default 'type annot))
+             (let* ((page (assoc-default 'page annot))
+                    ;; use pdf-annot-edges-to-region to get correct boundaries of highlight
+                    (real-edges (pdf-annot-edges-to-region
+                                 (pdf-annot-get annot 'markup-edges)))
+                    (text (or (assoc-default 'subject annot) (assoc-default 'content annot)
+                              (replace-regexp-in-string "\n" " " (pdf-info-gettext page real-edges nil pdfpath)
+                                                        ) ))
+
+                    (height (nth 1 real-edges)) ;; distance down the page
+                    ;; use pdfview link directly to page number
+                    (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                                      "++" (number-to-string height) "][" title  "]]" ))
+                    )
+               (setq outputstring (concat outputstring text " ("
+                                          linktext ", " (number-to-string page) ")\n\n"))
+               )))
+       annots)
+      outputstring ;; return the header
+      ))
   )
 
 ;; markdown
