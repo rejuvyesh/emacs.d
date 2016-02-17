@@ -54,28 +54,26 @@
   "Check time and change theme setting"
   (let*
       ((now (current-time))
-       
        (today-times    (sunrise-sunset-times (today)))
        (tomorrow-times (sunrise-sunset-times (tomorrow)))
-       
        (sunrise-today (first today-times))
        (sunset-today (second today-times))
        (sunrise-tomorrow (first tomorrow-times)))
     (if (daytime-p sunrise-today sunset-today)
-	(progn
-	  (setq use-bright-theme t)
+        (progn
+          (setq use-bright-theme t)
           (disable-theme dark-theme)
           (load-correct-theme)
-	  (run-at-time (+second sunset-today) nil
-		       'load-theme-as-time))
+          (run-at-time (+second sunset-today) nil
+                       'load-theme-as-time))
       (setq use-bright-theme nil)
       (disable-theme bright-theme)
       (load-correct-theme)
       (if (time-less-p now sunrise-today)
-	  (run-at-time (+second sunrise-today) nil
-		       'load-theme-as-time)
-	(run-at-time (+second sunrise-tomorrow) nil
-		     'load-theme-as-time)))))
+          (run-at-time (+second sunrise-today) nil
+                       'load-theme-as-time)
+        (run-at-time (+second sunrise-tomorrow) nil
+                     'load-theme-as-time)))))
 
 (when (pretty-load?)
   (load-theme-as-time))
@@ -135,10 +133,6 @@
 (setq scroll-margin 5)
 (setq scroll-conservatively 10000)
 
-;; yascroll
-;; (global-yascroll-bar-mode 1)
-
-
 ;; optical stuff
 ;; Stop cursor blinking
 (blink-cursor-mode -1)
@@ -146,9 +140,10 @@
 
 ;; undo highlighting
 ;; highlight changes made by undo
-(use-package volatile-highlights)
-(volatile-highlights-mode t)
-
+(use-package volatile-highlights 
+             :ensure t
+             :config
+             (volatile-highlights-mode t))
 
 ;; show keystrokes in progress
 (setq echo-keystrokes 0.1)
@@ -159,23 +154,34 @@
 (setq split-width-threshold 90)
 
 ;; show #colors in matching color
-(use-package rainbow-mode)
+(use-package rainbow-mode
+             :ensure t)
 (defadvice rainbow-mode (after rainbow-mode-refresh activate)
   (font-lock-fontify-buffer))
 
 
 ;; highlight some whitespace
-(use-package leerzeichen)
-(add-hook 'prog-mode-hook          	'leerzeichen-mode)
-(add-hook 'dired-mode-hook         	'leerzeichen-mode)
+(use-package leerzeichen
+  :commands (leerzeichen-mode))
+(add-hook 'prog-mode-hook  'leerzeichen-mode)
+(add-hook 'dired-mode-hook 'leerzeichen-mode)
 
 ;; parenthesis highlighting behavior
-(use-package paren)
-(setq blink-matching-paren-distance nil)
-(setq show-paren-style 'expression)
-(setq show-paren-delay 0.05) ; don't start highlighting when just scrolling past
-(show-paren-mode 1)
+(use-package paren
+  :config
+  (setq blink-matching-paren-distance nil)
+  (setq show-paren-style 'expression)
+  (setq show-paren-delay 0.05) ; don't start highlighting when just scrolling past
+  (show-paren-mode 1))
 
+(defun toggle-line-wrap ()
+  (interactive)
+  (if truncate-lines
+      (toggle-truncate-lines 1)
+    (toggle-truncate-lines 0))
+  (if visual-line-mode
+      (visual-line-mode 0)
+    (visual-line-mode 1)))
 
 ;; make regexpes a bit more readable by default
 (defun fontify-glyph (item glyph)
@@ -198,41 +204,43 @@
 (setq truncate-partial-width-windows nil)
 
 
-;; diminish
-;; hide information about minor modes from mode-line
-;; clean up modeline and hide standard minor modes
-(defmacro diminish-minor-mode (package mode &optional short-name)
-  `(load-after ,package
-               (when (fboundp ,mode)
-                 (diminish ,mode ,(or short-name "")))))
-;; clean up way-too-long major modes
-(defmacro diminish-major-mode (package-name mode new-name)
-  `(load-after ,package-name
-               '(defadvice ,mode (after diminish-major-mode activate)
-                  (setq mode-name ,new-name))))
 
 
-(use-package diminish)
-(diminish-minor-mode 'abbrev               'abbrev-mode)
-(diminish-minor-mode 'auto-complete        'auto-complete-mode "↝")
-(diminish-minor-mode 'auto-revert-mode     'auto-revert-mode)
-(diminish-minor-mode 'eldoc                'eldoc-mode)
-(diminish-minor-mode 'fic-mode             'fic-mode)
-(diminish-minor-mode 'haskell-doc          'haskell-doc-mode)
-(diminish-minor-mode 'hs-minor-mode        'hs-minor-mode)
-(diminish-minor-mode 'leerzeichen          'leerzeichen-mode)
-(diminish-minor-mode 'magit                'magit-auto-revert-mode)
-(diminish-minor-mode 'smartparens          'smartparens-mode)
-(diminish-minor-mode 'undo-tree            'undo-tree-mode     "↺")
-(diminish-minor-mode 'visual-line-mode     'visual-line-mode)
-(diminish-minor-mode 'volatile-highlights  'volatile-highlights-mode)
-(diminish-minor-mode 'whole-line-or-region 'whole-line-or-region-mode)
-(diminish-minor-mode 'yasnippet            'yas-minor-mode)
+(use-package diminish
+  :config
+  ;; diminish
+  ;; hide information about minor modes from mode-line
+  ;; clean up modeline and hide standard minor modes
+  (defmacro diminish-minor-mode (package mode &optional short-name)
+    `(load-after ,package
+       (when (fboundp ,mode)
+	 (diminish ,mode ,(or short-name "")))))
+  ;; clean up way-too-long major modes
+  (defmacro diminish-major-mode (package-name mode new-name)
+    `(load-after ,package-name
+       '(defadvice ,mode (after diminish-major-mode activate)
+	  (setq mode-name ,new-name))))
+  (diminish-minor-mode 'abbrev               'abbrev-mode)
+  (diminish-minor-mode 'company              'company-mode       "↝")
+  (diminish-minor-mode 'auto-revert-mode     'auto-revert-mode)
+  (diminish-minor-mode 'eldoc                'eldoc-mode)
+  (diminish-minor-mode 'fic-mode             'fic-mode)
+  (diminish-minor-mode 'haskell-doc          'haskell-doc-mode)
+  (diminish-minor-mode 'hs-minor-mode        'hs-minor-mode)
+  (diminish-minor-mode 'leerzeichen          'leerzeichen-mode)
+  (diminish-minor-mode 'magit                'magit-auto-revert-mode)
+  (diminish-minor-mode 'smartparens          'smartparens-mode)
+  (diminish-minor-mode 'undo-tree            'undo-tree-mode     "↺")
+  (diminish-minor-mode 'visual-line-mode     'visual-line-mode)
+  (diminish-minor-mode 'volatile-highlights  'volatile-highlights-mode)
+  (diminish-minor-mode 'whole-line-or-region 'whole-line-or-region-mode)
+  (diminish-minor-mode 'yasnippet            'yas-minor-mode)
 
-(diminish-major-mode	'lisp-mode    	emacs-lisp-mode	"EL" 	)
-(diminish-major-mode	'sh-script    	sh-mode        	"sh" 	)
-(diminish-major-mode	'ruby-mode    	ruby-mode      	"RB" 	)
-(diminish-major-mode	'enh-ruby-mode	enh-ruby-mode  	"RB+"	)
+  (diminish-major-mode	'lisp-mode    	emacs-lisp-mode	"EL" 	)
+  (diminish-major-mode	'sh-script    	sh-mode        	"sh" 	)
+  (diminish-major-mode	'python-mode  	python-mode    	"PY" 	)
+  (diminish-major-mode	'ruby-mode    	ruby-mode      	"RB" 	)
+  (diminish-major-mode	'enh-ruby-mode	enh-ruby-mode  	"RB+"	))
 
 (provide 'setup-look)
 ;;; setup-look ends here
