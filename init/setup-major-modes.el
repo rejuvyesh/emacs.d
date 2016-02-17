@@ -112,6 +112,10 @@
   ;; (global-set-key (kbd "C-c j") 'org-journal-new-entry)
 
   ;; (use-package org-download)
+  (use-package org-pdfview
+    :ensure t)
+  (add-to-list 'org-file-apps '("\\.pdf\\'"                   . org-pdfview-open))
+  (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
   )
 
 
