@@ -279,7 +279,7 @@ are referenced by its edges, but functions for these tasks need region."
 ;; markdown
 (load-lazy '(markdown-mode) "markdown-mode"
   (setq markdown-command "pandoc --smart -f markdown -t html")
-  (setq markdown-css-path (expand-file-name "markdown.css" "~/.pandoc/css/markdown.css"))
+  (setq markdown-css-paths `(,(expand-file-name "markdown.css" "~/.pandoc/css/markdown.css")))
   (setq markdown-enable-math t)
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
