@@ -385,24 +385,57 @@ are referenced by its edges, but functions for these tasks need region."
 (add-hook 'dired-mode-hook 'turn-on-auto-revert-mode)
 (setq auto-revert-verbose nil)
 
-;; python 
-
-(load-lazy '(python-mode) "python"
-  (setq python-indent-offset 2)
-  (add-hook 'python-mode-hook (lambda () (setq tab-width 2)))
+;; python
+(use-package python
+  :mode ("\\.py$" . python-mode)
+  :init
+  (defalias 'python2-mode 'python-mode)
+  (defalias 'python3-mode 'python-mode)
+  (defun annotate-pdb ()
+    "Highlight break point lines."
+    (interactive)
+    (highlight-lines-matching-regexp "import i?pu?db")
+    (highlight-lines-matching-regexp "i?pu?db.set_trace()"))
+  (setq tab-width 2
+        python-indent-offset 2
+        ;; auto-indent on colon doesn't work well with if statement
+        electric-indent-chars (delq ?: electric-indent-chars))
+  (annotate-pdb)
+  (defun python-setup-shell ()
+    (if (executable-find "ipython")
+        (progn
+          (setq python-shell-interpreter "ipython")
+          (when (version< emacs-version "24.4")
+            ;; these settings are unnecessary and even counter-productive on emacs 24.4 and newer
+            (setq python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+                  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+                  python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+                  python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
+                  python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")))
+      (setq python-shell-interpreter "python")))
+  :config
   (unbreak-stupid-map python-mode-map)
-  (setq
-   python-shell-interpreter "ipython"
-   python-shell-interpreter-args ""
-   python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-   python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-   python-shell-completion-require-code
-   "from IPython.core.completerlib import module_completion"
-   python-shell-completion-module-string-code
-   "';'.join(module_completion('''%s'''))\n"
-   python-shell-completion-string-code
-   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-  )
+  (setq compile-command nil)
+  (defun python-execute-file (arg)
+    "Execute a python script in a shell."
+    (interactive "P")
+    ;; set compile command to buffer-file-name
+    ;; universal argument put compile buffer in comint mode
+    (setq universal-argument t)
+    (if arg
+        (call-interactively 'compile)
+      (setq compile-command (format "python %s" (file-name-nondirectory
+                                                 buffer-file-name)))
+      (compile compile-command t)
+      (with-current-buffer (get-buffer "*compilation*")
+        (inferior-python-mode))))
+  (add-hook 'python-mode-hook 'python-setup-shell)
+  (add-hook 'python-mode-hook 'python-indent-guess-indent-offset)
+  (use-package anaconda-mode
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'eldoc-mode))
 
 ;; haskell mode
 (load-lazy '(haskell-mode) "haskell-mode")
