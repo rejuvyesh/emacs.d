@@ -321,6 +321,8 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (add-to-list 'winner-boring-buffers "*helm mini*")
   (winner-mode 1))
 
+(use-package proselint
+  :after (flycheck))
 
 ;; recent files
 (use-package recentf
