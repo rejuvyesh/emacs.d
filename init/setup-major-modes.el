@@ -407,7 +407,8 @@ are referenced by its edges, but functions for these tasks need region."
     "Highlight break point lines."
     (interactive)
     (highlight-lines-matching-regexp "import i?pu?db")
-    (highlight-lines-matching-regexp "i?pu?db.set_trace()"))
+    (highlight-lines-matching-regexp "i?pu?db.set_trace()")
+    (hi-lock-mode 1))
   (setq tab-width 2
         python-indent-offset 2
         ;; auto-indent on colon doesn't work well with if statement
