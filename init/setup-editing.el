@@ -778,8 +778,11 @@ See the variable `align-rules-list' for more details.")
   (setq keyfreq-file-lock (emacs-d "cache/keyfreq.lock"))
   (defadvice keyfreq-mode (after always-autosave activate)
     (keyfreq-autosave-mode 1))
-  )
-
+  (defun my/keyfreq-save-html ()
+    "Save the table of frequently used commands (and their associated bindings
+to an html file in `user-emacs-directory'."
+    (interactive)
+    (keyfreq-html (emacs-d "cache/keyfreq.html"))))
 
 (use-package keyboard-cat-mode
   :commands (keyboard-cat-mode))
