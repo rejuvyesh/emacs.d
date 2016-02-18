@@ -767,6 +767,8 @@ See the variable `align-rules-list' for more details.")
       apropos-do-all t
       mouse-yank-at-point t)
 
+;; On saving, automatically make a file an executable if it begins with "#!"
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
 (use-package keyfreq
   :ensure t
