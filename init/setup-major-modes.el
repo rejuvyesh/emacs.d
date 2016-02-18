@@ -87,6 +87,7 @@
   (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
   (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
   (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
+  (org-defkey org-mode-map (kbd "C-c x") 'org-export-dispatch)
   ;; shortcut for C-u C-c C-l
   (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
   (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
