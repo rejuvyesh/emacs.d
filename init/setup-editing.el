@@ -757,9 +757,13 @@ See the variable `align-rules-list' for more details.")
 (global-set-key [f8] 'goto-last-change)
 
 ;; Some saner clipboard
-(setq x-select-enable-clipboard t
-      x-select-enable-primary t
-      save-interprogram-paste-before-kill t
+(>= emacs-major-version 25
+    (setq select-enable-clipboard t)
+  (setq x-select-enable-clipboard t))
+(>= emacs-major-version 25
+     (setq select-enable-primary t) 
+     (setq x-select-enable-primary t))
+(setq save-interprogram-paste-before-kill t
       apropos-do-all t
       mouse-yank-at-point t)
 
