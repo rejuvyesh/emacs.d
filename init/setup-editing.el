@@ -712,6 +712,13 @@ See the variable `align-rules-list' for more details.")
   :commands (toggle-quotes)
   :bind ("C-'" . toggle-quotes))
 
+(use-package wrap-region
+  :ensure t
+  :config
+  (wrap-region-mode t)
+  (wrap-region-add-wrapper "$" "$")
+  )
+
 ;; don't use shift to mark things; smartparens overwrites this anyway, but be explicit about it
 (setq shift-select-mode nil)
 
