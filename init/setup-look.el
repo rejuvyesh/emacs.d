@@ -193,6 +193,10 @@
 
 (use-package hl-line)
 
+(use-package nyan-mode
+  :init
+  (nyan-mode t))
+
 ;; fonts
 (defvar small-font  "Fantasque Sans Mono 8")
 (defvar normal-font "Fantasque Sans Mono 10")
