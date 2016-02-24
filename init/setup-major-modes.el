@@ -219,6 +219,8 @@
 
 (use-package pdf-tools
   :mode ("\\.pdf$" . pdf-view-mode)
+  :init
+  (add-hook 'pdf-view-mode-hook (lambda () (nyan-mode -1)))
   :config
   (pdf-tools-install)
   (bind-keys :map pdf-view-mode-map
