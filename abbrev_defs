@@ -13,9 +13,7 @@
 
 (define-abbrev-table 'anaconda-mode-view-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -23,13 +21,9 @@
 
 (define-abbrev-table 'bookmark-edit-annotation-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -80,6 +74,8 @@
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
 
 (define-abbrev-table 'eshell-mode-abbrev-table '())
+
+(define-abbrev-table 'esup-mode-abbrev-table '())
 
 (define-abbrev-table 'flycheck-error-list-mode-abbrev-table '())
 
@@ -191,6 +187,7 @@
     ("adequite" "adequate" nil 0)
     ("adn" "and" nil 0)
     ("advanage" "advantage" nil 0)
+    ("adverserial" "Adversarial" nil 1)
     ("affraid" "afraid" nil 0)
     ("afterthe" "after the" nil 0)
     ("aganist" "against" nil 0)
@@ -203,6 +200,7 @@
     ("agressive" "aggressive" nil 0)
     ("ahppen" "happen" nil 0)
     ("ahve" "have" nil 0)
+    ("algo" "algorithm" nil 1)
     ("allwasy" "always" nil 0)
     ("allwyas" "always" nil 0)
     ("almots" "almost" nil 0)
@@ -361,6 +359,7 @@
     ("completly" "completely" nil 0)
     ("completness" "completeness" nil 0)
     ("complteted" "completed" nil 0)
+    ("compnay" "company" nil 1)
     ("composate" "composite" nil 0)
     ("compteted" "completed" nil 0)
     ("comtain" "contain" nil 0)
@@ -391,6 +390,7 @@
     ("corproations" "corporations" nil 0)
     ("corrospond" "correspond" nil 0)
     ("corruptable" "corruptible" nil 0)
+    ("cosntraint" "Constraint" nil 1)
     ("cotten" "cotton" nil 0)
     ("coudl" "could" nil 0)
     ("coudln" "couldn" nil 0)
@@ -563,6 +563,7 @@
     ("gonig" "going" nil 0)
     ("govenment" "government" nil 0)
     ("goverment" "government" nil 0)
+    ("gradeints" "gradients" nil 2)
     ("gruop" "group" nil 0)
     ("gruops" "groups" nil 0)
     ("grwo" "grow" nil 0)
@@ -773,6 +774,7 @@
     ("owrk" "work" nil 0)
     ("owuld" "would" nil 0)
     ("oxident" "oxidant" nil 0)
+    ("pacakge" "package" nil 5)
     ("papaer" "paper" nil 0)
     ("parliment" "parliament" nil 0)
     ("partof" "part of" nil 0)
@@ -809,7 +811,7 @@
     ("prerelease" "pre-release" nil 0)
     ("presance" "presence" nil 0)
     ("privleged" "privileged" nil 0)
-    ("probelm" "problem" nil 0)
+    ("probelm" "problem" nil 1)
     ("probelms" "problems" nil 0)
     ("problesm" "problems" nil 0)
     ("proceding" "proceeding" nil 0)
@@ -968,7 +970,7 @@
     ("talkign" "talking" nil 0)
     ("tath" "that" nil 0)
     ("tecnical" "technical" nil 0)
-    ("teh" "the" nil 2)
+    ("teh" "the" nil 6)
     ("tehy" "they" nil 0)
     ("terminiated" "terminated" nil 0)
     ("termoil" "turmoil" nil 0)
@@ -1138,9 +1140,7 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'js-mode-abbrev-table '())
 
@@ -1202,9 +1202,7 @@
 
 (define-abbrev-table 'notes-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1230,11 +1228,11 @@
 
 (define-abbrev-table 'pdf-outline-buffer-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
+
+(define-abbrev-table 'proced-mode-abbrev-table '())
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
@@ -1242,9 +1240,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'ruby-mode-abbrev-table '())
 
