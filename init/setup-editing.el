@@ -189,16 +189,13 @@
   (defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp)
   )
 
-
-(global-set-key (kbd "C-c C-s") 'phi-search)
-(global-set-key (kbd "C-c C-r") 'phi-search-backward)
-
-
 (use-package phi-search-mc
-  :ensure t)
-(define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
-(define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
-(define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all)
+  :ensure t
+  :defer t
+  :config
+  (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
+  (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
+  (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all))
 
 ;; undo tree
 (use-package undo-tree
