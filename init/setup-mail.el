@@ -1,55 +1,104 @@
 ;; mail settings
 
-(setup-lazy '(mu mu4e) "mu4e"
-  (setq mu4e-maildir "~/mail/iitk")
-  
-  (setq mu4e-drafts-folder "/INBOX.Drafts")
-  (setq mu4e-sent-folder "/sent")
-  (setq mu4e-trash-folder "/trash")
-  
-  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-  (setq mu4e-sent-messages-behavior 'delete)
-  
-  ;; setup some handy shortcuts
-  ;; you can quickly switch to your Inbox -- press ``ji''
-  ;; then, when you want archive some messages, move them to
-
-  (setq mu4e-maildir-shortcuts
-        '(("/inbox" . ?i)
-          ("/sent"	. ?s)
-          ("/trash" . ?t)
-          ))
-  (setq mu4e-bookmarks
-        `((,(concat
-             "flag:unread"
-             " AND NOT flag:trashed" ) "Unread messages" ?u)
-          ("date:today..now" "Today's messages" ?t)
-          ("date:7d..now" "Last 7 days" ?w)
-          ("mime:image/*" "Messages with images"	?p)))
-  
-  ;; allow for updating mail using 'U' in the main view:
-  (setq mu4e-get-mail-command "sandesh")
-  
+(defalias 'mu 'mu4e)
+(use-package mu4e
+  :commands (mu4e mu4e-compose-new)
+  :config
+;;; Set up some common mu4e variables
+  (setq mu4e-trash-folder "/trash"
+        mu4e-refile-folder "/archive"
+        mu4e-sent-folder "/sent"
+        mu4e-get-mail-command "sandesh"
+        mu4e-update-interval nil
+        mu4e-compose-signature-auto-include nil
+        mu4e-view-show-images t
+        mu4e-view-show-addresses t
+        mu4e-headers-replied-mark '("R" . "↵")
+        mu4e-headers-encrypted-mark '("x" . "⚷"))
   ;; saving stuff
   (setq mu4e-attachment-dir (expand-file-name "~/stuff"))
+  (setq mu4e-completing-read-function 'helm--completing-read-default)
+  (add-to-list 'mu4e-view-actions
+               '("View in browser" . mu4e-action-view-in-browser) t)
   
-  ;; no confirmations
-  (setq mu4e-confirm-quit nil)
-  
-  (setup "mu4e-contrib")
-  (setq mu4e-html2text-command 'mu4e-shr2text)
+  ;; html
+  (use-package mu4e-contrib
+    :config
+    (setq mu4e-html2text-command 'mu4e-shr2text))
   
   ;; Try to display images in mu4e
   (setq
    mu4e-view-show-images t
    mu4e-view-image-max-width 800)
   
+  ;; no confirmations
+  (setq mu4e-confirm-quit nil)
   
+  ;; Bookmarks
+  (setq mu4e-bookmarks
+        `(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+          ("date:today..now" "Today's messages" ?t)
+          ("date:7d..now" "Last 7 days" ?w)
+          ("mime:image/*" "Messages with images" ?p)
+          (,(mapconcat 'identity
+                       (mapcar
+                        (lambda (maildir)
+                          (concat "maildir:" (car maildir)))
+                        mu4e-maildir-shortcuts) " OR ")
+           "All inboxes" ?i)))  
+  ;; Contexts
+  (setq mu4e-contexts
+        `(,(make-mu4e-context
+             :name "stanford"
+             :enter-func (lambda () (mu4e-message "Switched to the Stanford"))
+             ;; leave-fun not defined
+             :match-func (lambda (msg)
+                           (when msg 
+                             (mu4e-message-contact-field-matches msg 
+                                                                 :to "stanford.edu")))
+             :vars '(  (user-mail-address  . "jkg@cs.stanford.edu")
+                       (user-full-name     . "Jayesh K. Gupta")
+                       (mu4e-maildir       . "~/mail/stanford")
+                       (mu4e-compose-signature .
+                                               (concat
+                                                "Jayesh K. Gupta\n"
+                                                "http://cs.stanford.edu/~jkg\n"))))
+          ,(make-mu4e-context
+             :name "rejuvyesh"
+             :enter-func (lambda () (mu4e-message "Switched to the mail@rejuvyesh"))
+             ;; leave-func not defined
+             :match-func (lambda (msg)
+                           (when msg 
+                             (mu4e-message-contact-field-matches msg 
+                                                                 :to (list "mail@rejuvyesh.com" 
+                                                                           "a2z.jayesh@gmail.com"))))
+             :vars '(  (user-mail-address . "mail@rejuvyesh.com")
+                       (user-full-name    . "Jayesh K Gupta")
+                       (mu4e-maildir       . "~/mail/rejuvyesh")
+                       ( mu4e-compose-signature .
+                                                (concat
+                                                 "Jayesh K. Gupta\n"
+                                                 "http://rejuvyesh.com\n"))))
+          ,(make-mu4e-context
+            :name "gmail"
+            :enter-func (lambda () (mu4e-message "Switched to the rejuvyesh@gmail"))
+            ;; leave-func not defined
+            :match-func (lambda (msg)
+                          (when msg 
+                            (mu4e-message-contact-field-matches msg 
+                                                                :to (list "rejuvyesh@gmail.com"))))
+            :vars '(  (user-mail-address . "rejuvyesh@gmail.com")
+                      (user-full-name    . "rejuvyesh")
+                      (mu4e-maildir       . "~/mail/gmail")
+                      ( mu4e-compose-signature .
+                                               (concat
+                                                "rejuvyesh\n"
+                                                "http://rejuvyesh.com\n"))))
+          ))
+  (use-package org-mu4e
+    :defer t)
   )
 
-(defalias 'mu 'mu4e)
-
-(setup-after "mu4e" "smtpmail")
 ;; sending mail
 (setq message-send-mail-function 'message-send-mail-with-sendmail
       sendmail-program "/usr/bin/msmtp"
