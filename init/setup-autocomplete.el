@@ -82,14 +82,16 @@
     :init
     (setq company-statistics-file (emacs-d "cache/company-statistics"))
     :config
-    (company-statistics-mode)))
-
-
-(use-package company-anaconda
-  :after (company anaconda-mode)
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-anaconda))
+    (company-statistics-mode))
+  (use-package company-jedi
+    :ensure t
+    :defer t
+    :config
+    (defun enable-jedi()
+      (setq-local company-backends
+                  (append '(company-jedi) company-backends)))
+    (add-hook 'python-mode-hook 'enable-jedi))
+  )
 
 
 ;; auto correction via abbreviation file
