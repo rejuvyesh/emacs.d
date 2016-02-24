@@ -150,8 +150,7 @@
 (use-package c-eldoc
   :commands (c-turn-on-eldoc-mode)
   :config
-  (setq c-eldoc-buffer-regenerate-time 15)
-  )
+  (setq c-eldoc-buffer-regenerate-time 15))
 
 (use-package cc-mode
   :bind ("M-RET" . c-indent-new-comment-line)
@@ -186,10 +185,10 @@
   :commands (latex-mode LaTeX-mode plain-tex-mode)
   :init
   (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)  
+  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)  
+  (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
   (setq TeX-auto-save t
         TeX-parse-self t
         TeX-save-query nil
@@ -198,7 +197,7 @@
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-source-correlate-start-server t)
   :config
-  ;; Compilation command  
+  ;; Compilation command
   (add-hook 'LaTeX-mode-hook (lambda () (setq compile-command "latexmk -pdf")))
   (use-package latex-extra
     :ensure t
@@ -226,13 +225,11 @@
   (bind-keys :map pdf-view-mode-map
              ("j" . pdf-view-next-line-or-next-page)
              ("k" . pdf-view-previous-line-or-previous-page))
-  (add-hook 'pdf-view-mode-hook
-            (lambda ()
-              (pdf-misc-size-indication-minor-mode)
-              (pdf-links-minor-mode)
-              (pdf-isearch-minor-mode)))
+  (add-hook 'pdf-tools-enabled-hook (lambda ()
+                                      (pdf-tools-disable-minor-modes
+                                       '(pdf-misc-size-indication-minor-mode))))
   (defun my-pdf-multi-extract (sources)
-    "Helper function to print highlighted text from a list of pdf's, with one org header per pdf, 
+    "Helper function to print highlighted text from a list of pdf's, with one org header per pdf,
 and links back to page of highlight."
     (let ((output ""))
       (dolist (thispdf sources)
@@ -260,7 +257,7 @@ are referenced by its edges, but functions for these tasks need region."
             (- bottom1 (/ (- bottom1 top1) 2 )))))
   (defun pdf-annot-markups-as-org-text (pdfpath &optional title level)
     "Acquire highligh annotations as text, and return as org-heading"
-    (interactive "fPath to PDF: ")  
+    (interactive "fPath to PDF: ")
     (let* ((outputstring "") ;; the text to be returned
            (title (or title (replace-regexp-in-string "-" " " (file-name-base pdfpath ))))
            (level (or level (1+ (org-current-level)))) ;; I guess if we're not in an org-buffer this will fail
@@ -285,7 +282,7 @@ are referenced by its edges, but functions for these tasks need region."
 
                     (height (nth 1 real-edges)) ;; distance down the page
                     ;; use pdfview link directly to page number
-                    (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page) 
+                    (linktext (concat "[[pdfview:" pdfpath "::" (number-to-string page)
                                       "++" (number-to-string height) "][" title  "]]" ))
                     )
                (setq outputstring (concat outputstring text " ("
@@ -513,7 +510,7 @@ are referenced by its edges, but functions for these tasks need region."
   :ensure t
   :commands (ruby-mode enh-ruby-mode)
   :init
-  ;; replace normal ruby mode  
+  ;; replace normal ruby mode
   (defalias 'ruby-mode 'enh-ruby-mode)
   :mode (("\\.rake$"    . enh-ruby-mode)
          ("Rakefile$"  . enh-ruby-mode)
@@ -564,7 +561,7 @@ are referenced by its edges, but functions for these tasks need region."
          ("\\.js$"   . web-mode)
          ("\\.xml$"  . web-mode)
          ("\\.aspx$" . web-mode))
-  
+
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-code-indent-offset 2
