@@ -462,6 +462,15 @@ are referenced by its edges, but functions for these tasks need region."
                ("M-?" .  jedi:show-doc)
                ;;("M-/" .  helm-jedi-related-names)
                ))
+  (use-package py-isort
+    :ensure t)
+  (bind-keys :map python-mode-map
+             ("C-S-c"   . python-execute-file)
+             ("C-c C-f" . python-shell-send-defun)
+             ("C-c C-r" . python-shell-send-region)
+             ("C->"     . python-indent-shift-right)
+             ("C-<"     . python-indent-shift-left))
+  )
 
 
 (use-package cython-mode
