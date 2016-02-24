@@ -23,6 +23,7 @@
         downcase-word-or-region
         duplicate-line
         electric-graphviz-dot-semi
+        electric-newline-and-maybe-indent
         end-of-buffer
         end-of-visual-line
         enh-ruby-electric-brace
