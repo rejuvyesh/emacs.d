@@ -517,10 +517,15 @@ See the variable `align-rules-list' for more details.")
 (whole-line-or-region-mode 1)
 
 ;; tramp
-(load-after 'tramp
-            (setq password-cache-expiry nil)
-            (setq tramp-default-method "ssh")
-            (setq tramp-persistency-file-name (emacs-d "cache/tramp")))
+(use-package tramp
+  :defer t
+  :config
+  (use-package password-cache
+    :init (setq password-cache-expiry nil))
+  (setq tramp-default-method "ssh")
+  (setq tramp-persistency-file-name (emacs-d "cache/tramp"))
+  )
+
 ;; cookies
 (setq url-cookie-file (emacs-d "cache/url/cookies"))
 
