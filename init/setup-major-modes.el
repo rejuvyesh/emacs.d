@@ -475,7 +475,10 @@ are referenced by its edges, but functions for these tasks need region."
 
 (use-package cython-mode
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (add-hook 'cython-mode-hook (lambda () (which-func-mode -1)))
+  )
 
 (use-package ein
   :ensure t
