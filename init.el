@@ -13,7 +13,6 @@
 ;; load path (the only hard-coded path, so we can use the file in external scripts without duplicating where load-paths are defined)
 (load (emacs-d "init/setup-load-path.el"))
 
-
 ;; packages
 (require 'setup-packages)
 
@@ -24,6 +23,7 @@
 (require 'setup-look)
 
 ;; editing etc
+(require 'setup-helm)
 (require 'setup-editing)
 (require 'setup-folding)
 
@@ -42,7 +42,8 @@
 ;; use automatic file headers
 (require 'setup-auto-insert)
 
-(setup "setup-mail")
+;; mail
+(require 'setup-mail)
 
 ;; others
 (require 'setup-misc)
