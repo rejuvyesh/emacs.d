@@ -60,9 +60,6 @@
 ;; eval shortcut
 (global-set-key (kbd "C-S-M-x")   'eval-buffer)
 
-;; undo
-(global-set-key (kbd "C-z") 'undo-tree-undo)
-(global-set-key (kbd "M-z") 'undo-tree-redo)
 
 (global-set-key (kbd "C-f")    'forward-word)
 (global-set-key (kbd "C-b")    'backward-word)
@@ -287,6 +284,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (winner-mode 1))
 
 (use-package proselint
+  :defer t
   :after (flycheck))
 
 ;; recent files
