@@ -299,9 +299,9 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (recentf-mode 1))
 
 ;; clean up buffers every once in a while
-(use-package midnight)
-(midnight-delay-set 'midnight-delay 0)
-
+(use-package midnight
+  :config
+  (midnight-delay-set 'midnight-delay 0))
 
 ;; unique names
 (use-package uniquify)
