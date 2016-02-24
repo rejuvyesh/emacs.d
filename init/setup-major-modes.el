@@ -400,8 +400,6 @@ are referenced by its edges, but functions for these tasks need region."
 
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
-;; also revert dired
-(add-hook 'dired-mode-hook 'turn-on-auto-revert-mode)
 (setq auto-revert-verbose nil)
 
 ;; python
@@ -786,8 +784,9 @@ are referenced by its edges, but functions for these tasks need region."
                                 ("mp3"  . "rmpv -a")
                                 ))
   ;; sort number naturally
-  (setq dired-listing-switches "--group-directories-first -v -al"))
-
-
+  (setq dired-listing-switches "--group-directories-first -v -al")
+  ;; also revert dired
+  (add-hook 'dired-mode-hook 'turn-on-auto-revert-mode)
+  )
 
 (provide 'setup-major-modes)
