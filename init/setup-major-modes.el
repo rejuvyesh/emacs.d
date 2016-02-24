@@ -610,9 +610,10 @@ are referenced by its edges, but functions for these tasks need region."
 (use-package matlab-mode
   :mode ("\\.m$" . matlab-mode)
   :init
-  (load-library "matlab-load")
+  (use-package matlab-load)
   :config
-  (add-to-list 'company-backends 'company-matlab)
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-matlab))
   (setq matlab-shell-command-switches (quote ("-nodesktop -nosplash")))
   (eval-after-load 'flycheck
     '(require 'flycheck-matlab-mlint)))
