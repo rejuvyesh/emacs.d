@@ -414,13 +414,13 @@ are referenced by its edges, but functions for these tasks need region."
     "Highlight break point lines."
     (interactive)
     (highlight-lines-matching-regexp "import i?pu?db")
-    (highlight-lines-matching-regexp "i?pu?db.set_trace()")
-    (hi-lock-mode 1))
+    (highlight-lines-matching-regexp "i?pu?db.set_trace()"))
   (setq tab-width 2
         python-indent-offset 2
         ;; auto-indent on colon doesn't work well with if statement
         electric-indent-chars (delq ?: electric-indent-chars))
-  (annotate-pdb)
+  (add-hook 'python-mode-hook #'hi-lock-mode)
+  (add-hook 'python-mode-hook 'annotate-pdb)
   (defun python-setup-shell ()
     (if (executable-find "ipython")
         (progn
