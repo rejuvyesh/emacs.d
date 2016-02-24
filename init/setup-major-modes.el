@@ -451,17 +451,17 @@ are referenced by its edges, but functions for these tasks need region."
         (inferior-python-mode))))
   (add-hook 'python-mode-hook 'python-setup-shell)
   (add-hook 'python-mode-hook 'python-indent-guess-indent-offset)
-  (use-package anaconda-mode
-    :ensure t
+  (use-package jedi-core
     :config
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (add-hook 'python-mode-hook 'eldoc-mode))
-
-  :bind (("C-S-c" . python-execute-file)
-         ("C-c C-f" . python-shell-send-defun)
-         ("C-c C-r" . python-shell-send-region)
-         ("C->"     . python-indent-shift-right)
-         ("C-<"     . python-indent-shift-left)))
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (add-hook 'python-mode-hook 'eldoc-mode)
+    (unbreak-stupid-map jedi-mode-map)
+    (bind-keys :map jedi-mode-map
+               ("M-." .  jedi:goto-definition)
+               ("M-," .  jedi:goto-definition-pop-marker)
+               ("M-?" .  jedi:show-doc)
+               ;;("M-/" .  helm-jedi-related-names)
+               ))
 
 
 (use-package cython-mode
@@ -475,6 +475,7 @@ are referenced by its edges, but functions for these tasks need region."
   ;; (unbind-key "C-<up>" ein:notebook-mode-map)
   ;; (unbind-key "C-<down>" ein:notebook-mode-map)
   :config
+  (add-hook 'ein:connect-mode-hook #'ein:jedi-setup)
   (bind-keys :map ein:notebook-mode-map
              ("M-<up>" . ein:worksheet-goto-prev-input)
              ("M-<down>" . ein:worksheet-goto-next-input)))
