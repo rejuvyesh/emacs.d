@@ -14,7 +14,16 @@
   ;; options
   (setq yas-indent-line 'fixed)
   (setq yas-verbosity 1)
-  (setq yas-wrap-around-region t))
+  (setq yas-wrap-around-region t)
+  (define-key yas-keymap (kbd "C-a") 'my-yas/goto-start-of-active-field)
+  (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
+  (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
+  (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete uses this
+  ;; Use C-t to expand snippet instead of conflicting <TAB>
+  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
+  (define-key yas-keymap (kbd "C-t") 'yas-next-field-or-maybe-expand)
+  (define-key yas-keymap (kbd "C-T") 'yas-next-field)
+  (define-key yas-minor-mode-map (kbd "C-c C-y") 'yas-reload-all))
 
 (defun my-yas/goto-end-of-active-field ()
   (interactive)
@@ -31,19 +40,6 @@
     (if (= (point) position)
         (move-beginning-of-line 1)
       (goto-char position))))
-
-
-(define-key yas-keymap (kbd "C-a") 'my-yas/goto-start-of-active-field)
-(define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
-(define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
-(define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete uses this
-;; Use C-t to expand snippet instead of conflicting <TAB>
-(define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
-(define-key yas-keymap (kbd "C-t") 'yas-next-field-or-maybe-expand)
-(define-key yas-keymap (kbd "C-T") 'yas-next-field)
-(define-key yas-minor-mode-map (kbd "C-c C-t") 'yas-reload-all)
-
-
 
 ;; auto-yasnippet
 ;; hybrid of keyboard macro and yasnippet
