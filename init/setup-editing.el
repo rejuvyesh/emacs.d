@@ -151,42 +151,43 @@
                      (global-unset-key (first key))))
 
 ;; multiple cursors
+
 (use-package multiple-cursors
-  :ensure t)
-(use-package mc-extras
-  :ensure t)
-(use-package mc-jump)
+  :ensure t
+  :bind (("C-c d"            . mc/edit-lines)
+         ("<C-down>"         . mc/mark-next-like-this)
+         ("<C-up>"           . mc/mark-previous-like-this)
+         ("<M-C-down>"       . mc/skip-to-next-like-this)
+         ("<M-C-up>"         . mc/skip-to-previous-like-this)
+         ("C-c C-d"          . mc/mark-all-dwim)
+         ("C-c >"            . mc/mark-more-like-this-extended)
+         ("C-c <"            . mc/mark-more-like-this-extended)
+         ("C-S-<mouse-1>"    . mc/add-cursor-on-click)
+         ("C-<down-mouse-1>" . mc/add-cursor-on-click))
+  :config
+  (defun mc/many-to-one-yank ()
+    "Yanks killed lines from multiple cursors into one position. Less messy than yank-rectangle."
+    (interactive)
+    (with-temp-buffer
+      (yank-rectangle)
+      (kill-ring-save (point-min) (point-max)))
+    (yank))
 
-(defun mc/many-to-one-yank ()
-  "Yanks killed lines from multiple cursors into one position. Less messy than yank-rectangle."
-  (interactive)
-  (with-temp-buffer
-    (yank-rectangle)
-    (kill-ring-save (point-min) (point-max)))
-  (yank))
-
-(defun mc/many-to-one-yank-indent ()
-  "Yanks killed lines from multiple cursors into one position, and indents. See 'mc/many-to-one-yank'."
-  (interactive)
-  (mc/many-to-one-yank)
-  (call-interactively 'indent-region))
-
-(global-set-key (kbd "C-c d")            'mc/edit-lines)
-(global-set-key (kbd "<C-down>")         'mc/mark-next-like-this)
-(global-set-key (kbd "<C-up>")           'mc/mark-previous-like-this)
-(global-set-key (kbd "<M-C-down>")       'mc/skip-to-next-like-this)
-(global-set-key (kbd "<M-C-up>")         'mc/skip-to-previous-like-this)
-(global-set-key (kbd "C-c C-d")          'mc/mark-all-dwim)
-(global-set-key (kbd "C-c >")            'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-c <")            'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-S-<mouse-1>")    'mc/add-cursor-on-click)
-(global-set-key (kbd "C-<down-mouse-1>") 'mc/add-cursor-on-click)
-
-;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
-(define-key mc/keymap (kbd "<return>") nil)
-(define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
-;; Because regex
-(defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp)
+  (defun mc/many-to-one-yank-indent ()
+    "Yanks killed lines from multiple cursors into one position, and indents. See 'mc/many-to-one-yank'."
+    (interactive)
+    (mc/many-to-one-yank)
+    (call-interactively 'indent-region))
+  
+  (use-package mc-extras
+    :ensure t)
+  (use-package mc-jump)
+  ;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
+  ;;(define-key mc/keymap ("<return>") nil)
+  (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
+  ;; Because regex
+  (defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp)
+  )
 
 
 (global-set-key (kbd "C-c C-s") 'phi-search)
