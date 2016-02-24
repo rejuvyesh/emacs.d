@@ -45,14 +45,18 @@
 ;; hybrid of keyboard macro and yasnippet
 (use-package auto-yasnippet
   :ensure t
+  :commands (aya-create aya-expand)
   :bind (("C-c ~" . aya-create)
          ("C-c C-~" . aya-expand)))
 
 
 (use-package company
   :ensure t
+  :defer t
   :init
-  (setq company-idle-delay 0)
+  (setq company-idle-delay 0.1
+        ;; min prefix of 1 chars
+        company-minimum-prefix-length 1)
   (setq company-tooltip-align-annotations t)
   (global-company-mode)
   :config
