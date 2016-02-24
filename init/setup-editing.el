@@ -566,11 +566,6 @@ See the variable `align-rules-list' for more details.")
 ;; don't spam *Scratch*
 (setq initial-scratch-message nil)
 
-;; oh pretty!
-(use-package pretty-lambdada
-  :config
-  (global-pretty-lambda-mode))
-
 ;; handle camelcase better
 (global-subword-mode 1)
 
