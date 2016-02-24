@@ -4,11 +4,10 @@
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
-  :init
+  :config
   (setq magit-process-popup-time -1
         magit-auto-revert-mode-lighter nil
         magit-push-always-verify·nil)
-  :config
   (setq magit-display-buffer-function
         (lambda (buffer)
           (if (or
@@ -64,25 +63,6 @@
   (setq org-default-priority 67) ;C
   ;; highlight math
   (setf org-highlight-latex-and-related '(latex entities))
-  ;; code block
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (C          . t)
-     (R          . t)
-     (matlab     . t)
-     (sh         . t)
-     (ruby       . t)
-     (python     . t)
-     (haskell    . t)))
-  (add-to-list 'org-src-lang-modes '("c" . c))
-  (add-to-list 'org-src-lang-modes '("r" . ess-mode))
-  (add-to-list 'org-src-lang-modes '("h" . haskell))
-  (add-to-list 'org-src-lang-modes '("s" . sh))
-  (add-to-list 'org-src-lang-modes '("p" . python))
-  (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
-  (setq org-src-fontify-natively t)
-  (setq org-confirm-babel-evaluate nil)
 
   (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
   (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
@@ -91,7 +71,7 @@
   ;; shortcut for C-u C-c C-l
   (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
   (org-defkey org-mode-map (kbd "C-c l") 'org-store-link)
-  
+
   ;; some templates
   (setcdr (assoc "c" org-structure-template-alist)
           '("#+BEGIN_COMMENT\n?\n#+END_COMMENT"))
@@ -107,7 +87,7 @@
                '("b"
                  "#+BEGIN_SRC bib\n?\n#+END_SRC"
                  "<src lang=\"bib\">\n\n</src>"))
-  
+
   ;; (use-package org-journal)
   ;; (setq org-journal-dir "~/Documents/spoiler/logs/")
   ;; (setq org-journal-file-format "%Y-%m-%d.org")
@@ -115,9 +95,31 @@
 
   ;; (use-package org-download)
   (use-package org-pdfview
-    :ensure t)
+    :ensure t
+    :defer t)
   (add-to-list 'org-file-apps '("\\.pdf\\'"                   . org-pdfview-open))
   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+  (use-package org-plus-contrib
+    :ensure t)
+  ;; code block
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     ;; (C          . t)
+     ;; (R          . t)
+     ;; (matlab     . t)
+     (sh         . t)
+     (ruby       . t)
+     (python     . t)
+     (haskell    . t)))
+  (add-to-list 'org-src-lang-modes '("c" . c))
+  (add-to-list 'org-src-lang-modes '("r" . ess-mode))
+  (add-to-list 'org-src-lang-modes '("h" . haskell))
+  (add-to-list 'org-src-lang-modes '("s" . sh))
+  (add-to-list 'org-src-lang-modes '("p" . python))
+  (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
+  (setq org-src-fontify-natively t)
+  (setq org-confirm-babel-evaluate nil)
   )
 
 
