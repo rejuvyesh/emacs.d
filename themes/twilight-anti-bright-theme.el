@@ -121,7 +121,7 @@
    `(ecb-method-face ((((type graphic)) (:foreground ,red-1 :background ,red-1bg))))
    `(ecb-tag-header-face ((((type graphic)) (:background ,blue-2bg))))
    
-   `(which-func ((((type graphic)) (:weight bold :foreground "gray-3"))))
+   `(which-func ((((type graphic)) (:weight bold :foreground ,gray-3))))
    
    ;; org-mode
    `(org-date ((((type graphic)) (:foreground ,purple-1 :background ,purple-1bg))))
@@ -129,6 +129,13 @@
    `(org-hide ((((type graphic)) (:foreground ,gray-2 :background ,gray-1bg))))
    `(org-link ((((type graphic)) (:foreground ,blue-1 :background ,blue-1bg))))
    `(org-todo ((((type graphic)) (:foreground ,red-1 :background ,red-1bg))))
+   
+   ;; sml
+   `(sml/global    ((((type graphic)) :foreground "gray50" :inverse-video nil)))
+   `(sml/modes     ((((type graphic)) :inherit sml/global :foreground "White")))
+   `(sml/filename  ((((type graphic)) :inherit sml/global :foreground "#eab700" :weight bold)))
+   `(sml/prefix    ((((type graphic)) :inherit sml/global :foreground "#bf6000")))
+   `(sml/read-only ((((type graphic)) :inherit sml/not-modified :foreground "DeepSkyBlue")))
    )
 
   (custom-theme-set-variables

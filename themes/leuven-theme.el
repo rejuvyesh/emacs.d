@@ -570,7 +570,11 @@
    `(yas/field-debug-face ((,class (:background "ivory2"))))
    `(yas/field-highlight-face ((,class (:background "DarkSeaGreen1"))))
 
-
+   `(sml/global    ((t :foreground "gray60" :inverse-video nil)))
+   `(sml/modes     ((t :inherit sml/global :foreground "black")))
+   `(sml/filename  ((t :inherit sml/global :foreground "#eab700"      :weight bold)))
+   `(sml/prefix    ((t :inherit sml/global :foreground "#FF993F"   :weight bold)))
+   `(sml/read-only ((t :inherit sml/not-modified :foreground "#B0FF3F" :weight bold)))
    ;; phi grep
    ;; `(phi-grep-heading-face ((,class (:background "DarkSeaGreen1"))))
    ;; `(phi-grep-match-face ((,class (:background "DarkSeaGreen1"))))
