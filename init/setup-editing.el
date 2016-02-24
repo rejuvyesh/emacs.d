@@ -289,14 +289,16 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 
 ;; recent files
 (use-package recentf
+  :defer t
   :config
-  (setq recentf-max-saved-items 1000)
+  (setq recentf-max-saved-items 500)
   (setq recentf-save-file (emacs-d "cache/recentf"))
   (setq recentf-exclude (append recentf-exclude
                                 '("\.emacs\.d/cache"
                                   "\.emacs\.d/elpa")))
   (setq recentf-keep '(file-remote-p file-readable-p))
-  (recentf-mode 1))
+  (when (not noninteractive) (recentf-mode 1))   ; fix load times
+  )
 
 ;; clean up buffers every once in a while
 (use-package midnight
