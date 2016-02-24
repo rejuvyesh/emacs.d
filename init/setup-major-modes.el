@@ -559,10 +559,7 @@ are referenced by its edges, but functions for these tasks need region."
         web-mode-css-indent-offset 2
         web-mode-style-padding 2
         web-mode-script-padding 2
-        web-mode-block-padding 2)
-  (require-keybinds web-mode-map
-                    [remap comment-dwim] 'web-mode-comment-or-uncomment
-                    "C-c C-'" 'web-mode-element-close))
+        web-mode-block-padding 2))
 
 (load-after 'smart-compile
   (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
