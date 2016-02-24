@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: magg
+# key: magg
+# group: numpy
+# --
+import matplotlib; matplotlib.use('Agg')
+
