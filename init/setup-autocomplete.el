@@ -67,8 +67,15 @@
   ;; math
   (use-package company-math
     :ensure t
+    :defer t
     :config
-    (add-to-list 'company-backends '(company-math-symbols-latex company-latex-commands)))
+    (defun enable-math()
+      (setq-local company-backends
+                  (append '((company-math-symbols-latex company-latex-commands))
+                          company-backends)))
+    (add-hook 'text-mode-hook 'enable-math)
+    (eval-after-load 'auctex
+      '(add-hook 'LaTeX-mode-hook 'enable-math)))
   ;; sort complections by usage statistics
   (use-package company-statistics
     :ensure t
