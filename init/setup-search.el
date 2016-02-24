@@ -22,17 +22,25 @@
 
 
 (use-package phi-search
-  :ensure t)
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c C-s") 'phi-search)
+  (global-set-key (kbd "C-c C-r") 'phi-search-backward))
 
-(use-package visual-regexp)
-(use-package visual-regexp-steroids)
-(defun vr/query-replace-from-beginning ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (call-interactively 'vr/query-replace)))
-(global-set-key (kbd "C-c r") 'vr/query-replace)
-(global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning)
+(use-package visual-regexp
+  :ensure t
+  :commands (vr/query-replace)
+  :config
+  (use-package visual-regexp-steroids
+    :ensure t)
+  (defun vr/query-replace-from-beginning ()
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (call-interactively 'vr/query-replace)))
+  (global-set-key (kbd "C-c r") 'vr/query-replace)
+  (global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning))
+
 
 
 ;; use regexp search and selected region (if any) by default
