@@ -205,6 +205,23 @@
 
 (font-lock-add-keywords 'emacs-lisp-mode (fontify-glyph "\\\\\\\\" "\\"))
 
+;; Pretty mode
+;; Base set of pretty symbols.
+(defvar base-prettify-symbols-alist '(("<=" . ?≤)
+                                      (">=" . ?≥)
+                                      ("<-" . ?←)
+                                      ("->" . ?→)
+                                      ("lambda" . ?λ)))
+(defun prettify-symbols-hook ()
+  "Set pretty symbols for programming modes."
+  (setq prettify-symbols-alist
+        (append '(("==" . ?≡)
+                  ("!=" . ?≠)) base-prettify-symbols-alist)))
+(add-hook 'prog-mode-hook 'prettify-symbols-hook)
+(add-hook 'emacs-lisp-mode-hook 'prettify-symbols-hook)
+(global-prettify-symbols-mode 1)
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+
 ;; don't hard-wrap text, but use nice virtual wrapping
 (use-package adaptive-wrap)
 (setq-default fill-column 80)
