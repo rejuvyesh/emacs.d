@@ -203,10 +203,15 @@
 ;; undo tree
 (use-package undo-tree
   :ensure t
-  :config
+  :commands (undo-tree-undo undo-tree-redo)
+  :init
   (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps t))
-
+  :config
+  (setq undo-tree-visualizer-timestamps t)
+  (define-key undo-tree-map (kbd "C-x u") 'undo-tree-visualize)
+  ;; undo
+  (global-set-key (kbd "C-z") 'undo-tree-undo)
+  (global-set-key (kbd "M-z") 'undo-tree-redo))
 
 
 ;; copy end of line, like C-k
