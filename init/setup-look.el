@@ -155,7 +155,8 @@
              :ensure t
              :config
              (volatile-highlights-mode t))
-
+;; change arg colors
+(use-package color-identifiers-mode)
 ;; show keystrokes in progress
 (setq echo-keystrokes 0.1)
 
@@ -174,8 +175,10 @@
 ;; highlight some whitespace
 (use-package leerzeichen
   :commands (leerzeichen-mode))
-(add-hook 'prog-mode-hook  'leerzeichen-mode)
-(add-hook 'dired-mode-hook 'leerzeichen-mode)
+(add-hook 'prog-mode-hook 'leerzeichen-mode)
+(eval-after-load 'dired
+  '(add-hook 'dired-mode-hook 'leerzeichen-mode))
+
 
 ;; parenthesis highlighting behavior
 (use-package paren
@@ -230,9 +233,6 @@
 ;; don't wrap lines by default
 (setq-default truncate-lines t)
 (setq truncate-partial-width-windows nil)
-
-
-
 
 (use-package diminish
   :config
