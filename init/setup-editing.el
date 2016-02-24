@@ -598,43 +598,58 @@ See the variable `align-rules-list' for more details.")
   (setq blink-matching-paren-distance nil)
   (setq show-paren-style 'parenthesis)
   (setq show-paren-delay 0)
+  ;; sp keys
+  (bind-keys :map smartparens-mode-map
+             ("C-M-f"         . sp-forward-sexp)
+             ("C-M-b"         . sp-backward-sexp)
+             ("M-f"           . sp-forward-symbol)
+             ("M-b"           . sp-backward-symbol)
+             ("C-S-a"         . sp-beginning-of-sexp)
+             ("C-S-e"         . sp-end-of-sexp)
+             ("C-M-t"         . sp-transpose-sexp)
+             ("C-M-n"         . sp-next-sexp)
+             ("C-M-p"         . sp-previous-sexp)
+             ("C-M-k"         . sp-kill-sexp)
+             ("C-M-w"         . sp-copy-sexp)
+             ("C-<left>"      . sp-add-to-next-sexp)
+             ("C-<right>"     . sp-add-to-previous-sexp)
+             ("M-<delete>"    . sp-unwrap-sexp)
+             ("M-<backspace>" . sp-backward-unwrap-sexp)
+             ("C-c k"         . sp-splice-sexp)
+             ("C-c C-k"       . sp-rewrap-sexp)
+             ("S-<left>"      . sp-select-previous-thing)
+             ("S-<right>"     . sp-select-next-thing)
+             ("C-c |"         . sp-split-sexp)
+             ("C-c C-|"       . sp-join-sexp))
+  
+  ;; markdown-mode
+  (sp-with-modes '(markdown-mode)
+    (sp-local-pair "*" "*"
+                   :wrap "C-*"
+                   :unless '(sp-point-after-word-p sp-point-at-bol-p))
+    (sp-local-pair "_" "_"
+                   :wrap "C-_"
+                   :unless '(sp-point-after-word-p))
+    (sp-local-pair "**" "**")
+    (sp-local-pair "$" "$") ; math
+    (sp-local-pair "$$" "$$")
+    (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
+  ;; org-mode
+  (sp-with-modes '(org-mode)
+    (sp-local-pair "$" "$" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "$$" "$$")
+    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC"))))
+  ;; html-mode
+  (sp-with-modes '(html-mode sgml-mode)
+    (sp-local-pair "<" ">"))
+  ;; C++
+  (sp-with-modes '(malabar-mode c++-mode)
+    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET"))))
+  (sp-local-pair 'c++-mode "/*" "*/" :post-handlers '((" | " "SPC")
+                                                      ("* ||\n[i]" "RET")))
   )
-;; sp keys
-(define-key smartparens-mode-map (kbd "C-M-f")         'sp-forward-sexp)
-(define-key smartparens-mode-map (kbd "C-M-b")         'sp-backward-sexp)
-(define-key smartparens-mode-map (kbd "M-f")           'sp-forward-symbol)
-(define-key smartparens-mode-map (kbd "M-b")           'sp-backward-symbol)
-(define-key smartparens-mode-map (kbd "C-S-a")         'sp-beginning-of-sexp)
-(define-key smartparens-mode-map (kbd "C-S-d")         'sp-end-of-sexp)
-(define-key smartparens-mode-map (kbd "C-M-k")         'sp-kill-sexp)
-(define-key smartparens-mode-map (kbd "C-M-w")         'sp-copy-sexp)
-(define-key smartparens-mode-map (kbd "C-<left>")      'sp-add-to-next-sexp)
-(define-key smartparens-mode-map (kbd "C-<right>")     'sp-add-to-previous-sexp)
-(define-key smartparens-mode-map (kbd "M-<delete>")    'sp-unwrap-sexp)
-(define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
-(define-key smartparens-mode-map (kbd "C-c k")         'sp-splice-sexp)
-(define-key smartparens-mode-map (kbd "C-c C-k")       'sp-rewrap-sexp)
-(define-key smartparens-mode-map (kbd "S-<left>")      'sp-select-previous-thing)
-(define-key smartparens-mode-map (kbd "S-<right>")     'sp-select-next-thing)
-(define-key smartparens-mode-map (kbd "C-c |")         'sp-split-sexp)
-(define-key smartparens-mode-map (kbd "C-c C-|")       'sp-join-sexp)
-
-
-;; markdown-mode
-
-(sp-with-modes '(markdown-mode)
-  (sp-local-pair "*" "*" :actions '(wrap))
-  (sp-local-pair "_" "_" :actions '(wrap))
-  (sp-local-tag "m" "$" "$") ; math
-  (sp-local-pair "$$" "$$")
-  (sp-local-tag "<"  "<_>" "</_>" :transform 'sp-match-sgml-tags))
-
-(sp-with-modes '(org-mode)
-  (sp-local-pair "$" "$" :actions '(wrap autoskip))
-  (sp-local-pair "$$" "$$" :actions '(wrap autoskip)))
-;; html-mode
-(sp-with-modes '(html-mode sgml-mode)
-  (sp-local-pair "<" ">"))
 
 ;; move to beginning of text on line
 (defun sp-kill-to-end-of-sexp ()
