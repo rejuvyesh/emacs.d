@@ -633,6 +633,10 @@ are referenced by its edges, but functions for these tasks need region."
   :ensure t
   :mode ("\\.automount\\'\\|\\.busname\\'\\|\\.mount\\'\\|\\.service\\'\\|\\.slice\\'\\|\\.socket\\'\\|\\.target\\'\\|\\.timer\\'\\|\\.link\\'\\|\\.netdev\\'\\|\\.network\\'\\|\\.override\\.conf.*\\'" . systemd-mode))
 
+(use-package protobuf-mode
+  :ensure t
+  :mode ("\\.proto\\'" . protobuf-mode))
+
 ;; mark stuff like FIXME
 (use-package fic-mode
   :commands (fic-mode))
