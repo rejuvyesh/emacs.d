@@ -132,14 +132,19 @@
 
 ;; Flycheck for code linting
 (use-package flycheck
+  :defer t
   :ensure t
+  :bind (("M-g M-n" . flycheck-next-error)
+         ("M-g M-p" . flycheck-previous-error)
+         ("M-g M-=" . flycheck-list-errors))
   :init
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (global-flycheck-mode)
   :config
   (unbreak-stupid-map flycheck-mode-map)
-  (define-key flycheck-mode-map (kbd "C-c C-n") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "C-c C-p") 'flycheck-previous-error))
-
+  (use-package helm-flycheck
+    :ensure t
+    :after (helm))
+  )
 
 
 (use-package c-eldoc
