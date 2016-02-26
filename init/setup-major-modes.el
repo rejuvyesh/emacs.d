@@ -79,6 +79,9 @@
   ;; highlight math
   (setf org-highlight-latex-and-related '(latex entities))
 
+  ;; Allow alphabetical lists
+  (setq org-alphabetical-lists t)
+
   (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
   (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
   (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
