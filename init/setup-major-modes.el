@@ -7,7 +7,9 @@
   :config
   (setq magit-process-popup-time -1
         magit-auto-revert-mode-lighter nil
-        magit-push-always-verify·nil)
+        magit-push-always-verify nil
+        magit-save-repository-buffers 'dontask
+        magit-refs-show-commit-count 'all)
   (setq magit-display-buffer-function
         (lambda (buffer)
           (if (or
