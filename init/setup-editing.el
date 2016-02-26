@@ -613,6 +613,12 @@ Deletes whitespace at join."
 (define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
 (define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)
 
+(use-package rainbow-delimiters         ; Highlight delimiters by depth
+  :ensure t
+  :defer t
+  :init (dolist (hook '(text-mode-hook prog-mode-hook))
+          (add-hook hook #'rainbow-delimiters-mode)))
+
 (use-package toggle-quotes
   :ensure t
   :commands (toggle-quotes)
