@@ -519,7 +519,8 @@ are referenced by its edges, but functions for these tasks need region."
   (setq haskell-process-log t)
   (define-key haskell-mode-map (kbd "C-c ?") 'haskell-process-do-type)
   (define-key haskell-mode-map (kbd "C-c C-?") 'haskell-process-do-info)
-  (use-package haskell-doc)
+  (use-package haskell-doc
+    :diminish haskell-doc-mode)
   (use-package inf-haskell))
 
 ;; ruby ;;
@@ -674,6 +675,7 @@ are referenced by its edges, but functions for these tasks need region."
 
 ;; mark stuff like FIXME
 (use-package fic-mode
+  :diminish fic-mode
   :commands (fic-mode))
 (add-hook 'prog-mode-hook     'fic-mode)
 (add-hook 'enh-ruby-mode-hook 'fic-mode)
