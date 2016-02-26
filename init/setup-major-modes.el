@@ -469,6 +469,7 @@ are referenced by its edges, but functions for these tasks need region."
   (use-package jedi-core
     :config
     (add-hook 'python-mode-hook 'jedi:setup)
+    (setq jedi:tooltip-method nil)
     (add-hook 'python-mode-hook 'eldoc-mode)
     (unbreak-stupid-map jedi-mode-map)
     (bind-keys :map jedi-mode-map
