@@ -503,9 +503,10 @@ are referenced by its edges, but functions for these tasks need region."
   ;; (unbind-key "C-<down>" ein:notebook-mode-map)
   :config
   (add-hook 'ein:connect-mode-hook #'ein:jedi-setup)
-  (bind-keys :map ein:notebook-mode-map
-             ("M-<up>" . ein:worksheet-goto-prev-input)
-             ("M-<down>" . ein:worksheet-goto-next-input)))
+  ;; (bind-keys :map ein:notebook-mode-map
+  ;;            ("M-<up>" . ein:worksheet-goto-prev-input)
+  ;;            ("M-<down>" . ein:worksheet-goto-next-input))
+  )
 
 ;; haskell mode
 (use-package haskell-mode
