@@ -54,14 +54,15 @@
 (use-package company
   :ensure t
   :defer t
-  :diminish company-mode
+  :diminish (company-mode . " ⓐ")
   :init
   (global-company-mode)
   :config
   (setq company-tooltip-align-annotations t
-        company-idle-delay 0.1
-        ;; min prefix of 1 chars
-        company-minimum-prefix-length 1)
+        company-idle-delay 0.2
+        ;; min prefix of 2 chars
+        company-minimum-prefix-length 2
+        company-require-match nil)
   ;; math
   (use-package company-math
     :ensure t
