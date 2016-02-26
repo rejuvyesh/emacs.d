@@ -3,7 +3,8 @@
 ;; snippets
 (use-package yasnippet
   :ensure t
-  :commands (yas-expand yas-reload-all)
+  :defer t
+  :diminish yas-minor-mode
   :init
   ;; set snippet directory
   (setq yas-snippet-dirs (emacs-d "snippets"))
@@ -53,17 +54,14 @@
 (use-package company
   :ensure t
   :defer t
+  :diminish company-mode
   :init
-  (setq company-idle-delay 0.1
-        ;; min prefix of 1 chars
-        company-minimum-prefix-length 1)
-  (setq company-tooltip-align-annotations t)
   (global-company-mode)
   :config
-  (use-package company-quickhelp
-    :ensure t
-    :init
-    (company-quickhelp-mode 1))
+  (setq company-tooltip-align-annotations t
+        company-idle-delay 0.1
+        ;; min prefix of 1 chars
+        company-minimum-prefix-length 1)
   ;; math
   (use-package company-math
     :ensure t
@@ -76,26 +74,39 @@
     (add-hook 'text-mode-hook 'enable-math)
     (eval-after-load 'auctex
       '(add-hook 'LaTeX-mode-hook 'enable-math)))
-  ;; sort complections by usage statistics
-  (use-package company-statistics
-    :ensure t
-    :init
-    (setq company-statistics-file (emacs-d "cache/company-statistics"))
-    :config
-    (company-statistics-mode))
-  (use-package company-jedi
-    :ensure t
-    :defer t
-    :config
-    (defun enable-jedi()
-      (setq-local company-backends
-                  (append '(company-jedi) company-backends)))
-    (add-hook 'python-mode-hook 'enable-jedi))
   )
 
+(use-package company-quickhelp          ; Show help in tooltip
+  :ensure t
+  :defer t
+  :init (with-eval-after-load 'company
+          (company-quickhelp-mode)))
+
+(use-package company-statistics         ; Sort company candidates by statistics
+  :ensure t
+  :defer t
+  :init (with-eval-after-load 'company
+          (company-statistics-mode)))
+
+(use-package company-emoji              ; Emojis completion like Github/Slack
+  :ensure t
+  :defer t
+  :init (with-eval-after-load 'company
+          (add-to-list 'company-backends 'company-emoji)))
+
+(use-package company-jedi
+  :ensure t
+  :defer t
+  :init
+  (defun enable-jedi()
+    (setq-local company-backends
+                (append '(company-jedi) company-backends)))
+  (with-eval-after-load 'company
+    (add-hook 'python-mode-hook 'enable-jedi)))
 
 ;; auto correction via abbreviation file
 (use-package abbrev
+  :diminish abbrev-mode
   :config
   (setq abbrev-file-name
         (emacs-d "abbrev_defs"))
