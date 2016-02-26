@@ -243,6 +243,12 @@
   (bind-keys :map pdf-view-mode-map
              ("j" . pdf-view-next-line-or-next-page)
              ("k" . pdf-view-previous-line-or-previous-page))
+  (bind-keys :prefix-map pdf-annot-minor-mode-map
+             :prefix "M-a"
+             ("m" . pdf-annot-add-markup-annotation)
+             ("s" . pdf-annot-add-squiggly-markup-annotation)
+             ("u" . pdf-annot-add-underline-markup-annotation)
+             ("h" . pdf-annot-add-highlight-markup-annotation))
   (add-hook 'pdf-tools-enabled-hook (lambda ()
                                       (pdf-tools-disable-minor-modes
                                        '(pdf-misc-size-indication-minor-mode))))
