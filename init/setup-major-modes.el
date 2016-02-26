@@ -82,6 +82,7 @@
   ;; Allow alphabetical lists
   (setq org-alphabetical-lists t)
 
+  ;; org keys
   (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
   (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
   (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
@@ -106,10 +107,22 @@
                  "#+BEGIN_SRC bib\n?\n#+END_SRC"
                  "<src lang=\"bib\">\n\n</src>"))
 
-  ;; (use-package org-journal)
-  ;; (setq org-journal-dir "~/Documents/spoiler/logs/")
-  ;; (setq org-journal-file-format "%Y-%m-%d.org")
-  ;; (global-set-key (kbd "C-c j") 'org-journal-new-entry)
+  (setq org-default-notes-file "~/Dropbox/notes/scratch.org")
+  (setq org-capture-templates
+        (quote (("t" "todo" entry (file "~/Dropbox/notes/scratch.org")
+                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("r" "respond" entry (file "~/Dropbox/notes/scratch.org")
+                 "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                ("n" "note" entry (file "~/Dropbox/notes/scratch.org")
+                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("j" "Research Journal" entry (file+datetree "~/Dropbox/notes/Research.org")
+                 "* %?\n%U\n" :clock-in t :clock-resume t)
+                ("m" "Meeting" entry (file "~/Dropbox/notes/scratch.org")
+                 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("p" "Phone call" entry (file "~/Dropbox/notes/scratch.org")
+                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+                ("h" "Habit" entry (file "~/Dropbox/notes/scratch.org")
+                 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
 
   ;; (use-package org-download)
   (use-package org-pdfview
@@ -138,6 +151,7 @@
   (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
   (setq org-src-fontify-natively t)
   (setq org-confirm-babel-evaluate nil)
+  :bind* (("C-c C-j" . org-capture))
   )
 
 
