@@ -154,7 +154,7 @@
   (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
   (setq org-src-fontify-natively t)
   (setq org-confirm-babel-evaluate nil)
-  :bind* (("C-c C-j" . org-capture))
+  :bind* (("C-. c" . org-capture))
   )
 
 
