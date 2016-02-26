@@ -1,6 +1,10 @@
 (use-package hideshow)
-(use-package hideshowvis)
-(use-package fold-dwim)
+(use-package hideshowvis
+  :ensure t
+  :defer t)
+(use-package fold-dwim
+  :ensure t
+  :defer t)
 
 (add-hook 'prog-mode-hook  #'hs-minor-mode)
 
