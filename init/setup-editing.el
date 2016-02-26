@@ -197,6 +197,7 @@
 ;; undo tree
 (use-package undo-tree
   :ensure t
+  :diminish undo-tree
   :commands (undo-tree-undo undo-tree-redo)
   :init
   (global-undo-tree-mode)
@@ -431,15 +432,19 @@ Deletes whitespace at join."
 
 ;; if no region is active, act on current line
 (use-package whole-line-or-region
-  :ensure t)
-(setq whole-line-or-region-extensions-alist
-      '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
-        (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
-        (kill-region whole-line-or-region-kill-region nil)
-        (kill-ring-save whole-line-or-region-kill-ring-save nil)
-        (yank whole-line-or-region-yank nil)
-        ))
-(whole-line-or-region-mode 1)
+  :diminish whole-line-or-region-mode
+  :ensure t
+  :init
+  (whole-line-or-region-mode 1)
+  :config
+  (setq whole-line-or-region-extensions-alist
+        '((comment-dwim whole-line-or-region-comment-dwim-2 nil)
+          (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+          (kill-region whole-line-or-region-kill-region nil)
+          (kill-ring-save whole-line-or-region-kill-ring-save nil)
+          (yank whole-line-or-region-yank nil)
+          )))
+
 
 ;; tramp
 (use-package tramp
@@ -502,13 +507,11 @@ Deletes whitespace at join."
   (setq recenter-positions '(2 middle)))
 
 (add-hook 'imenu-after-jump-hook 'recenter-top-bottom)
-;; (use-package idomenu
-;;   :bind (("C-c [" . idomenu)
-;;          ("C-c C-[" . idomenu)))
 
 ;; smartparens
 (use-package smartparens
   :ensure t
+  :diminish (smartparens-mode . " ⓟ")
   :init
   (use-package smartparens-config)
   (smartparens-global-mode t)
@@ -660,10 +663,10 @@ Deletes whitespace at join."
 (global-set-key [f8] 'goto-last-change)
 
 ;; Some saner clipboard
-(>= emacs-major-version 25
+(if (>= emacs-major-version 25)
     (setq select-enable-clipboard t)
   (setq x-select-enable-clipboard t))
-(>= emacs-major-version 25
+(if (>= emacs-major-version 25)
      (setq select-enable-primary t) 
      (setq x-select-enable-primary t))
 (setq save-interprogram-paste-before-kill t
