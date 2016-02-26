@@ -91,6 +91,10 @@
      map) t)
   (message "<right> to fold more, <left> to fold less, SPC to reset."))
 
+;; change arg colors
+(use-package color-identifiers-mode
+  :defer t)
+
 (bind-keys :prefix-map visual-prefix-map
            :prefix "C-:"
            ("C-f" . fold-dwim-toggle)
@@ -101,6 +105,7 @@
            ("l" . toggle-line-wrap)
            ("s" . whitespace-fold-levels)
            ("S" . whitespace-fold-reset)
-           ("w" . leerzeichen-mode))
+           ("w" . leerzeichen-mode)
+           ("c" . color-identifiers-mode))
 
 (provide 'setup-folding)
