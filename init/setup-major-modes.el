@@ -50,6 +50,9 @@
   :ensure t
   :defer t)
 
+(use-package git-timemachine            ; go back and forward in history
+  :ensure t
+  :defer t)
 
 ;; default modes
 (use-package org
