@@ -708,13 +708,17 @@ are referenced by its edges, but functions for these tasks need region."
   :mode ("\\.pentadactylrc$" . dactyl-mode)
   :commands (dactyl-mode))
 
-;; ag search
-(use-package ag
+
+(use-package ag                         ; ag search
   :ensure t
   :commands (ag)
   :config
   (setq ag-highlight-search t)
   )
+(use-package wgrep-ag                   ; Wgrep for ag
+  :ensure t
+  :defer t)
+
 
 ;; smart-compile
 (use-package smart-compile
