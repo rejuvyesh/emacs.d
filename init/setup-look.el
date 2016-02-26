@@ -100,6 +100,7 @@
 (use-package hl-line)
 
 (use-package nyan-mode
+  :ensure t
   :init
   (nyan-mode t))
 
@@ -151,12 +152,12 @@
 
 ;; undo highlighting
 ;; highlight changes made by undo
-(use-package volatile-highlights 
-             :ensure t
-             :config
-             (volatile-highlights-mode t))
-;; change arg colors
-(use-package color-identifiers-mode)
+(use-package volatile-highlights
+  :ensure t
+  :diminish volatile-highlights-mode
+  :config
+  (volatile-highlights-mode t))
+
 ;; show keystrokes in progress
 (setq echo-keystrokes 0.1)
 
@@ -174,6 +175,7 @@
 
 ;; highlight some whitespace
 (use-package leerzeichen
+  :diminish leerzeichen-mode
   :commands (leerzeichen-mode))
 (add-hook 'prog-mode-hook 'leerzeichen-mode)
 (eval-after-load 'dired
@@ -210,20 +212,23 @@
 
 ;; Pretty mode
 ;; Base set of pretty symbols.
-(defvar base-prettify-symbols-alist '(("<=" . ?≤)
-                                      (">=" . ?≥)
-                                      ("<-" . ?←)
-                                      ("->" . ?→)
-                                      ("lambda" . ?λ)))
-(defun prettify-symbols-hook ()
-  "Set pretty symbols for programming modes."
-  (setq prettify-symbols-alist
-        (append '(("==" . ?≡)
-                  ("!=" . ?≠)) base-prettify-symbols-alist)))
-(add-hook 'prog-mode-hook 'prettify-symbols-hook)
-(add-hook 'emacs-lisp-mode-hook 'prettify-symbols-hook)
-(global-prettify-symbols-mode 1)
-(setq prettify-symbols-unprettify-at-point 'right-edge)
+(use-package prettify-symbols
+  :init
+  (global-prettify-symbols-mode 1)
+  :config
+  (defvar base-prettify-symbols-alist '(("<=" . ?≤)
+                                        (">=" . ?≥)
+                                        ("<-" . ?←)
+                                        ("->" . ?→)
+                                        ("lambda" . ?λ)))
+  (defun prettify-symbols-hook ()
+    "Set pretty symbols for programming modes."
+    (setq prettify-symbols-alist
+          (append '(("==" . ?≡)
+                    ("!=" . ?≠)) base-prettify-symbols-alist)))
+  (add-hook 'prog-mode-hook 'prettify-symbols-hook)
+  (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-hook)
+  (setq prettify-symbols-unprettify-at-point 'right-edge))
 
 ;; don't hard-wrap text, but use nice virtual wrapping
 (use-package adaptive-wrap)
@@ -248,21 +253,10 @@
     `(load-after ,package-name
        '(defadvice ,mode (after diminish-major-mode activate)
 	  (setq mode-name ,new-name))))
-  (diminish-minor-mode 'abbrev               'abbrev-mode)
-  (diminish-minor-mode 'company              'company-mode       "↝")
   (diminish-minor-mode 'auto-revert-mode     'auto-revert-mode)
-  (diminish-minor-mode 'eldoc                'eldoc-mode)
-  (diminish-minor-mode 'fic-mode             'fic-mode)
-  (diminish-minor-mode 'haskell-doc          'haskell-doc-mode)
   (diminish-minor-mode 'hs-minor-mode        'hs-minor-mode)
-  (diminish-minor-mode 'leerzeichen          'leerzeichen-mode)
   (diminish-minor-mode 'magit                'magit-auto-revert-mode)
-  (diminish-minor-mode 'smartparens          'smartparens-mode)
-  (diminish-minor-mode 'undo-tree            'undo-tree-mode     "↺")
   (diminish-minor-mode 'visual-line-mode     'visual-line-mode)
-  (diminish-minor-mode 'volatile-highlights  'volatile-highlights-mode)
-  (diminish-minor-mode 'whole-line-or-region 'whole-line-or-region-mode)
-  (diminish-minor-mode 'yasnippet            'yas-minor-mode)
 
   (diminish-major-mode	'lisp-mode    	emacs-lisp-mode	"EL" 	)
   (diminish-major-mode	'sh-script    	sh-mode        	"sh" 	)
