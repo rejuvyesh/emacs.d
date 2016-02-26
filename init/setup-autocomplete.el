@@ -105,8 +105,8 @@
   (with-eval-after-load 'company
     (add-hook 'python-mode-hook 'enable-jedi)))
 
-;; auto correction via abbreviation file
-(use-package abbrev
+
+(use-package abbrev                     ; auto correction via abbreviation file
   :diminish abbrev-mode
   :config
   (setq abbrev-file-name
