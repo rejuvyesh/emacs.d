@@ -37,6 +37,19 @@
             (get-buffer-window buffer))))
   )
 
+(use-package what-the-commit            ; Insert random commit messages
+  :ensure t
+  :bind (("C-c w" . what-the-commit-insert)
+         ("C-c v w" . what-the-commit)))
+
+(use-package gitconfig-mode             ; Git configuration mode
+  :ensure t
+  :defer t)
+
+(use-package gitignore-mode             ; .gitignore mode
+  :ensure t
+  :defer t)
+
 
 ;; default modes
 (use-package org
