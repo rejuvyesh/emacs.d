@@ -592,11 +592,15 @@ are referenced by its edges, but functions for these tasks need region."
   (push '(web-mode . (browse-url-of-buffer)) smart-compile-alist))
 
 ;; eldoc, ie function signatures in the minibuffer
-(load-lazy '(turn-on-eldoc-mode) "eldoc"
+(use-package eldoc
+  :diminish (eldoc-mode)
+  :commands (turn-on-eldoc-mode)
+  :config
   (setq eldoc-idle-delay 0.1
-        eldoc-echo-area-use-multiline-p nil))
-(load-after 'lisp-mode
-  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
+        eldoc-echo-area-use-multiline-p nil)
+  (load-after 'lisp-mode
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode))
+  )
 
 
 ;; go
