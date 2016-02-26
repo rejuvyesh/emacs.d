@@ -619,6 +619,11 @@ Deletes whitespace at join."
   :init (dolist (hook '(text-mode-hook prog-mode-hook))
           (add-hook hook #'rainbow-delimiters-mode)))
 
+(use-package highlight-numbers          ; Fontify number literals
+  :ensure t
+  :defer t
+  :init (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+
 (use-package toggle-quotes
   :ensure t
   :commands (toggle-quotes)
