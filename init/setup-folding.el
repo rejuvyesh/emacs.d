@@ -4,7 +4,7 @@
   :defer t)
 (use-package fold-dwim
   :ensure t
-  :defer t)
+  :commands (fold-dwim-toggle))
 
 (add-hook 'prog-mode-hook  #'hs-minor-mode)
 
