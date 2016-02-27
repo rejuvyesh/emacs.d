@@ -35,7 +35,7 @@
 (column-number-mode t)
 (setq-default indicate-empty-lines t)
 
-(setq locale-coding-system  'utf-8) 
+(setq locale-coding-system  'utf-8)
 (set-terminal-coding-system 'utf-8)
 (prefer-coding-system       'utf-8)
 
@@ -175,7 +175,7 @@
     (interactive)
     (mc/many-to-one-yank)
     (call-interactively 'indent-region))
-  
+
   (use-package mc-extras
     :ensure t)
   (use-package mc-jump)
@@ -445,6 +445,10 @@ Deletes whitespace at join."
           (yank whole-line-or-region-yank nil)
           )))
 
+(use-package whitespace-cleanup
+  :commands (whitespace-cleanup whitespace-cleanup-region)
+  :bind (("C-. w" . whitespace-cleanup))
+  )
 
 ;; tramp
 (use-package tramp
@@ -544,7 +548,7 @@ Deletes whitespace at join."
              ("S-<right>"     . sp-select-next-thing)
              ("C-c |"         . sp-split-sexp)
              ("C-c C-|"       . sp-join-sexp))
-  
+
   ;; markdown-mode
   (sp-with-modes '(markdown-mode)
     (sp-local-pair "*" "*"
@@ -678,7 +682,7 @@ Deletes whitespace at join."
     (setq select-enable-clipboard t)
   (setq x-select-enable-clipboard t))
 (if (>= emacs-major-version 25)
-     (setq select-enable-primary t) 
+     (setq select-enable-primary t)
      (setq x-select-enable-primary t))
 (setq save-interprogram-paste-before-kill t
       apropos-do-all t
