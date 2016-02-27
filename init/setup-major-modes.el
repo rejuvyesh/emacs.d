@@ -154,7 +154,7 @@
   (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
   (setq org-src-fontify-natively t)
   (setq org-confirm-babel-evaluate nil)
-  :bind* (("C-. c" . org-capture))
+  :bind (("C-. c" . org-capture))
   )
 
 
@@ -348,7 +348,12 @@ are referenced by its edges, but functions for these tasks need region."
   (setq markdown-enable-math t)
   ;; add pandoc hook
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
-  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
+  (use-package pandoc-mode
+    :ensure t
+    :defer t
+    :config
+    (add-hook 'pandoc-mode-hook 'pandoc-mode))
+  )
 
 ;; yaml
 (use-package yaml-mode
@@ -493,7 +498,6 @@ are referenced by its edges, but functions for these tasks need region."
     :config
     (add-hook 'python-mode-hook 'jedi:setup)
     (setq jedi:tooltip-method nil)
-    (add-hook 'python-mode-hook 'eldoc-mode)
     (unbreak-stupid-map jedi-mode-map)
     (bind-keys :map jedi-mode-map
                ("M-." .  jedi:goto-definition)
