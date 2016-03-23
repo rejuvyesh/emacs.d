@@ -645,6 +645,17 @@ are referenced by its edges, but functions for these tasks need region."
   :mode ("\\.pentadactylrc$" . dactyl-mode)
   :commands (dactyl-mode))
 
+(use-package semantic
+  :defer t
+  :init
+  (setq semanticdb-default-save-directory (emacs-d "cache/semanticdb/"))
+  (unless (file-exists-p semanticdb-default-save-directory)
+    (make-directory semanticdb-default-save-directory))
+  (add-hook 'prog-mode-hook (lambda ()
+                              (add-to-list 'semantic-default-submodes
+                                           'global-semantic-idle-summary-mode)
+                              (semantic-mode 1))))
+
 ;; Automatic Math preview toggle in org-mode
 ;; Source: http://goo.gl/WLYzxp
 (defvar org-latex-fragment-last nil
