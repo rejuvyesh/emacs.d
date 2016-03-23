@@ -75,7 +75,6 @@ the right."
   (defun align-repeat-decimal (start end)
     "Align a table of numbers on decimal points and dollar signs (both optional)."
     (interactive "r")
-    (require 'align)
     (align-region start end nil
                   '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
                          (repeat . t)
@@ -107,6 +106,7 @@ the right."
   (create-align-repeat-x "equal" "=")
   (create-align-repeat-x "math-oper" "[+\\-*/]")
   (create-align-repeat-x "ampersand" "&")
+  (create-align-repeat-x "sharp" "#")
   (create-align-repeat-x "bar" "|")
   (create-align-repeat-x "left-paren" "(")
   (create-align-repeat-x "right-paren" ")" t)
@@ -125,6 +125,7 @@ the right."
              (":"   . align-repeat-colon)
              ("="   . align-repeat-equal)
              ("&"   . align-repeat-ampersand)
+             ("#"   . align-repeat-sharp)
              ("|"   . align-repeat-bar)
              ("("   . align-repeat-left-paren)
              (")"   . align-repeat-right-paren)))
