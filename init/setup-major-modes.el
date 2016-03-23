@@ -206,15 +206,12 @@
   :init
   (which-function-mode 1))
 
-;; load ESS for R
-;; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-(use-package ess-site
+;; load ESS for R & julia
+(use-package ess
   :mode (("\\.jl$" . julia-mode)
          ("\\.R$"  . R-mode))
-  :commands (R R-mode julia-mode)
   :config
-  (setq inferior-julia-program-name "julia")
-  )
+  (add-hook 'ess-mode-hook 'company-mode))
 
 ;; auctex
 (use-package auctex
