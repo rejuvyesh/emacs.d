@@ -47,35 +47,36 @@
 ;; general key bindings
 
 ;; commenting
-(global-set-key (kbd "C-c c")     'comment-region)
-(global-set-key (kbd "C-c u")     'uncomment-region)
-(global-set-key (kbd "C-c SPC")   'comment-dwim)
-(global-set-key (kbd "C-c C-SPC") 'comment-dwim)
+(bind-key "C-c c"     'comment-region)
+(bind-key "C-c u"     'uncomment-region)
+(bind-key "C-c SPC"   'comment-dwim)
+(bind-key "C-c C-SPC" 'comment-dwim)
 
 ;; error
-(global-set-key (kbd "C-c n") 'next-error)
-(global-set-key (kbd "C-c p") 'previous-error)
-(global-set-key (kbd "M-t")   'find-tag)
+(bind-key "C-c n" 'next-error)
+(bind-key "C-c p" 'previous-error)
+(bind-key "M-t"   'find-tag)
 
 ;; eval shortcut
-(global-set-key (kbd "C-S-M-x")   'eval-buffer)
+(bind-key "C-S-M-x"   'eval-buffer)
 
 
-(global-set-key (kbd "C-f")    'forward-word)
-(global-set-key (kbd "C-b")    'backward-word)
-(global-set-key (kbd "M-f")    'forward-sentence)
-(global-set-key (kbd "M-b")    'backward-sentence)
-(global-set-key (kbd "<home>") 'beginning-of-buffer)
-(global-set-key (kbd "<end>")  'end-of-buffer)
+(bind-key "C-f"    'forward-word)
+(bind-key "C-b"    'backward-word)
+(bind-key "M-f"    'forward-sentence)
+(bind-key "M-b"    'backward-sentence)
+(bind-key "<home>" 'beginning-of-buffer)
+(bind-key "<end>"  'end-of-buffer)
 
 ;; allowed key components
-(use-package free-keys)
-(setq free-keys-keys
-      (concat "abcdefghijklmnopqrstuvwxyz"
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-              "1234567890"
-              "!@#$%^&*()-=[]{};'\\:\"|,./<>?`~_+"
-              ))
+(use-package free-keys
+  :config
+  (setq free-keys-keys
+        (concat "abcdefghijklmnopqrstuvwxyz"
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "1234567890"
+                "!@#$%^&*()-=[]{};'\\:\"|,./<>?`~_+"
+                )))
 ;; unset unwanted default keys
 (cl-loop for key in `(
                       (,(kbd "C-x C-z") suspend-frame)
@@ -88,7 +89,6 @@
                       (,(kbd "<C-down-mouse-2>") facemenu-menu)
                       (,(kbd "<S-down-mouse-1>") mouse-appearance-menu)
                       (,(kbd "C-x C-t") transpose-lines)
-                      (,(kbd "C-x C-q") read-only-mode)
                       (,(kbd "C-x C-o") delete-blank-lines)
                       (,(kbd "C-x C-n") set-goal-column)
                       (,(kbd "C-x TAB") indent-rigidly)
@@ -126,7 +126,6 @@
                       (,(kbd "M-*") pop-tag-mark)
                       (,(kbd "M-.") find-tag)
                       (,(kbd "M-,") tags-loop-continue)
-                      (,(kbd "M-/") dabbrev-expand)
                       (,(kbd "M-=") count-words-region)
                       (,(kbd "M-@") mark-word)
                       (,(kbd "M-\\") delete-horizontal-space)
@@ -160,7 +159,11 @@
          ("C-c >"            . mc/mark-more-like-this-extended)
          ("C-c <"            . mc/mark-more-like-this-extended)
          ("C-S-<mouse-1>"    . mc/add-cursor-on-click)
-         ("C-<down-mouse-1>" . mc/add-cursor-on-click))
+         ("C-<down-mouse-1>" . mc/add-cursor-on-click)
+         (:map mc/keymap
+               ;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
+               ("<return>" . nil)
+               ("C-j"      . multiple-cursors-mode)))
   :config
   (defun mc/many-to-one-yank ()
     "Yanks killed lines from multiple cursors into one position. Less messy than yank-rectangle."
@@ -179,9 +182,7 @@
   (use-package mc-extras
     :ensure t)
   (use-package mc-jump)
-  ;; <ret> inserts a newline; C-j exits (a bit more convenient that way)
-  ;;(define-key mc/keymap ("<return>") nil)
-  (define-key mc/keymap (kbd "C-j") 'multiple-cursors-mode)
+
   ;; Because regex
   (defalias 'mc/mark-all-in-region 'mc/mark-all-in-region-regexp)
   )
@@ -189,24 +190,27 @@
 (use-package phi-search-mc
   :ensure t
   :defer t
-  :config
-  (define-key phi-search-default-map (kbd "<C-down>") 'phi-search-mc/mark-next)
-  (define-key phi-search-default-map (kbd "<C-up>")   'phi-search-mc/mark-previous)
-  (define-key phi-search-default-map (kbd "C-c C-k")  'phi-search-mc/mark-all))
+  :bind (:map phi-search-default-map
+              ("C-<down>" . phi-search-mc/mark-next)
+              ("C-<up>"   . phi-search-mc/mark-previous)
+              ("C-c C-k"  . phi-search-mc/mark-all)))
 
 ;; undo tree
 (use-package undo-tree
   :ensure t
-  :diminish undo-tree
+  :diminish undo-tree-mode
   :commands (undo-tree-undo undo-tree-redo)
   :init
   (global-undo-tree-mode)
   :config
   (setq undo-tree-visualizer-timestamps t)
-  (define-key undo-tree-map (kbd "C-x u") 'undo-tree-visualize)
+
   ;; undo
-  (global-set-key (kbd "C-z") 'undo-tree-undo)
-  (global-set-key (kbd "M-z") 'undo-tree-redo))
+  :bind (("C-z" . undo-tree-undo)
+         ("M-z" . undo-tree-redo)
+         (:map undo-tree-map
+               ("C-x u" . undo-tree-visualize)))
+  )
 
 
 ;; copy end of line, like C-k
@@ -221,7 +225,7 @@
     (if (eq last-command 'copy-to-kill)
         (append-next-kill))
     (kill-ring-save (mark) (point))))
-(global-set-key (kbd "M-k") 'copy-line)
+(bind-key "M-k" 'copy-line)
 
 ;; move to beginning of text on line
 (defun smart-beginning-of-line ()
@@ -244,7 +248,7 @@ If visual-line-mode is on, then also jump to beginning of real line."
         (goto-char vispos)
       (when (= oldpos (point))
         (beginning-of-line)))))
-(global-set-key (kbd "C-a") 'smart-beginning-of-line)
+(bind-key "C-a" 'smart-beginning-of-line)
 
 (defun smart-end-of-line ()
   "Move point to end of visual line or, if already there, to end of logical line."
@@ -254,17 +258,16 @@ If visual-line-mode is on, then also jump to beginning of real line."
     (end-of-visual-line)
     (when (= oldpos (point))
       (end-of-line))))
-(global-set-key (kbd "C-e") 'smart-end-of-line)
-
-;; move lines like in org-mode
-(use-package move-dup
-  :config
-  (global-set-key (kbd "M-<up>") 'md/move-lines-up)
-  (global-set-key (kbd "M-<down>") 'md/move-lines-down))
+(bind-key "C-e" 'smart-end-of-line)
 
 ;; org-mode has similar behavior built-in, so use it instead
 (load-after 'org-mode
-            (setq org-special-ctrl-a/e t))
+  (setq org-special-ctrl-a/e t))
+
+;; move lines like in org-mode
+(use-package move-dup
+  :bind (("M-<up>" . md/move-lines-up)
+         ("M-<down>" . md/move-lines-down)))
 
 (defun insert-file-name (filename &optional args)
   "Insert name of file FILENAME into buffer after point.
@@ -275,7 +278,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
          (insert (expand-file-name filename)))
         (t
          (insert (file-relative-name filename)))))
-(global-set-key (kbd "C-c C-i") 'insert-file-name)
+(bind-key "C-c C-i" 'insert-file-name)
 
 
 (use-package winner
@@ -307,15 +310,18 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (midnight-delay-set 'midnight-delay 0))
 
 ;; unique names
-(use-package uniquify)
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator "/")
+  (setq uniquify-after-kill-buffer-p t)   ; rename after killing uniquified
+  (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+  )
+
 
 ;; indentation
 (setq-default tab-width 2)
-(global-set-key (kbd "C-c i") 'indent-region)
+(bind-key "C-c i" 'indent-region)
 
 ;; don't use tabs normally, except for a few special modes
 (setq-default indent-tabs-mode nil)
@@ -323,12 +329,11 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 ;; makefile has its issues
 (add-hook 'makefile-mode-hook 'usetabs)
 ;; insert literal tab
-(global-set-key (kbd "<C-tab>") (lambda () (interactive)
+(bind-key "<C-tab>" (lambda () (interactive)
                                   (insert "\t")))
 
-;; automatically indent on return, except in a few modes that have similar stuff by default
-;; automatically indent on return
-(use-package electric
+
+(use-package electric                   ; automatically indent on return
   :config
   (electric-indent-mode 1))
 
@@ -342,7 +347,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (interactive)
   (yank)
   (call-interactively 'indent-region))
-(global-set-key (kbd "C-y") 'yank-and-indent)
+(bind-key "C-y" 'yank-and-indent)
 
 ;; undo hardwrapped regions (mostly markdown)
 (defun unfill-region (begin end)
@@ -350,7 +355,7 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
 indented text (quotes, code) and lists intact."
   (interactive "r")
   (replace-regexp "\\([^\n]\\)\n\\([^ *\\>-\n]\\)" "\\1 \\2" nil begin end))
-(global-set-key "\M-Q" 'unfill-region)
+(bind-key "M-Q" 'unfill-region)
 
 ;; delete spaces when killing a line
 (defun kill-and-join-forward (&optional arg)
@@ -360,11 +365,11 @@ Deletes whitespace at join."
   (if (and (eolp) (not (bolp)))
       (delete-indentation t)
     (kill-line arg)))
-(global-set-key (kbd "C-k") 'kill-and-join-forward)
+(bind-key "C-k" 'kill-and-join-forward)
 
-;; delete all space before point up to beginning of line or non-whitespace char
-(use-package hungry-delete
+(use-package hungry-delete              ; delete all space before point up to beginning of line or non-whitespace char
   :ensure t
+  :diminish (hungry-delete-mode)
   :init
   (global-hungry-delete-mode))
 
@@ -374,14 +379,14 @@ Deletes whitespace at join."
 (defun literal-delete-backward-char (&optional arg)
   (interactive "P")
   (delete-backward-char 1))
-(global-set-key (kbd "C-d") 'literal-delete-char)
-(global-set-key (kbd "M-d") 'literal-delete-backward-char)
+(bind-key "C-d" 'literal-delete-char)
+(bind-key "M-d" 'literal-delete-backward-char)
 
 (use-package wcheck-mode
-             :ensure t)
+  :ensure t
+  :bind (("C-c s" . wcheck-actions)))
 (setq ispell-really-hunspell t)
 (setq wcheck-timer-idle .2)
-(define-key global-map (kbd "C-c s") 'wcheck-actions)
 (setq-default
  wcheck-language "English"
  wcheck-language-data '(("English"
@@ -421,6 +426,7 @@ Deletes whitespace at join."
 (add-hook 'text-mode-hook     'turn-on-spell-check)
 (add-hook 'markdown-mode-hook 'turn-on-spell-check)
 (add-hook 'org-mode-hook      'turn-on-spell-check)
+(add-hook 'text-mode-hook     'turn-on-spell-check)
 
 ;; diff- mode (better colors)
 (use-package diff-mode-)
@@ -501,7 +507,11 @@ Deletes whitespace at join."
 (setq initial-scratch-message nil)
 
 ;; handle camelcase better
-(global-subword-mode 1)
+(use-package subword
+  :diminish (subword-mode)
+  :config
+  (global-subword-mode 1))
+
 
 ;; fast navigation
 (use-package imenu
@@ -547,7 +557,11 @@ Deletes whitespace at join."
              ("S-<left>"      . sp-select-previous-thing)
              ("S-<right>"     . sp-select-next-thing)
              ("C-c |"         . sp-split-sexp)
-             ("C-c C-|"       . sp-join-sexp))
+             ("C-c C-|"       . sp-join-sexp)
+             ("C-c C-a"       . sp-kill-to-beginning-of-sexp)
+             ("C-c C-e"       . sp-kill-to-end-of-sexp)
+             ("C-c M-a"       . sp-copy-to-beginning-of-sexp)
+             ("C-c M-e"       . sp-copy-to-end-of-sexp))
 
   ;; markdown-mode
   (sp-with-modes '(markdown-mode)
@@ -610,12 +624,7 @@ Deletes whitespace at join."
     (set-mark (point))
     (sp-beginning-of-sexp)
     (kill-ring-save (mark) (point))))
-(define-key sp-keymap (kbd "C-c a")   'sp-beginning-of-sexp)
-(define-key sp-keymap (kbd "C-c e")   'sp-end-of-sexp)
-(define-key sp-keymap (kbd "C-c C-a") 'sp-kill-to-beginning-of-sexp)
-(define-key sp-keymap (kbd "C-c C-e") 'sp-kill-to-end-of-sexp)
-(define-key sp-keymap (kbd "C-c M-a") 'sp-copy-to-beginning-of-sexp)
-(define-key sp-keymap (kbd "C-c M-e") 'sp-copy-to-end-of-sexp)
+
 
 (use-package rainbow-delimiters         ; Highlight delimiters by depth
   :ensure t
@@ -675,7 +684,7 @@ Deletes whitespace at join."
 ;; http://www.emacswiki.org/emacs/GotoChg
 (use-package goto-last-change
   :ensure t)
-(global-set-key [f8] 'goto-last-change)
+(bind-key "<f8>" 'goto-last-change)
 
 ;; Some saner clipboard
 (if (>= emacs-major-version 25)
