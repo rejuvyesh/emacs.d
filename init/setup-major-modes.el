@@ -835,6 +835,11 @@ are referenced by its edges, but functions for these tasks need region."
     :ensure t)
   (use-package dired-open
     :ensure t)
+  (use-package dired-narrow             ; narrow dired to match filter
+    :ensure t
+    :bind (:map dired-mode-map
+                ("/" . dired-narrow)))
+
   ;; reload dired after making changes
   (--each '(dired-do-rename
             dired-do-copy
