@@ -136,27 +136,6 @@
     :defer t)
   (add-to-list 'org-file-apps '("\\.pdf\\'"                   . org-pdfview-open))
   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
-  (use-package org-plus-contrib
-    :ensure t)
-  ;; code block
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     ;; (C          . t)
-     ;; (R          . t)
-     ;; (matlab     . t)
-     (sh         . t)
-     (ruby       . t)
-     (python     . t)
-     (haskell    . t)))
-  (add-to-list 'org-src-lang-modes '("c" . c))
-  (add-to-list 'org-src-lang-modes '("r" . ess-mode))
-  (add-to-list 'org-src-lang-modes '("h" . haskell))
-  (add-to-list 'org-src-lang-modes '("s" . sh))
-  (add-to-list 'org-src-lang-modes '("p" . python))
-  (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
-  (setq org-src-fontify-natively t)
-  (setq org-confirm-babel-evaluate nil)
   :bind (("C-. c" . org-capture))
   )
 
@@ -365,83 +344,6 @@ are referenced by its edges, but functions for these tasks need region."
 (use-package notes-mode
   :mode "\\.notes$")
 
-
-;; Automatic Math preview toggle in org-mode
-;; Source: http://goo.gl/WLYzxp
-(defvar org-latex-fragment-last nil
-  "Holds last fragment/environment you were on.")
-;; FIXME Pretty janky right now
-(defun org-latex-fragment-toggle ()
-  "Toggle a latex fragment image "
-  (and (eq 'org-mode major-mode)
-       (let* ((el (org-element-context))
-              (el-type (car el)))
-         (cond
-          ;; were on a fragment and now on a new fragment
-          ((and
-            ;; fragment we were on
-            org-latex-fragment-last
-            ;; and are on a fragment now
-            (or
-             (eq 'latex-fragment el-type)
-             (eq 'latex-environment el-type))
-            ;; but not on the last one this is a little tricky. as you edit the
-            ;; fragment, it is not equal to the last one. We use the begin
-            ;; property which is less likely to change for the comparison.
-            (not (= (org-element-property :begin el)
-                    (org-element-property :begin org-latex-fragment-last))))
-           ;; go back to last one and put image back
-           (save-excursion
-             (goto-char (org-element-property :begin org-latex-fragment-last))
-             (org-preview-latex-fragment))
-           ;; now remove current image
-           (goto-char (org-element-property :begin el))
-           (let ((ov (loop for ov in org-latex-fragment-image-overlays
-                           if
-                           (and
-                            (<= (overlay-start ov) (point))
-                            (>= (overlay-end ov) (point)))
-                           return ov)))
-             (when ov
-               (delete-overlay ov)))
-           ;; and save new fragment
-           (setq org-latex-fragment-last el))
-
-          ;; were on a fragment and now are not on a fragment
-          ((and
-            ;; not on a fragment now
-            (not (or
-                  (eq 'latex-fragment el-type)
-                  (eq 'latex-environment el-type)))
-            ;; but we were on one
-            org-latex-fragment-last)
-           ;; put image back on
-           (save-excursion
-             (goto-char (org-element-property :begin org-latex-fragment-last))
-             (org-preview-latex-fragment))
-           ;; unset last fragment
-           (setq org-latex-fragment-last nil))
-
-          ;; were not on a fragment, and now are
-          ((and
-            ;; we were not one one
-            (not org-latex-fragment-last)
-            ;; but now we are
-            (or
-             (eq 'latex-fragment el-type)
-             (eq 'latex-environment el-type)))
-           (goto-char (org-element-property :begin el))
-           ;; remove image
-           (let ((ov (loop for ov in org-latex-fragment-image-overlays
-                           if
-                           (and
-                            (<= (overlay-start ov) (point))
-                            (>= (overlay-end ov) (point)))
-                           return ov)))
-             (when ov
-               (delete-overlay ov)))
-           (setq org-latex-fragment-last el))))))
-(add-hook 'post-command-hook 'org-latex-fragment-toggle)
 
 ;; reload file when it changed (and the buffer has no changes)
 (global-auto-revert-mode 1)
@@ -743,6 +645,106 @@ are referenced by its edges, but functions for these tasks need region."
   :mode ("\\.pentadactylrc$" . dactyl-mode)
   :commands (dactyl-mode))
 
+;; Automatic Math preview toggle in org-mode
+;; Source: http://goo.gl/WLYzxp
+(defvar org-latex-fragment-last nil
+  "Holds last fragment/environment you were on.")
+;; FIXME Pretty janky right now
+(defun org-latex-fragment-toggle ()
+  "Toggle a latex fragment image "
+  (and (eq 'org-mode major-mode)
+       (let* ((el (org-element-context))
+              (el-type (car el)))
+         (cond
+          ;; were on a fragment and now on a new fragment
+          ((and
+            ;; fragment we were on
+            org-latex-fragment-last
+            ;; and are on a fragment now
+            (or
+             (eq 'latex-fragment el-type)
+             (eq 'latex-environment el-type))
+            ;; but not on the last one this is a little tricky. as you edit the
+            ;; fragment, it is not equal to the last one. We use the begin
+            ;; property which is less likely to change for the comparison.
+            (not (= (org-element-property :begin el)
+                    (org-element-property :begin org-latex-fragment-last))))
+           ;; go back to last one and put image back
+           (save-excursion
+             (goto-char (org-element-property :begin org-latex-fragment-last))
+             (org-preview-latex-fragment))
+           ;; now remove current image
+           (goto-char (org-element-property :begin el))
+           (let ((ov (loop for ov in (org--list-latex-overlays)
+                           if
+                           (and
+                            (<= (overlay-start ov) (point))
+                            (>= (overlay-end ov) (point)))
+                           return ov)))
+             (when ov
+               (delete-overlay ov)))
+           ;; and save new fragment
+           (setq org-latex-fragment-last el))
+
+          ;; were on a fragment and now are not on a fragment
+          ((and
+            ;; not on a fragment now
+            (not (or
+                  (eq 'latex-fragment el-type)
+                  (eq 'latex-environment el-type)))
+            ;; but we were on one
+            org-latex-fragment-last)
+           ;; put image back on
+           (save-excursion
+             (goto-char (org-element-property :begin org-latex-fragment-last))
+             (org-preview-latex-fragment))
+           ;; unset last fragment
+           (setq org-latex-fragment-last nil))
+
+          ;; were not on a fragment, and now are
+          ((and
+            ;; we were not one one
+            (not org-latex-fragment-last)
+            ;; but now we are
+            (or
+             (eq 'latex-fragment el-type)
+             (eq 'latex-environment el-type)))
+           (goto-char (org-element-property :begin el))
+           ;; remove image
+           (let ((ov (loop for ov in (org--list-latex-overlays)
+                           if
+                           (and
+                            (<= (overlay-start ov) (point))
+                            (>= (overlay-end ov) (point)))
+                           return ov)))
+             (when ov
+               (delete-overlay ov)))
+           (setq org-latex-fragment-last el))))))
+(add-hook 'post-command-hook 'org-latex-fragment-toggle)
+
+;; Should load this after all other languages I guess :(
+(use-package org-plus-contrib
+  :ensure t
+  :config
+  ;; code block
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (R          . t)
+     (matlab     . t)
+     (julia      . t)
+     (sh         . t)
+     (ruby       . t)
+     (python     . t)
+     (haskell    . t)))
+  (add-to-list 'org-src-lang-modes '("c" . c))
+  (add-to-list 'org-src-lang-modes '("r" . ess-mode))
+  (add-to-list 'org-src-lang-modes '("h" . haskell))
+  (add-to-list 'org-src-lang-modes '("s" . sh))
+  (add-to-list 'org-src-lang-modes '("p" . python))
+  (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
+  (setq org-src-fontify-natively t)
+  (setq org-confirm-babel-evaluate nil))
 
 (use-package ag                         ; ag search
   :ensure t
