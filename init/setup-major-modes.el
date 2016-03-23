@@ -781,13 +781,15 @@ are referenced by its edges, but functions for these tasks need region."
 
 (use-package ag                         ; ag search
   :ensure t
-  :commands (ag)
+  :commands (ag helm-do-grep-ag)
   :config
   (setq ag-highlight-search t)
   )
 (use-package wgrep-ag                   ; Wgrep for ag
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
 
 
 ;; smart-compile
