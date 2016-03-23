@@ -219,12 +219,14 @@ This usually makes new item indented one level deeper."
   :ensure t
   :mode ("\\.tex$" . LaTeX-mode)
   :commands (latex-mode LaTeX-mode plain-tex-mode)
-  :init
+  :config
   (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
   (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
   (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
+  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+            #'TeX-revert-document-buffer)
   (setq TeX-auto-save t
         TeX-parse-self t
         TeX-save-query nil
@@ -232,7 +234,7 @@ This usually makes new item indented one level deeper."
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-source-correlate-start-server t)
-  :config
+
   ;; Compilation command
   (add-hook 'LaTeX-mode-hook (lambda () (setq compile-command "latexmk -pdf")))
   (use-package latex-extra
