@@ -132,6 +132,10 @@ This usually makes new item indented one level deeper."
                '("b"
                  "#+BEGIN_SRC bib\n?\n#+END_SRC"
                  "<src lang=\"bib\">\n\n</src>"))
+  (add-to-list 'org-structure-template-alist
+               '("j"
+                 "#+BEGIN_SRC julia\n?\n#+END_SRC"
+                 "<src lang=\"julia\">\n\n</src>"))
 
   (setq org-default-notes-file "~/Dropbox/notes/scratch.org")
   (setq org-capture-templates
