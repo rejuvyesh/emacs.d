@@ -9,7 +9,7 @@
 (defun yank-pop-reverse ()
   (interactive)
   (yank-pop -1))
-(global-set-key (kbd "M-Y") 'yank-pop-reverse)
+(bind-key  "M-Y" 'yank-pop-reverse)
 
 ;; goto and hint-style navigation
 (use-package avy
@@ -17,15 +17,15 @@
   :bind (("M-g l" . avy-goto-line)
          ("M-g c" . avy-goto-char)
          ("M-g w" . avy-goto-word-or-subword-1)))
-(global-set-key (kbd "M-g M-g") 'goto-line)
-(global-set-key (kbd "M-g g") 'goto-line)
+(bind-key "M-g M-g" 'goto-line)
+(bind-key "M-g g" 'goto-line)
 
 
 (use-package phi-search
   :ensure t
-  :config
-  (global-set-key (kbd "C-c C-s") 'phi-search)
-  (global-set-key (kbd "C-c C-r") 'phi-search-backward))
+  :bind (("C-c C-s" . phi-search)
+         ("C-c C-r" . phi-search-backward))
+  )
 
 (use-package visual-regexp
   :ensure t
@@ -38,9 +38,8 @@
     (save-excursion
       (goto-char (point-min))
       (call-interactively 'vr/query-replace)))
-  (global-set-key (kbd "C-c r") 'vr/query-replace)
-  (global-set-key (kbd "C-c R") 'vr/query-replace-from-beginning))
-
+  :bind (("C-c r" . vr/query-replace)
+         ("C-c R" . vr/query-replace-from-beginning)))
 
 
 ;; use regexp search and selected region (if any) by default
@@ -59,10 +58,10 @@
   (call-interactively 'isearch-backward-regexp))
 
 ;; use regexp search by default
-(global-set-key (kbd "C-s") 'isearch-forward-use-region)
-(global-set-key (kbd "C-r") 'isearch-backward-use-region)
-(global-set-key (kbd "C-S-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-S-r") 'isearch-backward-regexp)
+(bind-key "C-s"   'isearch-forward-use-region)
+(bind-key "C-r"   'isearch-backward-use-region)
+(bind-key "C-S-s" 'isearch-forward-regexp)
+(bind-key "C-S-r" 'isearch-backward-regexp)
 
 ;; make backspace sane
 (define-key isearch-mode-map (kbd "<backspace>") 'isearch-del-char)
@@ -98,7 +97,7 @@
       (isearch-search-and-update))))
 
 (add-hook 'isearch-mode-hook 'isearch-yank-word-hook)
-(global-set-key (kbd "C-c *") 'isearch-word-at-point)
+(bind-key "C-c *" 'isearch-word-at-point)
 
 ;; better grep
 (use-package phi-grep
