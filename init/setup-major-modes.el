@@ -88,7 +88,27 @@
   ;; Allow alphabetical lists
   (setq org-alphabetical-lists t)
 
+  (defun my-org-metacontrolreturn ()
+    "Execute `org-meta-return' followed by `org-meta-right'.
+This usually makes new item indented one level deeper."
+    (interactive)
+    (org-meta-return)
+    (org-metaright))
+  (bind-key "<C-M-return>" 'my-org-metacontrolreturn) ; Decide whether useful only in org-mode
+
+  (defun my-org-make-numbered-list (beg end)
+    (interactive (if (use-region-p)
+                     (list (region-beginning) (region-end))
+                   (list
+                    (save-excursion (outline-previous-heading) (forward-line) (point))
+                    (save-excursion (outline-next-heading) (forward-line -1) (point)))))
+    (string-rectangle beg end "- ")
+    (beginning-of-line)
+    (org-call-with-arg 'org-cycle-list-bullet 'previous)
+    (org-call-with-arg 'org-cycle-list-bullet 'previous))
+
   ;; org keys
+  (org-defkey org-mode-map (kbd "C-c 1") 'my-org-make-numbered-list)
   (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
   (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
   (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
