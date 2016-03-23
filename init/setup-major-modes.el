@@ -54,6 +54,9 @@
   :ensure t
   :defer t)
 
+(use-package magit-annex                ; git annex using magit
+  :defer t)
+
 ;; default modes
 (use-package org
   :ensure t
@@ -854,5 +857,8 @@ are referenced by its edges, but functions for these tasks need region."
   ;; also revert dired
   (add-hook 'dired-mode-hook 'turn-on-auto-revert-mode)
   )
+
+;; git-annex
+(use-package git-annex)
 
 (provide 'setup-major-modes)
