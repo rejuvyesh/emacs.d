@@ -2,6 +2,7 @@
 (use-package helm
   :ensure t
   :defer t
+  :diminish (helm-mode)
   :bind
   (("C-c h"     . helm-command-prefix)
    ("C-c h t"   . helm-cmd-t)
