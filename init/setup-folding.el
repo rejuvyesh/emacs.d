@@ -1,10 +1,14 @@
-(use-package hideshow)
+(use-package hideshow
+  :defer t)
 (use-package hideshowvis
   :ensure t
   :defer t)
 (use-package fold-dwim
   :ensure t
   :commands (fold-dwim-toggle))
+(use-package fold-this
+  :ensure t
+  :defer t)
 
 (add-hook 'prog-mode-hook  #'hs-minor-mode)
 
@@ -101,6 +105,8 @@
            ("SPC" . hs-show-block)
            ("f" . hs-fold-levels)
            ("F" . fold-dwim-show-all)
+           ("r" . fold-active-region)
+           ("R" . fold-this-unfold-at-point)
            ("h" . hl-line-mode)
            ("l" . toggle-line-wrap)
            ("s" . whitespace-fold-levels)
