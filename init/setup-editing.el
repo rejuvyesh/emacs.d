@@ -287,7 +287,11 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   (add-to-list 'winner-boring-buffers "*helm mini*")
   (winner-mode 1))
 
-(use-package proselint
+(use-package flycheck-proselint
+  :defer t
+  :after (flycheck))
+
+(use-package flycheck-julia
   :defer t
   :after (flycheck))
 

@@ -5,6 +5,16 @@
   :ensure t
   :defer t
   :diminish yas-minor-mode
+  :bind ((:map yas-keymap
+               ("C-a" . my-yas/goto-start-of-active-field)
+               ("C-e" . my-yas/goto-end-of-active-field)
+               ;; Use C-t to expand snippet instead of conflicting <TAB>
+               ("C-t" . yas-next-field-or-maybe-expand)
+               ("C-T" . yas-next-field))
+         (:map yas-minor-mode-map
+               ("TAB" . nil)
+               ("<tab>" . nil)
+               ("C-c C-y a" . yas-reload-all)))
   :init
   ;; set snippet directory
   (setq yas-snippet-dirs (emacs-d "snippets"))
@@ -15,16 +25,7 @@
   ;; options
   (setq yas-indent-line 'fixed)
   (setq yas-verbosity 1)
-  (setq yas-wrap-around-region t)
-  (define-key yas-keymap (kbd "C-a") 'my-yas/goto-start-of-active-field)
-  (define-key yas-keymap (kbd "C-e") 'my-yas/goto-end-of-active-field)
-  (define-key yas-minor-mode-map (kbd "TAB") nil) ; auto-complete uses this
-  (define-key yas-minor-mode-map (kbd "<tab>") nil) ; auto-complete uses this
-  ;; Use C-t to expand snippet instead of conflicting <TAB>
-  (define-key yas-minor-mode-map (kbd "C-t") 'yas-expand)
-  (define-key yas-keymap (kbd "C-t") 'yas-next-field-or-maybe-expand)
-  (define-key yas-keymap (kbd "C-T") 'yas-next-field)
-  (define-key yas-minor-mode-map (kbd "C-c C-y") 'yas-reload-all))
+  (setq yas-wrap-around-region t))
 
 (defun my-yas/goto-end-of-active-field ()
   (interactive)
@@ -86,8 +87,10 @@
 (use-package company-statistics         ; Sort company candidates by statistics
   :ensure t
   :defer t
-  :init (with-eval-after-load 'company
-          (company-statistics-mode)))
+  :config
+  (setq company-statistics-file (emacs-d "cache/company-statistics"))
+  (with-eval-after-load 'company
+    (company-statistics-mode)))
 
 (use-package company-emoji              ; Emojis completion like Github/Slack
   :ensure t
