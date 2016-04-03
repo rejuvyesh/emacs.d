@@ -80,6 +80,7 @@
   ;; Todo states
   (setq org-todo-keywords
         '((sequence "TODO(t)" "|" "WAITING(w)" "DONE(d)")))
+  (setq org-use-fast-todo-selection t)  ; C-c C-<char>
   ;; priorities
   (setq org-default-priority 67) ;C
   ;; highlight math
@@ -109,9 +110,6 @@ This usually makes new item indented one level deeper."
 
   ;; org keys
   (org-defkey org-mode-map (kbd "C-c 1") 'my-org-make-numbered-list)
-  (org-defkey org-mode-map (kbd "C-c C-t") (lambda () (interactive) (org-todo "TODO")))
-  (org-defkey org-mode-map (kbd "C-c C-w") (lambda () (interactive) (org-todo "WAITING")))
-  (org-defkey org-mode-map (kbd "C-c C-d") (lambda () (interactive) (org-todo "DONE")))
   (org-defkey org-mode-map (kbd "C-c x") 'org-export-dispatch)
   ;; shortcut for C-u C-c C-l
   (defun org-insert-file-link () (interactive) (org-insert-link '(4)))
