@@ -260,7 +260,9 @@ This usually makes new item indented one level deeper."
   (pdf-tools-install)
   (bind-keys :map pdf-view-mode-map
              ("j" . pdf-view-next-line-or-next-page)
-             ("k" . pdf-view-previous-line-or-previous-page))
+             ("k" . pdf-view-previous-line-or-previous-page)
+             ("J" . forward-page)
+             ("K" . backward-page))
   (bind-keys :prefix-map pdf-annot-minor-mode-map
              :prefix "M-a"
              ("m" . pdf-annot-add-markup-annotation)
