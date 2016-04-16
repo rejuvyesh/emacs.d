@@ -22,5 +22,7 @@
 ;; make sure we always know what's happening when eval-ing things
 (setq eval-expression-print-level nil)
 
+;; warn when opening files bigger than 100MB
+(setq large-file-warning-threshold 100000000)
 
 (provide 'setup-misc)
