@@ -756,6 +756,8 @@ are referenced by its edges, but functions for these tasks need region."
                (delete-overlay ov)))
            (setq org-latex-fragment-last el))))))
 (add-hook 'post-command-hook 'org-latex-fragment-toggle)
+;; bigger latex fragment
+(setq org-format-latex-options (quote (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
 
 ;; Should load this after all other languages I guess :(
 (use-package org-plus-contrib
