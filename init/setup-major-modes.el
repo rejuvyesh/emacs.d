@@ -206,8 +206,8 @@ This usually makes new item indented one level deeper."
   (which-function-mode 1))
 
 ;; load ESS for R & julia
-(use-package ess
-  :mode (("\\.jl$" . julia-mode)
+(use-package ess-site
+  :mode (("\\.jl$" . ess-julia-mode)
          ("\\.R$"  . R-mode))
   :config
   (add-hook 'ess-mode-hook 'company-mode))
