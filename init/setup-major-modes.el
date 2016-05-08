@@ -156,7 +156,30 @@ This usually makes new item indented one level deeper."
     :defer t)
   (add-to-list 'org-file-apps '("\\.pdf\\'"                   . org-pdfview-open))
   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
-  :bind (("C-. c" . org-capture))
+  ;; Add citation link for latex export
+  ;; Use #+LATEX_HEADER: \bibliographystyle{ieeetr}
+  ;;     and \bibliography{papers}
+  (org-add-link-type "cite"
+                     (defun follow-cite (name)
+                       "Open bibliography and jump to appropriate entry.
+        The document must contain \bibliography{filename} somewhere
+        for this to work"
+                       (find-file-other-window
+                        (save-excursion
+                          (beginning-of-buffer)
+                          (save-match-data
+                            (re-search-forward "\\\\bibliography{\\([^}]+\\)}")
+                            (concat (match-string 1) ".bib"))))
+                       (goto-char (point-min))
+                       (search-forward name))
+                     (defun export-cite (path desc format)
+                       "Export [[cite:cohen93]] as \cite{cohen93} in LaTeX."
+                       (if (eq format 'latex)
+                           (if (or (not desc) (equal 0 (search "cite:" desc)))
+                               (format "\\cite{%s}" path)
+                             (format "\\cite[%s]{%s}" desc path)))))
+  :bind (("C-. c" . org-capture)
+         ("<f12>" . org-agenda))
   )
 
 
