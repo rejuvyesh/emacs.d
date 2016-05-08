@@ -233,7 +233,12 @@ This usually makes new item indented one level deeper."
   :mode (("\\.jl$" . ess-julia-mode)
          ("\\.R$"  . R-mode))
   :config
-  (add-hook 'ess-mode-hook 'company-mode))
+  (add-hook 'ess-mode-hook 'company-mode)
+  (add-hook 'ess-julia-mode-hook
+            (lambda()
+              (define-key
+                ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
+  )
 
 ;; auctex
 (use-package auctex
