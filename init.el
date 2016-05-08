@@ -26,6 +26,7 @@
 (require 'setup-helm)
 (require 'setup-editing)
 (require 'setup-folding)
+(require 'setup-align)
 
 ;; isearch etc
 (require 'setup-search)
