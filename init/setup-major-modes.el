@@ -268,6 +268,11 @@ This usually makes new item indented one level deeper."
     :init
     (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
 
+(use-package auctex-latexmk
+  :ensure t
+  :config
+  (auctex-latexmk-setup))
+
 (use-package preview
   :commands LaTeX-preview-setup
   :init
