@@ -286,7 +286,8 @@ This usually makes new item indented one level deeper."
   (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120))))
 
 (use-package pdf-tools
-  :mode ("\\.pdf$" . pdf-view-mode)
+  :mode (("\\.pdf$" . pdf-view-mode)
+         ("\\.tex$" . LaTeX-mode))
   :init
   (add-hook 'pdf-view-mode-hook (lambda () (nyan-mode -1)))
   :config
