@@ -5,6 +5,9 @@
       '(
         Buffer-menu-delete
         LaTeX-babel-insert-hyphen
+        LaTeX-insert-left-brace
+        TeX-insert-backslash
+        TeX-insert-dollar
         ace-jump-done
         ace-jump-line-mode
         align-region-or-current
@@ -29,8 +32,10 @@
         enh-ruby-electric-brace
         enh-ruby-find-error
         er/mark-defun
+        ess-electric-brace
         ess-indent-or-complete
         ess-smart-S-assign
+        ess-smart-comma
         eval-defun
         fold-dwim-toggle
         generalized-shell-command
@@ -50,6 +55,7 @@
         kill-and-join-forward
         kill-without-append
         kmacro-end-or-call-macro
+        latex/backward-environment
         literal-delete-backward-char
         literal-delete-char
         literal-tab
@@ -87,6 +93,7 @@
         smart-end-of-line
         sp--self-insert-command
         sp-add-to-previous-sexp
+        sp-backward-sexp
         sp-backward-symbol
         sp-backward-unwrap-sexp
         sp-beginning-of-sexp
@@ -96,6 +103,7 @@
         sp-unwrap-sexp
         toggle-title-case
         toggle-upcase
+        uncomment-region
         wdired-finish-edit
         wdired-previous-line
         whole-line-or-region-comment-dwim-2
@@ -118,5 +126,6 @@
         phi-search
         phi-search-backward
         save-buffers-kill-terminal
+        select-window-2
         sp-add-to-next-sexp
         ))

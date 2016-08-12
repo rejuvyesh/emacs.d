@@ -20,7 +20,7 @@
           (file-name) " "
           (one-or-more (not digit))
           line " " (or "ERROR" "FATAL") (one-or-more blank) (message) line-end))
-  :modes julia-mode)
+  :modes ess-julia-mode)
 
 (add-to-list 'flycheck-checkers 'julia-lint)
 

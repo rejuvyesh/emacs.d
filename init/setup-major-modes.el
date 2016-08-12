@@ -149,14 +149,15 @@ This usually makes new item indented one level deeper."
                  "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
                 ("h" "Habit" entry (file "~/Dropbox/notes/scratch.org")
                  "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
-
-  ;; (use-package org-download)
+  (use-package ox-reveal
+               :defer t)
   (use-package org-pdfview
     :ensure t
     :defer t)
   (add-to-list 'org-file-apps '("\\.pdf\\'"                   . org-pdfview-open))
   (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
   ;; Add citation link for latex export
+  ;; Learn org-ref and nix this
   ;; Use #+LATEX_HEADER: \bibliographystyle{ieeetr}
   ;;     and \bibliography{papers}
   (org-add-link-type "cite"
@@ -266,12 +267,13 @@ This usually makes new item indented one level deeper."
   (use-package latex-extra
     :ensure t
     :init
-    (add-hook 'LaTeX-mode-hook #'latex-extra-mode)))
+    (add-hook 'LaTeX-mode-hook #'latex-extra-mode))
+  (use-package auctex-latexmk
+    :ensure t
+    :config
+    (auctex-latexmk-setup))
+  )
 
-(use-package auctex-latexmk
-  :ensure t
-  :config
-  (auctex-latexmk-setup))
 
 (use-package preview
   :commands LaTeX-preview-setup
