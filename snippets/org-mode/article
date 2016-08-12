@@ -1,0 +1,16 @@
+#name : article
+# --
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [12pt]
+
+#+OPTIONS: toc:nil
+
+#+LATEX_HEADER: \usepackage[margin=1in]{geometry}
+
+#+LATEX_HEADER: \usepackage{xltxtra}
+#+LATEX_HEADER: \setmainfont{Minion Pro}
+
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[enumerate,itemize]{noitemsep,nolistsep,leftmargin=*}
+
+#+LATEX_HEADER: \bibliographystyle{ieeetr}
