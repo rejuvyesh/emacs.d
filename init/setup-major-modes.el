@@ -420,8 +420,8 @@ are referenced by its edges, but functions for these tasks need region."
     (interactive)
     (highlight-lines-matching-regexp "import i?pu?db")
     (highlight-lines-matching-regexp "i?pu?db.set_trace()"))
-  (setq tab-width 2
-        python-indent-offset 2
+  (setq tab-width 4
+        python-indent-offset 4
         ;; auto-indent on colon doesn't work well with if statement
         electric-indent-chars (delq ?: electric-indent-chars))
   (add-hook 'python-mode-hook #'hi-lock-mode)
@@ -469,6 +469,10 @@ are referenced by its edges, but functions for these tasks need region."
                ))
   (use-package py-isort
     :ensure t)
+  (use-package yapfify
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'yapf-mode))
   (bind-keys :map python-mode-map
              ("C-S-c"   . python-execute-file)
              ("C-c C-f" . python-shell-send-defun)
