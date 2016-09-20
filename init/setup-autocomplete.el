@@ -17,7 +17,7 @@
                ("C-c C-y a" . yas-reload-all)))
   :init
   ;; set snippet directory
-  (setq yas-snippet-dirs (emacs-d "snippets"))
+  (setq yas-snippet-dirs (list (emacs-d "snippets")))
   ;; turn on yasnippet everywhere
   (yas-global-mode 1)
   (yas-reload-all)

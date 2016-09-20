@@ -170,7 +170,7 @@
 (use-package rainbow-mode
              :ensure t)
 (defadvice rainbow-mode (after rainbow-mode-refresh activate)
-  (font-lock-fontify-buffer))
+  (font-lock-flush))
 
 
 ;; highlight some whitespace
