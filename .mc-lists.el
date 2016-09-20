@@ -110,6 +110,8 @@
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
         whole-line-or-region-yank
+        yaml-electric-backspace
+        yaml-electric-dash-and-dot
         yank-and-indent
         yas-expand
         ))
