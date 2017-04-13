@@ -106,4 +106,27 @@
   (setq phi-grep-window-height 40)
   (setq phi-grep-make-backup-function nil))
 
+(use-package ag                         ; ag search
+  :if (executable-find "ag")
+  :ensure t
+  :commands (ag helm-do-grep-ag)
+  :config
+  (setq ag-highlight-search t)
+  )
+
+(use-package wgrep-ag                   ; Wgrep for ag
+  :if (executable-find "ag")
+  :ensure t
+  :defer t
+  :config
+  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+
+(use-package ripgrep
+  :if (executable-find "rg")
+  :ensure t
+  :commands (projectile-ripgrep ripgrep-regexp)
+  :config
+  )
+
+
 (provide 'setup-search)

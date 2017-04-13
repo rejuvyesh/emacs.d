@@ -1,3 +1,17 @@
+(defun projectile-ripgrep (regexp)
+  "Run a Ripgrep search with `REGEXP' rooted at the current projectile project root."
+  (interactive
+   (list
+    (read-from-minibuffer "Ripgrep search for: " (thing-at-point 'symbol))))
+  (if (fboundp 'projectile-project-root)
+      (ripgrep-regexp regexp
+                      (projectile-project-root)
+                      (mapcar (lambda (val) (concat "--glob !" val))
+                              (append projectile-globally-ignored-files
+                                      projectile-globally-ignored-directories))
+                      )
+    (error "Projectile is not available")))
+
 (use-package projectile
   :ensure t
   :diminish projectile-mode
@@ -8,6 +22,10 @@
   (setq projectile-file-exists-remote-cache-expire nil)
   (setq projectile-completion-system 'helm)
   (setq projectile-known-projects-file (emacs-d "cache/projectile-bookmarks.eld"))
-  (define-key projectile-command-map (kbd "s") 'projectile-ag))
+  (if (executable-find "ag")
+      (define-key projectile-command-map (kbd "s") 'projectile-ag))
+  (if (executable-find "rg")
+      (define-key projectile-command-map (kbd "s") 'projectile-ripgrep))
+  )
 
 (provide 'setup-project)
