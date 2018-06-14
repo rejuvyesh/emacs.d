@@ -128,6 +128,4 @@
   :config
   )
 
-
-
 (provide 'setup-search)
