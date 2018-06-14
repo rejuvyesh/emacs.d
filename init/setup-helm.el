@@ -1,4 +1,5 @@
 ;; helm
+
 (use-package helm
   :ensure t
   :defer t
@@ -6,7 +7,6 @@
   :bind
   (("C-c h"     . helm-command-prefix)
    ("C-c h t"   . helm-cmd-t)
-   ("C-c h g"   . helm-do-grep-ag)
    ("C-c h o"   . helm-occur)
    ("M-x"       . helm-M-x)
    ("M-y"       . helm-show-kill-ring)
@@ -37,6 +37,18 @@
   (defadvice helm-default-display-buffer
       (before helm-fullscreen-split activate)
     (delete-other-windows))
+  
    )
+
+(use-package helm-ag
+  :if (or (executable-find "ag") (executable-find "rg"))
+  :ensure t
+  :bind
+  (("C-c h g"   . helm-do-ag))
+  :config
+  (if (executable-find "rg")
+      (setq helm-ag-base-command "rg --smart-case --no-heading --vimgrep")
+    )
+  )
 
 (provide 'setup-helm)

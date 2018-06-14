@@ -25,4 +25,7 @@
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
+;; some people like capitals
+(define-coding-system-alias 'UTF-8 'utf-8)
+
 (provide 'setup-misc)

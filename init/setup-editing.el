@@ -295,6 +295,10 @@ Prefixed with \\[universal-argument], expand the file name to its full path."
   :defer t
   :after (flycheck))
 
+(use-package flycheck-mypy
+  :defer t
+  :after (flycheck))
+
 ;; recent files
 (use-package recentf
   :defer t
