@@ -149,8 +149,104 @@ This usually makes new item indented one level deeper."
                  "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
                 ("h" "Habit" entry (file "~/Dropbox/notes/scratch.org")
                  "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
-  (use-package ox-reveal
-               :defer t)
+  ;; From scimax
+  ;; default with images open
+  (setq org-startup-with-inline-images "inlineimages")
+  ;; * Fragment overlays
+  (defun org-latex-fragment-tooltip (beg end image imagetype)
+    "Add the fragment tooltip to the overlay and set click function to toggle it."
+    (overlay-put (ov-at) 'help-echo
+                 (concat (buffer-substring beg end)
+                         "\nmouse-1 to toggle."))
+    (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
+                                      (define-key map [mouse-1]
+                                        `(lambda ()
+                                           (interactive)
+                                           (org-remove-latex-fragment-image-overlays ,beg ,end)))
+                                      map)))
+  
+  (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip)
+  (defun org-latex-fragment-justify (justification)
+    "Justify the latex fragment at point with JUSTIFICATION.
+JUSTIFICATION is a symbol for 'left, 'center or 'right."
+    (interactive
+     (list (intern-soft
+            (completing-read "Justification (left): " '(left center right)
+                             nil t nil nil 'left))))
+
+    (let* ((ov (ov-at))
+           (beg (ov-beg ov))
+           (end (ov-end ov))
+           (shift (- beg (line-beginning-position)))
+           (img (overlay-get ov 'display))
+           (img (and (and img (consp img) (eq (car img) 'image)
+                          (image-type-available-p (plist-get (cdr img) :type)))
+                     img))
+           space-left offset)
+      (when (and img (= beg (line-beginning-position)))
+        (setq space-left (- (window-max-chars-per-line) (car (image-display-size img)))
+              offset (floor (cond
+                             ((eq justification 'center)
+                              (- (/ space-left 2) shift))
+                             ((eq justification 'right)
+                              (- space-left shift))
+                             (t
+                              0))))
+        (when (>= offset 0)
+          (overlay-put ov 'before-string (make-string offset ?\ ))))))
+
+  (defun org-latex-fragment-justify-advice (beg end image imagetype)
+    "After advice function to justify fragments."
+    (org-latex-fragment-justify (or (plist-get org-format-latex-options :justify) 'left)))
+
+  (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-justify-advice)
+  
+  ;; ** numbering latex equations
+  (defun org-renumber-environment (orig-func &rest args)
+    "A function to inject numbers in LaTeX fragment previews."
+    (let ((results '()) 
+          (counter -1)
+          (numberp))
+
+      (setq results (loop for (begin .  env) in 
+                          (org-element-map (org-element-parse-buffer) 'latex-environment
+                            (lambda (env)
+                              (cons
+                               (org-element-property :begin env)
+                               (org-element-property :value env))))
+                          collect
+                          (cond
+                           ((and (string-match "\\\\begin{equation}" env)
+                                 (not (string-match "\\\\tag{" env)))
+                            (incf counter)
+                            (cons begin counter))
+                           ((string-match "\\\\begin{align}" env)
+                            (prog2
+                                (incf counter)
+                                (cons begin counter)			    
+                              (with-temp-buffer
+                                (insert env)
+                                (goto-char (point-min))
+                                ;; \\ is used for a new line. Each one leads to a number
+                                (incf counter (count-matches "\\\\$"))
+                                ;; unless there are nonumbers.
+                                (goto-char (point-min))
+                                (decf counter (count-matches "\\nonumber")))))
+                           (t
+                            (cons begin nil)))))
+
+      (when (setq numberp (cdr (assoc (point) results)))
+        (setf (car args)
+              (concat
+               (format "\\setcounter{equation}{%s}\n" numberp)
+               (car args)))))
+    
+    (apply orig-func args))
+
+  (advice-add 'org-create-formula-image :around #'org-renumber-environment)
+
+  ;; (use-package ox-reveal
+  ;;              :defer t)
   (use-package org-pdfview
     :ensure t
     :defer t)
@@ -207,6 +303,28 @@ This usually makes new item indented one level deeper."
     :after (helm))
   )
 
+(use-package lsp-mode
+  :ensure t)
+
+(use-package lsp-ui
+  :ensure t
+  :after (lsp-mode flycheck)
+  :config
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  (lsp-ui-flycheck-enable t))
+
+(use-package company-lsp 
+  :ensure t
+  :after (lsp-mode company)
+  :config (push 'company-lsp company-backends))
+
+(use-package dap-mode
+  :after (lsp-mode)
+  :hook ((lsp-mode . dap-mode)
+         (lsp-mode . dap-ui-mode))
+  :config
+  (setq dap--breakpoints-file (expand-file-name "cache/dap-breakpoints" user-emacs-directory)))
 
 (use-package c-eldoc
   :commands (c-turn-on-eldoc-mode)
@@ -229,17 +347,38 @@ This usually makes new item indented one level deeper."
   :init
   (which-function-mode 1))
 
-;; load ESS for R & julia
+;; load ESS for R
 (use-package ess-site
-  :mode (("\\.jl$" . ess-julia-mode)
-         ("\\.R$"  . R-mode))
+  :mode (("\\.R$"  . R-mode))
   :config
-  (add-hook 'ess-mode-hook 'company-mode)
-  (add-hook 'ess-julia-mode-hook
-            (lambda()
-              (define-key
-                ess-julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)))
-  )
+  (add-hook 'ess-mode-hook 'company-mode))
+
+(use-package julia-mode
+  :ensure t
+  :mode ("\\.jl$" . julia-mode)
+  :config
+  (add-hook 'julia-mode-hook 'flycheck-mode))
+
+(use-package lsp-julia
+  :after (lsp-mode julia-mode)
+  :config
+  (add-hook 'julia-mode-hook #'lsp-julia-enable))
+
+(use-package julia-repl
+  :ensure t
+  :commands julia-repl-mode
+  :hook (julia-mode . julia-repl-mode))
+
+(use-package company-lsp
+  :after (company lsp-mode)
+  :ensure t
+  :config
+  (setq company-lsp-enable-snippet t
+        company-lsp-cache-candidates nil
+        company-transformers nil
+        company-lsp-async t)
+  (push '(company-lsp :with company-yasnippet) company-backends))
+
 
 ;; auctex
 (use-package auctex
@@ -268,12 +407,16 @@ This usually makes new item indented one level deeper."
     :ensure t
     :init
     (add-hook 'LaTeX-mode-hook #'latex-extra-mode))
-  (use-package auctex-latexmk
-    :ensure t
-    :config
-    (auctex-latexmk-setup))
   )
 
+
+(use-package auctex-latexmk
+  :after (tex)
+  :ensure t
+  :init
+  (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+  :config
+  (auctex-latexmk-setup))
 
 (use-package preview
   :commands LaTeX-preview-setup
@@ -429,14 +572,7 @@ are referenced by its edges, but functions for these tasks need region."
   (defun python-setup-shell ()
     (if (executable-find "ipython")
         (progn
-          (setq python-shell-interpreter "ipython")
-          (when (version< emacs-version "24.4")
-            ;; these settings are unnecessary and even counter-productive on emacs 24.4 and newer
-            (setq python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-                  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-                  python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
-                  python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
-                  python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")))
+          (setq python-shell-interpreter "ipython"))
       (setq python-shell-interpreter "python")))
   :config
   (unbreak-stupid-map python-mode-map)
@@ -456,17 +592,7 @@ are referenced by its edges, but functions for these tasks need region."
         (inferior-python-mode))))
   (add-hook 'python-mode-hook 'python-setup-shell)
   (add-hook 'python-mode-hook 'python-indent-guess-indent-offset)
-  (use-package jedi-core
-    :config
-    (add-hook 'python-mode-hook 'jedi:setup)
-    (setq jedi:tooltip-method nil)
-    (unbreak-stupid-map jedi-mode-map)
-    (bind-keys :map jedi-mode-map
-               ("M-." .  jedi:goto-definition)
-               ("M-," .  jedi:goto-definition-pop-marker)
-               ("M-?" .  jedi:show-doc)
-               ;;("M-/" .  helm-jedi-related-names)
-               ))
+  
   (use-package py-isort
     :ensure t)
   (use-package yapfify
@@ -495,8 +621,6 @@ are referenced by its edges, but functions for these tasks need region."
   :init
   ;; (unbind-key "C-<up>" ein:notebook-mode-map)
   ;; (unbind-key "C-<down>" ein:notebook-mode-map)
-  :config
-  (add-hook 'ein:connect-mode-hook #'ein:jedi-setup)
   ;; (bind-keys :map ein:notebook-mode-map
   ;;            ("M-<up>" . ein:worksheet-goto-prev-input)
   ;;            ("M-<down>" . ein:worksheet-goto-next-input))
@@ -668,6 +792,9 @@ are referenced by its edges, but functions for these tasks need region."
   :ensure t
   :mode ("\\.proto\\'" . protobuf-mode))
 
+(use-package pddl-mode
+  :mode ("\\.pddl$" . pddl-mode))
+
 ;; mark stuff like FIXME
 (use-package fic-mode
   :diminish fic-mode
@@ -710,82 +837,82 @@ are referenced by its edges, but functions for these tasks need region."
   :commands (dactyl-mode))
 
 
-;; Automatic Math preview toggle in org-mode
-;; Source: http://goo.gl/WLYzxp
-(defvar org-latex-fragment-last nil
-  "Holds last fragment/environment you were on.")
-;; FIXME Pretty janky right now
-(defun org-latex-fragment-toggle ()
-  "Toggle a latex fragment image "
-  (and (eq 'org-mode major-mode)
-       (let* ((el (org-element-context))
-              (el-type (car el)))
-         (cond
-          ;; were on a fragment and now on a new fragment
-          ((and
-            ;; fragment we were on
-            org-latex-fragment-last
-            ;; and are on a fragment now
-            (or
-             (eq 'latex-fragment el-type)
-             (eq 'latex-environment el-type))
-            ;; but not on the last one this is a little tricky. as you edit the
-            ;; fragment, it is not equal to the last one. We use the begin
-            ;; property which is less likely to change for the comparison.
-            (not (= (org-element-property :begin el)
-                    (org-element-property :begin org-latex-fragment-last))))
-           ;; go back to last one and put image back
-           (save-excursion
-             (goto-char (org-element-property :begin org-latex-fragment-last))
-             (org-preview-latex-fragment))
-           ;; now remove current image
-           (goto-char (org-element-property :begin el))
-           (let ((ov (loop for ov in (org--list-latex-overlays)
-                           if
-                           (and
-                            (<= (overlay-start ov) (point))
-                            (>= (overlay-end ov) (point)))
-                           return ov)))
-             (when ov
-               (delete-overlay ov)))
-           ;; and save new fragment
-           (setq org-latex-fragment-last el))
+;; ;; Automatic Math preview toggle in org-mode
+;; ;; Source: http://goo.gl/WLYzxp
+;; (defvar org-latex-fragment-last nil
+;;   "Holds last fragment/environment you were on.")
+;; ;; FIXME Pretty janky right now
+;; (defun org-latex-fragment-toggle ()
+;;   "Toggle a latex fragment image "
+;;   (and (eq 'org-mode major-mode)
+;;        (let* ((el (org-element-context))
+;;               (el-type (car el)))
+;;          (cond
+;;           ;; were on a fragment and now on a new fragment
+;;           ((and
+;;             ;; fragment we were on
+;;             org-latex-fragment-last
+;;             ;; and are on a fragment now
+;;             (or
+;;              (eq 'latex-fragment el-type)
+;;              (eq 'latex-environment el-type))
+;;             ;; but not on the last one this is a little tricky. as you edit the
+;;             ;; fragment, it is not equal to the last one. We use the begin
+;;             ;; property which is less likely to change for the comparison.
+;;             (not (= (org-element-property :begin el)
+;;                     (org-element-property :begin org-latex-fragment-last))))
+;;            ;; go back to last one and put image back
+;;            (save-excursion
+;;              (goto-char (org-element-property :begin org-latex-fragment-last))
+;;              (org-preview-latex-fragment))
+;;            ;; now remove current image
+;;            (goto-char (org-element-property :begin el))
+;;            (let ((ov (loop for ov in (org--list-latex-overlays)
+;;                            if
+;;                            (and
+;;                             (<= (overlay-start ov) (point))
+;;                             (>= (overlay-end ov) (point)))
+;;                            return ov)))
+;;              (when ov
+;;                (delete-overlay ov)))
+;;            ;; and save new fragment
+;;            (setq org-latex-fragment-last el))
 
-          ;; were on a fragment and now are not on a fragment
-          ((and
-            ;; not on a fragment now
-            (not (or
-                  (eq 'latex-fragment el-type)
-                  (eq 'latex-environment el-type)))
-            ;; but we were on one
-            org-latex-fragment-last)
-           ;; put image back on
-           (save-excursion
-             (goto-char (org-element-property :begin org-latex-fragment-last))
-             (org-preview-latex-fragment))
-           ;; unset last fragment
-           (setq org-latex-fragment-last nil))
+;;           ;; were on a fragment and now are not on a fragment
+;;           ((and
+;;             ;; not on a fragment now
+;;             (not (or
+;;                   (eq 'latex-fragment el-type)
+;;                   (eq 'latex-environment el-type)))
+;;             ;; but we were on one
+;;             org-latex-fragment-last)
+;;            ;; put image back on
+;;            (save-excursion
+;;              (goto-char (org-element-property :begin org-latex-fragment-last))
+;;              (org-preview-latex-fragment))
+;;            ;; unset last fragment
+;;            (setq org-latex-fragment-last nil))
 
-          ;; were not on a fragment, and now are
-          ((and
-            ;; we were not one one
-            (not org-latex-fragment-last)
-            ;; but now we are
-            (or
-             (eq 'latex-fragment el-type)
-             (eq 'latex-environment el-type)))
-           (goto-char (org-element-property :begin el))
-           ;; remove image
-           (let ((ov (loop for ov in (org--list-latex-overlays)
-                           if
-                           (and
-                            (<= (overlay-start ov) (point))
-                            (>= (overlay-end ov) (point)))
-                           return ov)))
-             (when ov
-               (delete-overlay ov)))
-           (setq org-latex-fragment-last el))))))
-(add-hook 'post-command-hook 'org-latex-fragment-toggle)
+;;           ;; were not on a fragment, and now are
+;;           ((and
+;;             ;; we were not one one
+;;             (not org-latex-fragment-last)
+;;             ;; but now we are
+;;             (or
+;;              (eq 'latex-fragment el-type)
+;;              (eq 'latex-environment el-type)))
+;;            (goto-char (org-element-property :begin el))
+;;            ;; remove image
+;;            (let ((ov (loop for ov in (org--list-latex-overlays)
+;;                            if
+;;                            (and
+;;                             (<= (overlay-start ov) (point))
+;;                             (>= (overlay-end ov) (point)))
+;;                            return ov)))
+;;              (when ov
+;;                (delete-overlay ov)))
+;;            (setq org-latex-fragment-last el))))))
+;; (add-hook 'post-command-hook 'org-latex-fragment-toggle)
 ;; bigger latex fragment
 (setq org-format-latex-options (quote (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
 
@@ -800,30 +927,18 @@ are referenced by its edges, but functions for these tasks need region."
      (R          . t)
      (matlab     . t)
      (julia      . t)
-     (sh         . t)
+     (shell      . t)
      (ruby       . t)
      (python     . t)
      (haskell    . t)))
   (add-to-list 'org-src-lang-modes '("c" . c))
   (add-to-list 'org-src-lang-modes '("r" . ess-mode))
   (add-to-list 'org-src-lang-modes '("h" . haskell))
-  (add-to-list 'org-src-lang-modes '("s" . sh))
+  (add-to-list 'org-src-lang-modes '("s" . shell))
   (add-to-list 'org-src-lang-modes '("p" . python))
   (add-to-list 'org-src-lang-modes '("ruby" . enh-ruby))
   (setq org-src-fontify-natively t)
   (setq org-confirm-babel-evaluate nil))
-
-(use-package ag                         ; ag search
-  :ensure t
-  :commands (ag helm-do-grep-ag)
-  :config
-  (setq ag-highlight-search t)
-  )
-(use-package wgrep-ag                   ; Wgrep for ag
-  :ensure t
-  :defer t
-  :config
-  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
 
 
 ;; smart-compile
@@ -863,10 +978,8 @@ are referenced by its edges, but functions for these tasks need region."
   (setq dired-dwim-target t)
   (use-package wdired
     :ensure t)
-  (use-package dired-details
-    :ensure t)
-  (use-package dired-details+
-    :ensure t)
+  (use-package dired-details)
+  (use-package dired-details+)
   (use-package dired-open
     :ensure t)
   (use-package dired-narrow             ; narrow dired to match filter
@@ -921,9 +1034,9 @@ are referenced by its edges, but functions for these tasks need region."
   ;; open by extension
   (setq dired-open-extensions '(
                                 ("djvu" . "zathura")
-                                ("mkv"  . "rmpv")
-                                ("mp4"  . "rmpv")
-                                ("mp3"  . "rmpv -a")
+                                ("mkv"  . "mpv")
+                                ("mp4"  . "mpv")
+                                ("mp3"  . "mpv")
                                 ))
   ;; sort number naturally
   (setq dired-listing-switches "--group-directories-first -v -al")
