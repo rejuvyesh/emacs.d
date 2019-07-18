@@ -12,8 +12,6 @@
                ("C-t" . yas-next-field-or-maybe-expand)
                ("C-T" . yas-next-field))
          (:map yas-minor-mode-map
-               ("TAB" . nil)
-               ("<tab>" . nil)
                ("C-c C-y a" . yas-reload-all)))
   :init
   ;; set snippet directory
@@ -97,17 +95,6 @@
   :defer t
   :init (with-eval-after-load 'company
           (add-to-list 'company-backends 'company-emoji)))
-
-(use-package company-jedi
-  :ensure t
-  :defer t
-  :init
-  (defun enable-jedi()
-    (setq-local company-backends
-                (append '(company-jedi) company-backends)))
-  (with-eval-after-load 'company
-    (add-hook 'python-mode-hook 'enable-jedi)))
-
 
 (use-package abbrev                     ; auto correction via abbreviation file
   :diminish abbrev-mode
