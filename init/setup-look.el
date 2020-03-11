@@ -239,6 +239,36 @@
 (setq-default truncate-lines t)
 (setq truncate-partial-width-windows nil)
 
+(use-package all-the-icons
+  :ensure t
+  :demand t
+  :config
+  (defun fn/add-major-mode-icon (main-mode icon-config)
+    "Add icon mapping to major mode given MAIN-MODE, ICON-CONFIG."
+    (add-to-list
+     'all-the-icons-mode-icon-alist
+     (append (list main-mode) icon-config)))
+
+  (fn/add-major-mode-icon
+   'makefile-mode
+   (list 'all-the-icons-faicon "wrench" :v-adjust -0.1))
+
+  (fn/add-major-mode-icon
+   'special-mode
+   (list 'all-the-icons-faicon "birthday-cake" :v-adjust -0.1))
+
+  (fn/add-major-mode-icon
+   'fundamental-mode
+   (list 'all-the-icons-faicon "pencil" :v-adjust -0.1))
+
+  (fn/add-major-mode-icon
+   'compilation-mode
+   (list 'all-the-icons-faicon "cog" :v-adjust -0.1))
+
+  (fn/add-major-mode-icon
+   'process-menu-mode
+   (list 'all-the-icons-faicon "list" :v-adjust -0.1)))
+
 (use-package diminish
   :config
   ;; diminish

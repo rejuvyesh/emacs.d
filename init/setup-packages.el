@@ -10,7 +10,7 @@
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
+(unless package--initialized (package-initialize t))
 
 ;; Install use-package if not there
 (unless (package-installed-p 'use-package)
