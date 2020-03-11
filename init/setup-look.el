@@ -104,6 +104,10 @@
   :init
   (nyan-mode t))
 
+(unless (display-graphic-p)
+  (load-theme 'tsdh-dark)
+  (set-face-background 'default "unspecified-bg"))
+
 ;; fonts
 (defvar small-font  "Fantasque Sans Mono 8")
 (defvar normal-font "Fantasque Sans Mono 10")
